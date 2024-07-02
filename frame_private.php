@@ -6,7 +6,6 @@
     require "include/frameutility.inc.php";
     include "include/tags/admin.inc.php";
     include "include/logout.inc.php";
-    //ciao
 
     if (!isset($_REQUEST['step'])) {
         $_REQUEST['step'] = 0;
