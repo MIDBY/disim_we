@@ -2,10 +2,6 @@ package it.univaq.example.webmarket.data.model;
 
 import it.univaq.framework.data.DataItem;
 
-/**
- *
- * @author Giuseppe Della Penna
- */
 public interface User extends DataItem<Integer> {
 
     Integer getId();

@@ -1,0 +1,21 @@
+package it.univaq.example.webmarket.data.model;
+
+import it.univaq.framework.data.DataItem;
+
+public interface Characteristic extends DataItem<Integer> {
+
+    Integer getId();
+
+    String getName();
+
+    void setName(String nome);
+
+    Category getCategory();
+
+    void setCategory(Category category);
+
+    String getDefaultValues();
+
+    void setDefaultValues(String values);
+    
+}

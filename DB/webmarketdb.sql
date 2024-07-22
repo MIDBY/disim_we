@@ -43,7 +43,7 @@ CREATE TABLE `caratteristica` (
 CREATE TABLE `categoria` (
   `id` int(11) NOT NULL,
   `nome` varchar(32) NOT NULL,
-  `id_categoria` int(11) DEFAULT NULL
+  `id_categoriaPadre` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -54,7 +54,7 @@ CREATE TABLE `categoria` (
 
 CREATE TABLE `gruppo` (
   `id` int(11) NOT NULL,
-  `nome` enum('admin','ordinante','tecnico','') NOT NULL
+  `nome` enum('AMMINISTRATORE','ORDINANTE','TECNICO') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -99,7 +99,7 @@ CREATE TABLE `proposta_acquisto` (
   `url` text DEFAULT NULL,
   `note` text DEFAULT NULL,
   `data_creazione` date NOT NULL,
-  `stato_proposta` enum('In attesa','Approvata','Respinta','') NOT NULL,
+  `stato_proposta` enum('INATTESA','APPROVATO','RESPINTO') NOT NULL DEFAULT 'INATTESA',
   `motivazione` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -116,8 +116,8 @@ CREATE TABLE `richiesta_acquisto` (
   `id_categoria` int(11) NOT NULL,
   `id_ordinante` int(11) NOT NULL,
   `id_tecnico` int(11) NOT NULL,
-  `stato_richiesta` enum('Nuovo','Presa in carico','Ordinato','Chiuso') NOT NULL DEFAULT 'Nuovo',
-  `stato_ordine` enum('Accettato','Respinto perché non conforme','Respinto perché non funzionante','') NOT NULL DEFAULT '',
+  `stato_richiesta` enum('NUOVO','PRESOINCARICO','ORDINATO','CHIUSO') NOT NULL DEFAULT 'NUOVO',
+  `stato_ordine` enum('INCORSO','ACCETTATO','RESPINTONONCONFORME','RESPINTONONFUNZIONANTE') NOT NULL DEFAULT 'INCORSO',
   `data_creazione` date NOT NULL,
   `note` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
