@@ -6,7 +6,6 @@ import it.univaq.framework.data.DataItemImpl;
 
 public class CharacteristicImpl extends DataItemImpl<Integer> implements Characteristic {
 
-    private Integer id;
     private String name;
     private Category category;
     private String defaultValues;
@@ -14,13 +13,8 @@ public class CharacteristicImpl extends DataItemImpl<Integer> implements Charact
     public CharacteristicImpl() {
         super();
         name = "";
-        category = new CategoryImpl();
+        category = null;
         defaultValues = "";
-    }
-
-    @Override
-    public Integer getId() {
-        return id;
     }
 
     @Override

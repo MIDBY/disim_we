@@ -4,8 +4,6 @@ import it.univaq.framework.data.DataItem;
 
 public interface Characteristic extends DataItem<Integer> {
 
-    Integer getId();
-
     String getName();
 
     void setName(String nome);

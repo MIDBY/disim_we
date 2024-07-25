@@ -4,10 +4,6 @@ import it.univaq.framework.data.DataException;
 import it.univaq.framework.data.DataItem;
 import java.io.InputStream;
 
-/**
- *
- * @author Giuseppe Della Penna
- */
 public interface Image extends DataItem<Integer> {
 
     String getCaption();

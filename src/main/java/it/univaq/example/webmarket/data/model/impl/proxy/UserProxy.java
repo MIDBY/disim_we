@@ -32,8 +32,20 @@ public class UserProxy extends UserImpl implements DataItemProxy  {
     }
 
     @Override
+    public void setEmail(String email) {
+        super.setEmail(email);
+        this.modified = true;
+    }
+
+    @Override
     public void setPassword(String surname) {
         super.setPassword(surname);
+        this.modified = true;
+    }
+
+    @Override
+    public void setAddress(String address) {
+        super.setAddress(address);
         this.modified = true;
     }
 

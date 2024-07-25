@@ -131,7 +131,7 @@ public class ArticleDAO_MySQL extends DAO implements ArticleDAO {
 
     @Override
     public List<Article> getArticles(Issue issue) throws DataException {
-        List<Article> result = new ArrayList();
+        List<Article> result = new ArrayList<Article>();
 
         try {
             sArticlesByIssue.setInt(1, issue.getKey());
@@ -156,7 +156,7 @@ public class ArticleDAO_MySQL extends DAO implements ArticleDAO {
 
     @Override
     public List<Article> getArticles() throws DataException {
-        List<Article> result = new ArrayList();
+        List<Article> result = new ArrayList<Article>();
 
         try (ResultSet rs = sArticles.executeQuery()) {
             while (rs.next()) {
@@ -170,7 +170,7 @@ public class ArticleDAO_MySQL extends DAO implements ArticleDAO {
 
     @Override
     public List<Article> getUnassignedArticles() throws DataException {
-        List<Article> result = new ArrayList();
+        List<Article> result = new ArrayList<Article>();
 
         try (ResultSet rs = sUnassignedArticles.executeQuery()) {
             while (rs.next()) {

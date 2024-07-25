@@ -12,14 +12,12 @@ import java.sql.SQLException;
 import it.univaq.framework.data.DataLayer;
 import it.univaq.framework.data.OptimisticLockException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
-/**
- *
- * @author Giuseppe Della Penna
- */
 public class UserDAO_MySQL extends DAO implements UserDAO {
 
-    private PreparedStatement sUserByID, sUserByName, iUser, uUser;
+    private PreparedStatement sUserByID, sUserByUsername, sUserByEmail, sUserByAccepted, iUser, uUser;
 
     public UserDAO_MySQL(DataLayer d) {
         super(d);
@@ -32,12 +30,14 @@ public class UserDAO_MySQL extends DAO implements UserDAO {
 
             //precompiliamo tutte le query utilizzate nella classe
             //precompile all the queries uses in this class
-            sUserByID = connection.prepareStatement("SELECT * FROM user WHERE ID=?");
-            sUserByName = connection.prepareStatement("SELECT ID FROM user WHERE username=?");
-            iUser = connection.prepareStatement("INSERT INTO user (username,password) VALUES(?,?)", Statement.RETURN_GENERATED_KEYS);
-            uUser = connection.prepareStatement("UPDATE user SET username=?,password=?,version=? WHERE ID=? and version=?");
+            sUserByID = connection.prepareStatement("SELECT * FROM utente WHERE id=?");
+            sUserByUsername = connection.prepareStatement("SELECT id FROM utente WHERE username=?");
+            sUserByEmail = connection.prepareStatement("SELECT id FROM utente WHERE email=?");
+            sUserByAccepted = connection.prepareStatement("SELECT id FROM utente WHERE accettato=?");
+            iUser = connection.prepareStatement("INSERT INTO utente (username,email,password,indirizzo,accettato) VALUES(?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+            uUser = connection.prepareStatement("UPDATE utente SET username=?,email=?,password=?,indirizzo=?,accettato=?,versione=? WHERE id=? and versione=?");
         } catch (SQLException ex) {
-            throw new DataException("Error initializing newspaper data layer", ex);
+            throw new DataException("Error initializing webshop data layer", ex);
         }
     }
 
@@ -47,12 +47,14 @@ public class UserDAO_MySQL extends DAO implements UserDAO {
         //also closing PreparedStamenents is a good practice...
         try {
             sUserByID.close();
-            sUserByName.close();
+            sUserByUsername.close();
+            sUserByEmail.close();
+            sUserByAccepted.close();
             iUser.close();
             uUser.close();
 
         } catch (SQLException ex) {
-            //
+            ex.getStackTrace();
         }
         super.destroy();
     }
@@ -73,10 +75,13 @@ public class UserDAO_MySQL extends DAO implements UserDAO {
     private UserProxy createUser(ResultSet rs) throws DataException {
         try {
             UserProxy a = (UserProxy) createUser();
-            a.setKey(rs.getInt("ID"));
+            a.setKey(rs.getInt("id"));
             a.setUsername(rs.getString("username"));
+            a.setEmail(rs.getString("email"));
             a.setPassword(rs.getString("password"));
-            a.setVersion(rs.getLong("version"));
+            a.setAddress(rs.getString("indirizzo"));
+            a.setAccepted(rs.getBoolean("accettato"));
+            a.setVersion(rs.getLong("versione"));
             return a;
         } catch (SQLException ex) {
             throw new DataException("Unable to create user object form ResultSet", ex);
@@ -122,10 +127,10 @@ public class UserDAO_MySQL extends DAO implements UserDAO {
     public User getUserByName(String username) throws DataException {
 
         try {
-            sUserByName.setString(1, username);
-            try ( ResultSet rs = sUserByName.executeQuery()) {
+            sUserByUsername.setString(1, username);
+            try ( ResultSet rs = sUserByUsername.executeQuery()) {
                 if (rs.next()) {
-                    return getUser(rs.getInt("ID"));
+                    return getUser(rs.getInt("id"));
                 }
             }
         } catch (SQLException ex) {
@@ -135,7 +140,39 @@ public class UserDAO_MySQL extends DAO implements UserDAO {
     }
 
     @Override
-    public void storeUser(User user) throws DataException {
+    public User getUserByEmail(String email) throws DataException {
+
+        try {
+            sUserByEmail.setString(1, email);
+            try ( ResultSet rs = sUserByEmail.executeQuery()) {
+                if (rs.next()) {
+                    return getUser(rs.getInt("id"));
+                }
+            }
+        } catch (SQLException ex) {
+            throw new DataException("Unable to find user", ex);
+        }
+        return null;
+    }
+
+    @Override
+    public List<User> getUsersByAccepted(boolean accepted) throws DataException {
+        List<User> result = new ArrayList<User>();
+        try {
+            sUserByAccepted.setBoolean(1, accepted);
+            try ( ResultSet rs = sUserByAccepted.executeQuery()) {
+                if (rs.next()) {
+                    result.add((User) getUser(rs.getInt("id")));
+                }
+            }
+        } catch (SQLException ex) {
+            throw new DataException("Unable to find user", ex);
+        }
+        return result;
+    }
+
+    @Override
+    public void setUser(User user) throws DataException {
         try {
             if (user.getKey() != null && user.getKey() > 0) { //update
                 //non facciamo nulla se l'oggetto è un proxy e indica di non aver subito modifiche
@@ -144,14 +181,17 @@ public class UserDAO_MySQL extends DAO implements UserDAO {
                     return;
                 }
                 uUser.setString(1, user.getUsername());
-                uUser.setString(2, user.getPassword());
+                uUser.setString(2, user.getEmail());
+                uUser.setString(3, user.getPassword());
+                uUser.setString(4, user.getAddress());
+                uUser.setBoolean(5, user.isAccepted());
 
                 long current_version = user.getVersion();
                 long next_version = current_version + 1;
 
-                uUser.setLong(3, next_version);
-                uUser.setInt(4, user.getKey());
-                uUser.setLong(5, current_version);
+                uUser.setLong(6, next_version);
+                uUser.setInt(7, user.getKey());
+                uUser.setLong(8, current_version);
 
                 if (uUser.executeUpdate() == 0) {
                     throw new OptimisticLockException(user);
@@ -160,7 +200,10 @@ public class UserDAO_MySQL extends DAO implements UserDAO {
                 }
             } else { //insert
                 iUser.setString(1, user.getUsername());
-                iUser.setString(2, user.getPassword());
+                iUser.setString(2, user.getEmail());
+                iUser.setString(3, user.getPassword());
+                iUser.setString(4, user.getAddress());
+                iUser.setBoolean(5, user.isAccepted());
 
                 if (iUser.executeUpdate() == 1) {
                     //per leggere la chiave generata dal database

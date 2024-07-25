@@ -1,29 +1,27 @@
 package it.univaq.example.webmarket.data.model.impl;
 
+import java.util.List;
+import it.univaq.example.webmarket.data.model.Notification;
 import it.univaq.example.webmarket.data.model.User;
 import it.univaq.framework.data.DataItemImpl;
 
 public class UserImpl extends DataItemImpl<Integer> implements User {
 
-    private Integer id;
     private String username;
     private String email;
     private String password;
+    private String address;
     private Boolean accepted;
+    private List<Notification> notifications;
 
     public UserImpl() {
         super();
         username = "";
         email = "";
         password = "";
+        address = "";
         accepted = false;
-    }
-
-        /**
-     * @return the id
-     */
-    public Integer getId() {
-        return id;
+        notifications = null;
     }
 
     /**
@@ -68,7 +66,21 @@ public class UserImpl extends DataItemImpl<Integer> implements User {
         this.password = password;
     }
 
-        /**
+    /**
+     * @return the address
+     */
+    public String getAddress() {
+        return address;
+    }
+
+    /**
+     * @param address the address to set
+     */
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    /**
      * @return is accpeted
      */
     public Boolean isAccepted() {
@@ -80,6 +92,32 @@ public class UserImpl extends DataItemImpl<Integer> implements User {
      */
     public void setAccepted(Boolean accepted) {
         this.accepted = accepted;
+    }
+
+    @Override
+    public List<Notification> getNotifications() {
+        return notifications;
+    }
+
+
+    @Override
+    public void setNotifications(List<Notification> notifications) {
+        this.notifications.addAll(notifications);
+    }
+
+    @Override
+    public void addNotification(Notification notification) {
+        notifications.add(notification);
+    }
+
+    @Override
+    public void removeNotification(Notification notification) {
+        notifications.remove(notification);
+    }
+
+    @Override
+    public void readNotification(Notification notification) {
+        notifications.get(notifications.indexOf(notification)).setRead();
     }
 
 }

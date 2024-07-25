@@ -1,9 +1,5 @@
 package it.univaq.framework.data;
 
-/**
- *
- * @author Giuseppe Della Penna
- */
 public class DataException extends Exception {
 
     public DataException(String message) {

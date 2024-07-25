@@ -1,14 +1,16 @@
 package it.univaq.example.webmarket.data.model.impl;
 
 import java.time.LocalDate;
+import java.util.List;
 import it.univaq.example.webmarket.data.model.Category;
+import it.univaq.example.webmarket.data.model.Proposal;
 import it.univaq.example.webmarket.data.model.Request;
+import it.univaq.example.webmarket.data.model.RequestCharacteristic;
 import it.univaq.example.webmarket.data.model.User;
 import it.univaq.framework.data.DataItemImpl;
 
 public class RequestImpl extends DataItemImpl<Integer> implements Request {
     
-    private Integer id;
     private String title;
     private String description;
     private Category category;
@@ -17,24 +19,23 @@ public class RequestImpl extends DataItemImpl<Integer> implements Request {
     private LocalDate creationDate;
     private RequestStateEnum requestState;
     private OrderStateEnum orderState;
+    private List<RequestCharacteristic> characteristics;
+    private List<Proposal> proposals;
     private String notes;
 
     public RequestImpl() {
         super();
         title = "";
         description = "";
-        category = new CategoryImpl();
-        ordering = new UserImpl();
-        technician = new UserImpl();
+        category = null;
+        ordering = null;
+        technician = null;
         creationDate = LocalDate.now();
         requestState = RequestStateEnum.NUOVO;
         orderState = OrderStateEnum.INCORSO;
+        characteristics = null;
+        proposals = null;
         notes = "";
-    }
-
-    @Override
-    public Integer getId() {
-        return id;
     }
 
     @Override
@@ -115,6 +116,31 @@ public class RequestImpl extends DataItemImpl<Integer> implements Request {
     @Override
     public void setOrderState(OrderStateEnum value) {
         orderState = value;
+    }
+
+    @Override
+    public List<RequestCharacteristic> getRequestCharacteristics() {
+        return characteristics;
+    }
+
+    @Override
+    public void setRequestCharacteristics(List<RequestCharacteristic> requestCharacteristics) {
+        characteristics = requestCharacteristics;
+    }
+
+    @Override
+    public List<Proposal> getProposals() {
+        return proposals;
+    }
+
+    @Override
+    public void setProposals(List<Proposal> proposals) {
+        this.proposals = proposals;
+    }
+
+    @Override
+    public void addProposal(Proposal proposal) {
+        proposals.add(proposal);
     }
 
     @Override

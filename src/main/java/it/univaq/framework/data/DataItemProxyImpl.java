@@ -1,9 +1,5 @@
 package it.univaq.framework.data;
 
-/**
- *
- * @author giuse
- */
 public class DataItemProxyImpl extends DataItemImpl implements DataItemProxy {
 
     private boolean modified;

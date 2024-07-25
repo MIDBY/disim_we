@@ -1,15 +1,10 @@
 package it.univaq.example.webmarket.data.dao;
 
-import it.univaq.example.webmarket.data.model.Article;
-import it.univaq.example.webmarket.data.model.Image;
-import it.univaq.example.webmarket.data.model.Issue;
-import it.univaq.framework.data.DataException;
 import java.util.List;
+import it.univaq.example.webmarket.data.model.Category;
+import it.univaq.example.webmarket.data.model.Image;
+import it.univaq.framework.data.DataException;
 
-/**
- *
- * @author Giuseppe Della Penna
- */
 public interface ImageDAO {
 
     //metodo "factory" che permettono di creare
@@ -21,10 +16,11 @@ public interface ImageDAO {
     //hiding all the implementation details
     Image createImage();
 
+    List<Image> getImages() throws DataException;
+
     Image getImage(int image_key) throws DataException;
 
-    List<Image> getImages(Article article) throws DataException;
+    Image getImage(Category category) throws DataException;
 
-    List<Image> getImages(Issue issue) throws DataException;
-
+    void setImage(Image image) throws DataException;
 }

@@ -6,8 +6,6 @@ import it.univaq.framework.data.DataItem;
 
 public interface Proposal extends DataItem<Integer> {
 
-    Integer getId();
-
     Request getRequest();
 
     void setRequest(Request request);
@@ -15,6 +13,30 @@ public interface Proposal extends DataItem<Integer> {
     User getTechnician();
 
     void setTechnician(User techUser);
+
+    String getProductName();
+
+    void setProductName(String productName);
+
+    String getProducerName();
+
+    void setProducerName(String producerName);
+
+    String getProductDescription();
+
+    void setProductDescription(String productDescription);
+
+    Float getPrice();
+
+    void setPrice(Float price);
+
+    String getUrl();
+
+    boolean setUrl(String url);
+
+    String getNotes();
+
+    void setNotes(String notes);
 
     LocalDate getCreationDate();
 

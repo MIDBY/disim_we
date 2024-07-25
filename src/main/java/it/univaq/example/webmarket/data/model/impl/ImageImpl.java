@@ -14,7 +14,6 @@ import java.util.logging.Logger;
 
 public class ImageImpl  extends DataItemImpl<Integer> implements Image {
 
- 
     private String caption;
     private String imageType;
     private String imageFilename;
@@ -29,9 +28,6 @@ public class ImageImpl  extends DataItemImpl<Integer> implements Image {
         imageFilename = "";
         
     }
-
-  
-
 
     @Override
     public String getCaption() {

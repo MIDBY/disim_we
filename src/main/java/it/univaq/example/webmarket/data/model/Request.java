@@ -1,14 +1,13 @@
 package it.univaq.example.webmarket.data.model;
 
 import java.time.LocalDate;
+import java.util.List;
 import it.univaq.example.webmarket.data.model.impl.OrderStateEnum;
 import it.univaq.example.webmarket.data.model.impl.RequestStateEnum;
 import it.univaq.framework.data.DataItem;
 
 public interface Request extends DataItem<Integer> {
     
-    Integer getId();
-
     String getTitle();
 
     void setTitle(String title);
@@ -40,6 +39,16 @@ public interface Request extends DataItem<Integer> {
     OrderStateEnum getOrderState();
 
     void setOrderState(OrderStateEnum value);
+
+    List<RequestCharacteristic> getRequestCharacteristics();
+
+    void setRequestCharacteristics(List<RequestCharacteristic> requestCharacteristics);
+
+    List<Proposal> getProposals();
+
+    void setProposals(List<Proposal> proposals);
+
+    void addProposal(Proposal proposal);
 
     String getNotes();
 

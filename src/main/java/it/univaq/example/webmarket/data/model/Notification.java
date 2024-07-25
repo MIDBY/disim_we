@@ -5,8 +5,6 @@ import it.univaq.framework.data.DataItem;
 
 public interface Notification extends DataItem<Integer> {
     
-    Integer getId();
-
     User getRecipient();
 
     void setRecipient(User recipient);
@@ -21,5 +19,5 @@ public interface Notification extends DataItem<Integer> {
 
     Boolean isRead();
 
-    void setRead(Boolean read);
+    void setRead();
 }

@@ -1,12 +1,9 @@
 package it.univaq.example.webmarket.data.dao;
 
+import java.util.List;
 import it.univaq.example.webmarket.data.model.User;
 import it.univaq.framework.data.DataException;
 
-/**
- *
- * @author Giuseppe Della Penna
- */
 public interface UserDAO {
 
     //metodo "factory" che permettono di creare
@@ -22,6 +19,9 @@ public interface UserDAO {
     
     User getUserByName(String username) throws DataException;
 
-    void storeUser(User user) throws DataException;
+    User getUserByEmail(String email) throws DataException;
 
+    List<User> getUsersByAccepted(boolean accepted) throws DataException;
+
+    void setUser(User user) throws DataException;
 }

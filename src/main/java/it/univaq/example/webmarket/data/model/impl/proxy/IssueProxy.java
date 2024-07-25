@@ -68,7 +68,7 @@ public class IssueProxy extends IssueImpl implements DataItemProxy  {
     public List<Image> getImages() {
         if (super.getImages() == null) {
             try {
-                super.setImages(((ImageDAO) dataLayer.getDAO(Image.class)).getImages(this));
+                super.setImages(((ImageDAO) dataLayer.getDAO(Image.class)).getImages());
             } catch (DataException ex) {
                 Logger.getLogger(IssueProxy.class.getName()).log(Level.SEVERE, null, ex);
             }

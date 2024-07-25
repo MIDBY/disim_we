@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Creato il: Lug 20, 2024 alle 20:06
+-- Creato il: Lug 25, 2024 alle 18:06
 -- Versione del server: 10.4.32-MariaDB
 -- Versione PHP: 8.2.12
 
@@ -29,9 +29,10 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `caratteristica` (
   `id` int(11) NOT NULL,
-  `nome` varchar(16) NOT NULL,
+  `nome` varchar(32) NOT NULL,
   `id_categoria` int(11) NOT NULL,
-  `valori_default` text NOT NULL
+  `valori_default` varchar(512) NOT NULL,
+  `versione` tinyint(3) UNSIGNED NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -42,8 +43,10 @@ CREATE TABLE `caratteristica` (
 
 CREATE TABLE `categoria` (
   `id` int(11) NOT NULL,
-  `nome` varchar(32) NOT NULL,
-  `id_categoriaPadre` int(11) DEFAULT NULL
+  `nome` varchar(64) NOT NULL,
+  `id_categoria` int(11) DEFAULT NULL,
+  `id_immagine` int(11) NOT NULL,
+  `versione` tinyint(3) UNSIGNED NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -54,8 +57,17 @@ CREATE TABLE `categoria` (
 
 CREATE TABLE `gruppo` (
   `id` int(11) NOT NULL,
-  `nome` enum('AMMINISTRATORE','ORDINANTE','TECNICO') NOT NULL
+  `nome` varchar(16) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dump dei dati per la tabella `gruppo`
+--
+
+INSERT INTO `gruppo` (`id`, `nome`) VALUES
+(1, 'ADMIN'),
+(2, 'ORDINANTE'),
+(3, 'TECNICO');
 
 -- --------------------------------------------------------
 
@@ -71,15 +83,31 @@ CREATE TABLE `gruppo_servizio` (
 -- --------------------------------------------------------
 
 --
+-- Struttura della tabella `immagine`
+--
+
+CREATE TABLE `immagine` (
+  `id` int(11) NOT NULL,
+  `titolo` varchar(255) NOT NULL,
+  `tipo` varchar(32) NOT NULL,
+  `nome_file` varchar(255) NOT NULL,
+  `grandezza` int(11) NOT NULL,
+  `versione` tinyint(3) UNSIGNED NOT NULL DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Struttura della tabella `notifica`
 --
 
 CREATE TABLE `notifica` (
   `id` int(11) NOT NULL,
   `id_destinatario` int(11) NOT NULL,
-  `messaggio` text NOT NULL,
+  `messaggio` varchar(512) NOT NULL,
   `data` date NOT NULL,
-  `letto` tinyint(1) NOT NULL DEFAULT 0
+  `letto` tinyint(1) NOT NULL DEFAULT 0,
+  `versione` tinyint(3) UNSIGNED NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -92,15 +120,16 @@ CREATE TABLE `proposta_acquisto` (
   `id` int(11) NOT NULL,
   `id_richiesta` int(11) NOT NULL,
   `id_tecnico` int(11) NOT NULL,
-  `nome_prodotto` varchar(32) NOT NULL,
-  `nome_produttore` varchar(32) NOT NULL,
-  `descrizione_prodotto` text NOT NULL,
+  `nome_prodotto` varchar(64) NOT NULL,
+  `nome_produttore` varchar(64) NOT NULL,
+  `descrizione_prodotto` varchar(1024) NOT NULL,
   `prezzo_prodotto` float NOT NULL,
-  `url` text DEFAULT NULL,
-  `note` text DEFAULT NULL,
+  `url` varchar(512) DEFAULT NULL,
+  `note` varchar(1024) DEFAULT NULL,
   `data_creazione` date NOT NULL,
-  `stato_proposta` enum('INATTESA','APPROVATO','RESPINTO') NOT NULL DEFAULT 'INATTESA',
-  `motivazione` text NOT NULL
+  `stato_proposta` enum('In attesa','Approvata','Respinta','') NOT NULL,
+  `motivazione` varchar(1024) NOT NULL,
+  `versione` tinyint(3) UNSIGNED NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -112,14 +141,15 @@ CREATE TABLE `proposta_acquisto` (
 CREATE TABLE `richiesta_acquisto` (
   `id` int(11) NOT NULL,
   `titolo` varchar(64) NOT NULL,
-  `descrizione` text NOT NULL,
+  `descrizione` varchar(511) NOT NULL,
   `id_categoria` int(11) NOT NULL,
   `id_ordinante` int(11) NOT NULL,
   `id_tecnico` int(11) NOT NULL,
-  `stato_richiesta` enum('NUOVO','PRESOINCARICO','ORDINATO','CHIUSO') NOT NULL DEFAULT 'NUOVO',
-  `stato_ordine` enum('INCORSO','ACCETTATO','RESPINTONONCONFORME','RESPINTONONFUNZIONANTE') NOT NULL DEFAULT 'INCORSO',
+  `stato_richiesta` enum('Nuovo','Presa in carico','Ordinato','Chiuso') NOT NULL DEFAULT 'Nuovo',
+  `stato_ordine` enum('Accettato','Respinto perché non conforme','Respinto perché non funzionante','') NOT NULL DEFAULT '',
   `data_creazione` date NOT NULL,
-  `note` text DEFAULT NULL
+  `note` varchar(1024) DEFAULT NULL,
+  `versione` tinyint(3) UNSIGNED NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -131,7 +161,7 @@ CREATE TABLE `richiesta_acquisto` (
 CREATE TABLE `richiesta_caratteristica` (
   `id_richiesta` int(11) NOT NULL,
   `id_caratteristica` int(11) NOT NULL,
-  `valore` varchar(16) NOT NULL
+  `valore` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -142,7 +172,7 @@ CREATE TABLE `richiesta_caratteristica` (
 
 CREATE TABLE `servizio` (
   `id` int(11) NOT NULL,
-  `script` varchar(16) NOT NULL
+  `script` varchar(32) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -153,11 +183,12 @@ CREATE TABLE `servizio` (
 
 CREATE TABLE `utente` (
   `id` int(11) NOT NULL,
-  `username` text DEFAULT NULL,
-  `email` text NOT NULL,
-  `password` text NOT NULL,
-  `indirizzo` text NOT NULL,
-  `accettato` tinyint(1) NOT NULL DEFAULT 0
+  `username` varchar(128) DEFAULT NULL,
+  `email` varchar(128) NOT NULL,
+  `password` varchar(256) NOT NULL,
+  `indirizzo` varchar(256) NOT NULL,
+  `accettato` tinyint(1) NOT NULL DEFAULT 0,
+  `versione` tinyint(3) UNSIGNED NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -188,7 +219,8 @@ ALTER TABLE `caratteristica`
 --
 ALTER TABLE `categoria`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `categoria_FK1` (`id_categoria`);
+  ADD KEY `categoria_FK1` (`id_categoria`),
+  ADD KEY `categoria_FK2` (`id_immagine`);
 
 --
 -- Indici per le tabelle `gruppo`
@@ -202,6 +234,12 @@ ALTER TABLE `gruppo`
 ALTER TABLE `gruppo_servizio`
   ADD KEY `gruppo_servizio_FK1` (`id_gruppo`),
   ADD KEY `gruppo_servizio_FK2` (`id_servizio`);
+
+--
+-- Indici per le tabelle `immagine`
+--
+ALTER TABLE `immagine`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indici per le tabelle `notifica`
@@ -273,6 +311,12 @@ ALTER TABLE `categoria`
 -- AUTO_INCREMENT per la tabella `gruppo`
 --
 ALTER TABLE `gruppo`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT per la tabella `immagine`
+--
+ALTER TABLE `immagine`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
@@ -319,7 +363,8 @@ ALTER TABLE `caratteristica`
 -- Limiti per la tabella `categoria`
 --
 ALTER TABLE `categoria`
-  ADD CONSTRAINT `categoria_FK1` FOREIGN KEY (`id_categoria`) REFERENCES `categoria` (`id`);
+  ADD CONSTRAINT `categoria_FK1` FOREIGN KEY (`id_categoria`) REFERENCES `categoria` (`id`),
+  ADD CONSTRAINT `categoria_FK2` FOREIGN KEY (`id_immagine`) REFERENCES `immagine` (`id`);
 
 --
 -- Limiti per la tabella `gruppo_servizio`

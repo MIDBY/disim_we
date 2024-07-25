@@ -2,7 +2,6 @@ package it.univaq.framework.data;
 
 /**
  *
- * @author giuse
  * @param <KT> the key type
  */
 public interface DataItem<KT> {
