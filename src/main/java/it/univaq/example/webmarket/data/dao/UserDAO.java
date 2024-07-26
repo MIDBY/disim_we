@@ -21,6 +21,8 @@ public interface UserDAO {
 
     User getUserByEmail(String email) throws DataException;
 
+    List<User> getUsersByGroup(int group_key) throws DataException;
+
     List<User> getUsersByAccepted(boolean accepted) throws DataException;
 
     void setUser(User user) throws DataException;

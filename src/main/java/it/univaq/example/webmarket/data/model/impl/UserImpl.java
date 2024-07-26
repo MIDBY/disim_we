@@ -117,7 +117,7 @@ public class UserImpl extends DataItemImpl<Integer> implements User {
 
     @Override
     public void readNotification(Notification notification) {
-        notifications.get(notifications.indexOf(notification)).setRead();
+        notifications.get(notifications.indexOf(notification)).setRead(true);
     }
 
 }

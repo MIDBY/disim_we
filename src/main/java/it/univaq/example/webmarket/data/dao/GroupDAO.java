@@ -6,9 +6,13 @@ import it.univaq.framework.data.DataException;
 import java.util.List;
 
 public interface GroupDAO {
+    
+    Group createGroup();
 
-    Group getGroup(UserRoleEnum value) throws DataException;
+    Group getGroup (int group_key) throws DataException;
 
     List<Group> getGroups() throws DataException;
+
+    Group getGroupByName(UserRoleEnum value) throws DataException;
 
 }

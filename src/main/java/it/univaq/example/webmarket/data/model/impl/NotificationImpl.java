@@ -57,7 +57,7 @@ public class NotificationImpl extends DataItemImpl<Integer> implements Notificat
     }
 
     @Override
-    public void setRead() {
-        this.read = true;
+    public void setRead(boolean read) {
+        this.read = read;
     }
 }

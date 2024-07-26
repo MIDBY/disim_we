@@ -8,10 +8,14 @@ public interface NotificationDAO {
 
     Notification createNotification();
 
-    List<Notification> getNotifications(int user_key) throws DataException;
+    Notification getNotification(int notification_key) throws DataException;
 
-    Notification getNotificationById(int notification_key) throws DataException;
+    List<Notification> getNotificationsByUser(int user_key) throws DataException;
 
-    void readNotification(int notification_key) throws DataException;
+    List<Notification> getNotificationsNotReadByUser(int user_key) throws DataException;
+
+    void setNotification(Notification notification) throws DataException;
+
+    void deleteNotification(Notification notification) throws DataException;
 
 }

@@ -115,7 +115,7 @@ public class AuthorDAO_MySQL extends DAO implements AuthorDAO {
 
     @Override
     public List<Author> getAuthors() throws DataException {
-        List<Author> result = new ArrayList();
+        List<Author> result = new ArrayList<Author>();
 
         try (ResultSet rs = sAuthors.executeQuery()) {
             while (rs.next()) {

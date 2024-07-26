@@ -24,6 +24,11 @@ public class GroupImpl extends DataItemImpl<Integer> implements Group {
     }
 
     @Override
+    public void setName(UserRoleEnum name) {
+        this.name = name;
+    }
+
+    @Override
     public List<User> getUsers() {
         return users;
     }
@@ -46,5 +51,10 @@ public class GroupImpl extends DataItemImpl<Integer> implements Group {
     @Override
     public void setServices(List<Service> services) {
         this.services = services;
+    }
+
+    @Override
+    public void addService(Service service) {
+        services.add(service);
     }
 }

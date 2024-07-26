@@ -8,6 +8,8 @@ public interface Group extends DataItem<Integer> {
 
     UserRoleEnum getName();
 
+    void setName(UserRoleEnum name);
+
     List<User> getUsers();
 
     void setUsers(List<User> users);
@@ -17,6 +19,8 @@ public interface Group extends DataItem<Integer> {
     List<Service> getServices();
 
     void setServices(List<Service> services);
+
+    void addService(Service service);
 
 }
 

@@ -31,9 +31,9 @@ public class ComposeIssue extends NewspaperBaseController {
     private static final List<Integer> years;
 
     static {
-        days = new ArrayList();
-        months = new ArrayList();
-        years = new ArrayList();
+        days = new ArrayList<Integer>();
+        months = new ArrayList<Integer>();
+        years = new ArrayList<Integer>();
         for (int i = 1; i <= 31; ++i) {
             days.add(i);
         }

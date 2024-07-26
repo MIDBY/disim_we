@@ -12,4 +12,10 @@ public interface ServiceDAO {
 
     List<Service> getServices() throws DataException;
 
+    List<Service> getServicesByGroup(int group_key) throws DataException;
+
+    void setService(Service service) throws DataException;
+
+    void deleteService(Service service) throws DataException;
+
 }

@@ -20,7 +20,9 @@ public interface ImageDAO {
 
     Image getImage(int image_key) throws DataException;
 
-    Image getImage(Category category) throws DataException;
+    Image getImageByCategory(Category category) throws DataException;
 
     void setImage(Image image) throws DataException;
+
+    void deleteImage(Image image) throws DataException;
 }

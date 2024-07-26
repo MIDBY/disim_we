@@ -128,7 +128,7 @@ public class IssueDAO_MySQL extends DAO implements IssueDAO {
 
     @Override
     public List<Issue> getIssues() throws DataException {
-        List<Issue> result = new ArrayList();
+        List<Issue> result = new ArrayList<Issue>();
         try (ResultSet rs = sIssues.executeQuery()) {
             while (rs.next()) {
                 //la query  estrae solo gli ID degli issue selezionati

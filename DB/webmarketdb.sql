@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Creato il: Lug 25, 2024 alle 18:06
+-- Creato il: Lug 26, 2024 alle 17:45
 -- Versione del server: 10.4.32-MariaDB
 -- Versione PHP: 8.2.12
 
@@ -159,9 +159,11 @@ CREATE TABLE `richiesta_acquisto` (
 --
 
 CREATE TABLE `richiesta_caratteristica` (
+  `id` int(11) NOT NULL,
   `id_richiesta` int(11) NOT NULL,
   `id_caratteristica` int(11) NOT NULL,
   `valore` varchar(255) NOT NULL
+  `versione` tinyint(3) UNSIGNED NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -172,7 +174,8 @@ CREATE TABLE `richiesta_caratteristica` (
 
 CREATE TABLE `servizio` (
   `id` int(11) NOT NULL,
-  `script` varchar(32) NOT NULL
+  `script` varchar(32) NOT NULL,
+  `versione` tinyint(3) UNSIGNED NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -232,7 +235,7 @@ ALTER TABLE `gruppo`
 -- Indici per le tabelle `gruppo_servizio`
 --
 ALTER TABLE `gruppo_servizio`
-  ADD KEY `gruppo_servizio_FK1` (`id_gruppo`),
+  ADD UNIQUE KEY `id_gruppo` (`id_gruppo`,`id_servizio`),
   ADD KEY `gruppo_servizio_FK2` (`id_servizio`);
 
 --
@@ -253,8 +256,8 @@ ALTER TABLE `notifica`
 --
 ALTER TABLE `proposta_acquisto`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `proposta_FK1` (`id_richiesta`),
-  ADD KEY `proposta_FK2` (`id_tecnico`);
+  ADD KEY `proposta_FK2` (`id_tecnico`),
+  ADD KEY `id_richiesta` (`id_richiesta`,`id_tecnico`);
 
 --
 -- Indici per le tabelle `richiesta_acquisto`
@@ -269,8 +272,10 @@ ALTER TABLE `richiesta_acquisto`
 -- Indici per le tabelle `richiesta_caratteristica`
 --
 ALTER TABLE `richiesta_caratteristica`
-  ADD KEY `richiesta_caratteristica_FK1` (`id_richiesta`),
-  ADD KEY `richiesta_caratteristica_FK2` (`id_caratteristica`);
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `id_richiesta` (`id_richiesta`,`id_caratteristica`),
+  ADD KEY `richiesta_caratteristica_FK2` (`id_caratteristica`),
+  ADD KEY `id_richiesta_2` (`id_richiesta`);
 
 --
 -- Indici per le tabelle `servizio`
@@ -288,8 +293,8 @@ ALTER TABLE `utente`
 -- Indici per le tabelle `utente_gruppo`
 --
 ALTER TABLE `utente_gruppo`
-  ADD KEY `utente_gruppo_FK1` (`id_utente`),
-  ADD KEY `utente_gruppo_FK2` (`id_gruppo`);
+  ADD KEY `utente_gruppo_FK2` (`id_gruppo`),
+  ADD KEY `utente_gruppo_FK1` (`id_utente`);
 
 --
 -- AUTO_INCREMENT per le tabelle scaricate
@@ -338,6 +343,12 @@ ALTER TABLE `richiesta_acquisto`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT per la tabella `richiesta_caratteristica`
+--
+ALTER TABLE `richiesta_caratteristica`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT per la tabella `servizio`
 --
 ALTER TABLE `servizio`
@@ -357,55 +368,55 @@ ALTER TABLE `utente`
 -- Limiti per la tabella `caratteristica`
 --
 ALTER TABLE `caratteristica`
-  ADD CONSTRAINT `caratteristica_FK1` FOREIGN KEY (`id_categoria`) REFERENCES `categoria` (`id`);
+  ADD CONSTRAINT `caratteristica_FK1` FOREIGN KEY (`id_categoria`) REFERENCES `categoria` (`id`) ON DELETE CASCADE;
 
 --
 -- Limiti per la tabella `categoria`
 --
 ALTER TABLE `categoria`
-  ADD CONSTRAINT `categoria_FK1` FOREIGN KEY (`id_categoria`) REFERENCES `categoria` (`id`),
-  ADD CONSTRAINT `categoria_FK2` FOREIGN KEY (`id_immagine`) REFERENCES `immagine` (`id`);
+  ADD CONSTRAINT `categoria_FK1` FOREIGN KEY (`id_categoria`) REFERENCES `categoria` (`id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `categoria_FK2` FOREIGN KEY (`id_immagine`) REFERENCES `immagine` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Limiti per la tabella `gruppo_servizio`
 --
 ALTER TABLE `gruppo_servizio`
   ADD CONSTRAINT `gruppo_servizio_FK1` FOREIGN KEY (`id_gruppo`) REFERENCES `gruppo` (`id`),
-  ADD CONSTRAINT `gruppo_servizio_FK2` FOREIGN KEY (`id_servizio`) REFERENCES `servizio` (`id`);
+  ADD CONSTRAINT `gruppo_servizio_FK2` FOREIGN KEY (`id_servizio`) REFERENCES `servizio` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Limiti per la tabella `notifica`
 --
 ALTER TABLE `notifica`
-  ADD CONSTRAINT `notifica_FK1` FOREIGN KEY (`id_destinatario`) REFERENCES `utente` (`id`);
+  ADD CONSTRAINT `notifica_FK1` FOREIGN KEY (`id_destinatario`) REFERENCES `utente` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Limiti per la tabella `proposta_acquisto`
 --
 ALTER TABLE `proposta_acquisto`
-  ADD CONSTRAINT `proposta_FK1` FOREIGN KEY (`id_richiesta`) REFERENCES `richiesta_acquisto` (`id`),
-  ADD CONSTRAINT `proposta_FK2` FOREIGN KEY (`id_tecnico`) REFERENCES `utente` (`id`);
+  ADD CONSTRAINT `proposta_FK1` FOREIGN KEY (`id_richiesta`) REFERENCES `richiesta_acquisto` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `proposta_FK2` FOREIGN KEY (`id_tecnico`) REFERENCES `utente` (`id`) ON UPDATE CASCADE;
 
 --
 -- Limiti per la tabella `richiesta_acquisto`
 --
 ALTER TABLE `richiesta_acquisto`
-  ADD CONSTRAINT `richiesta_FK1` FOREIGN KEY (`id_categoria`) REFERENCES `categoria` (`id`),
-  ADD CONSTRAINT `richiesta_FK2` FOREIGN KEY (`id_ordinante`) REFERENCES `utente` (`id`),
-  ADD CONSTRAINT `richiesta_FK3` FOREIGN KEY (`id_tecnico`) REFERENCES `utente` (`id`);
+  ADD CONSTRAINT `richiesta_FK1` FOREIGN KEY (`id_categoria`) REFERENCES `categoria` (`id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `richiesta_FK2` FOREIGN KEY (`id_ordinante`) REFERENCES `utente` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `richiesta_FK3` FOREIGN KEY (`id_tecnico`) REFERENCES `utente` (`id`) ON UPDATE CASCADE;
 
 --
 -- Limiti per la tabella `richiesta_caratteristica`
 --
 ALTER TABLE `richiesta_caratteristica`
-  ADD CONSTRAINT `richiesta_caratteristica_FK1` FOREIGN KEY (`id_richiesta`) REFERENCES `richiesta_acquisto` (`id`),
-  ADD CONSTRAINT `richiesta_caratteristica_FK2` FOREIGN KEY (`id_caratteristica`) REFERENCES `caratteristica` (`id`);
+  ADD CONSTRAINT `richiesta_caratteristica_FK1` FOREIGN KEY (`id_richiesta`) REFERENCES `richiesta_acquisto` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `richiesta_caratteristica_FK2` FOREIGN KEY (`id_caratteristica`) REFERENCES `caratteristica` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Limiti per la tabella `utente_gruppo`
 --
 ALTER TABLE `utente_gruppo`
-  ADD CONSTRAINT `utente_gruppo_FK1` FOREIGN KEY (`id_utente`) REFERENCES `utente` (`id`),
+  ADD CONSTRAINT `utente_gruppo_FK1` FOREIGN KEY (`id_utente`) REFERENCES `utente` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `utente_gruppo_FK2` FOREIGN KEY (`id_gruppo`) REFERENCES `gruppo` (`id`);
 COMMIT;
 

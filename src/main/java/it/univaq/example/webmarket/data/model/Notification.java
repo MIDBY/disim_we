@@ -19,5 +19,5 @@ public interface Notification extends DataItem<Integer> {
 
     Boolean isRead();
 
-    void setRead();
+    void setRead(boolean read);
 }

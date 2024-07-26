@@ -20,7 +20,7 @@ import it.univaq.framework.data.OptimisticLockException;
 
 public class ImageDAO_MySQL extends DAO implements ImageDAO {
 
-    private PreparedStatement sImageByID, sImages, sImageByCategory, iImage, uImage;
+    private PreparedStatement sImageByID, sImages, sImageByCategory, iImage, uImage, dImage;
 
     public ImageDAO_MySQL(DataLayer d) {
         super(d);
@@ -38,6 +38,7 @@ public class ImageDAO_MySQL extends DAO implements ImageDAO {
             sImageByCategory = connection.prepareStatement("SELECT id_immagine FROM categoria WHERE id=?");
             iImage = connection.prepareStatement("INSERT INTO immagine (titolo,tipo,nome_file,grandezza) VALUES(?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
             uImage = connection.prepareStatement("UPDATE immagine SET titolo=?,tipo=?,nome_file=?,grandezza=?,versione=? WHERE id=? and versione=?");
+            dImage = connection.prepareStatement("DELETE FROM immagine WHERE id=?");
 
         } catch (SQLException ex) {
             throw new DataException("Error initializing webshop data layer", ex);
@@ -50,8 +51,11 @@ public class ImageDAO_MySQL extends DAO implements ImageDAO {
         //also closing PreparedStamenents is a good practice...
         try {
             sImageByID.close();
+            sImages.close();
             sImageByCategory.close();
             iImage.close();
+            uImage.close();
+            dImage.close();
 
         } catch (SQLException ex) {
             ex.getStackTrace();
@@ -123,7 +127,7 @@ public class ImageDAO_MySQL extends DAO implements ImageDAO {
     }
 
     @Override
-    public Image getImage(Category category) throws DataException {
+    public Image getImageByCategory(Category category) throws DataException {
         Image result = new ImageImpl();
         try {
             sImageByCategory.setInt(1, category.getKey());
@@ -203,6 +207,22 @@ public class ImageDAO_MySQL extends DAO implements ImageDAO {
             }
         } catch (SQLException | OptimisticLockException ex) {
             throw new DataException("Unable to store image", ex);
+        }
+    }
+
+    @Override
+    public void deleteImage(Image image) throws DataException {
+        try {
+            if (image.getKey() != null && image.getKey() > 0) { //delete
+                dImage.setInt(1, image.getKey());
+                if (dImage.executeUpdate() == 0) {
+                    throw new OptimisticLockException(image);
+                } else {
+                    dataLayer.getCache().delete(Image.class, image);
+                }
+            }
+        } catch (SQLException | OptimisticLockException ex) {
+            throw new DataException("Unable to delete image", ex);
         }
     }
 }

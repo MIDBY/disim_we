@@ -17,7 +17,7 @@ import java.util.List;
 
 public class UserDAO_MySQL extends DAO implements UserDAO {
 
-    private PreparedStatement sUserByID, sUserByUsername, sUserByEmail, sUserByAccepted, iUser, uUser;
+    private PreparedStatement sUserByID, sUserByUsername, sUserByEmail, sUsersByAccepted, sUsersByGroup, iUser, uUser;
 
     public UserDAO_MySQL(DataLayer d) {
         super(d);
@@ -33,7 +33,8 @@ public class UserDAO_MySQL extends DAO implements UserDAO {
             sUserByID = connection.prepareStatement("SELECT * FROM utente WHERE id=?");
             sUserByUsername = connection.prepareStatement("SELECT id FROM utente WHERE username=?");
             sUserByEmail = connection.prepareStatement("SELECT id FROM utente WHERE email=?");
-            sUserByAccepted = connection.prepareStatement("SELECT id FROM utente WHERE accettato=?");
+            sUsersByAccepted = connection.prepareStatement("SELECT id FROM utente WHERE accettato=?");
+            sUsersByGroup = connection.prepareStatement("SELECT id_utente FROM utente_gruppo WHERE id_gruppo=?");
             iUser = connection.prepareStatement("INSERT INTO utente (username,email,password,indirizzo,accettato) VALUES(?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
             uUser = connection.prepareStatement("UPDATE utente SET username=?,email=?,password=?,indirizzo=?,accettato=?,versione=? WHERE id=? and versione=?");
         } catch (SQLException ex) {
@@ -49,7 +50,8 @@ public class UserDAO_MySQL extends DAO implements UserDAO {
             sUserByID.close();
             sUserByUsername.close();
             sUserByEmail.close();
-            sUserByAccepted.close();
+            sUsersByAccepted.close();
+            sUsersByGroup.close();
             iUser.close();
             uUser.close();
 
@@ -159,14 +161,30 @@ public class UserDAO_MySQL extends DAO implements UserDAO {
     public List<User> getUsersByAccepted(boolean accepted) throws DataException {
         List<User> result = new ArrayList<User>();
         try {
-            sUserByAccepted.setBoolean(1, accepted);
-            try ( ResultSet rs = sUserByAccepted.executeQuery()) {
+            sUsersByAccepted.setBoolean(1, accepted);
+            try ( ResultSet rs = sUsersByAccepted.executeQuery()) {
                 if (rs.next()) {
                     result.add((User) getUser(rs.getInt("id")));
                 }
             }
         } catch (SQLException ex) {
             throw new DataException("Unable to find user", ex);
+        }
+        return result;
+    }
+
+    @Override
+    public List<User> getUsersByGroup(int group_key) throws DataException {
+        List<User> result = new ArrayList<User>();
+        try {
+            sUsersByGroup.setInt(1, group_key);
+            try ( ResultSet rs = sUsersByGroup.executeQuery()) {
+                if (rs.next()) {
+                    result.add((User) getUser(rs.getInt("id_utente")));
+                }
+            }
+        } catch (SQLException ex) {
+            throw new DataException("Unable to find user by group", ex);
         }
         return result;
     }
