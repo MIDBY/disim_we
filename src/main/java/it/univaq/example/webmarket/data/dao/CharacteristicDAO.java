@@ -12,7 +12,9 @@ public interface CharacteristicDAO {
 
     List<Characteristic> getCharacteristics() throws DataException;
 
-    List<Characteristic> getCharacteristics(int category_key) throws DataException;
+    List<Characteristic> getCharacteristicsByCategory(int category_key) throws DataException;
 
     void setCharacteristic(Characteristic characteristic) throws DataException;
+
+    void deleteCharacteristic(Characteristic characteristic) throws DataException;
 }

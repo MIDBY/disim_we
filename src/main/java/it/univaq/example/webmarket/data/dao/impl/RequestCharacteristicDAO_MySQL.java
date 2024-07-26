@@ -28,9 +28,9 @@ public class RequestCharacteristicDAO_MySQL extends DAO implements RequestCharac
         try {
             super.init();
             sRequestCharacteristicByID = connection.prepareStatement("SELECT * FROM richiesta_caratteristica WHERE id=?");
-            sRequestCharacteristicsByRequest = connection.prepareStatement("SELECT id FROM richiesta_caratteristica where id_richiesta=?");
-            iRequestCharacteristic = connection.prepareStatement("INSERT INTO richiesta_caratteristica (id_richiesta,id_caratteristica,valore) VALUES (?,?,?)", Statement.RETURN_GENERATED_KEYS);
-            uRequestCharacteristic = connection.prepareStatement("UPDATE richiesta_caratteristica SET id_richiesta=?,id_caratteristica=?,valore=?, versione=? WHERE id=? and versione=?");
+            sRequestCharacteristicsByRequest = connection.prepareStatement("SELECT id FROM richiesta_caratteristica where idRichiesta=?");
+            iRequestCharacteristic = connection.prepareStatement("INSERT INTO richiesta_caratteristica (idRichiesta,idCaratteristica,valore) VALUES (?,?,?)", Statement.RETURN_GENERATED_KEYS);
+            uRequestCharacteristic = connection.prepareStatement("UPDATE richiesta_caratteristica SET idRichiesta=?,idCaratteristica=?,valore=?,versione=? WHERE id=? and versione=?");
             dRequestCharacteristic = connection.prepareStatement("DELETE FROM richiesta_caratteristica WHERE id=?");
         } catch (SQLException ex) {
             throw new DataException("Error initializing webshop data layer", ex);
@@ -61,8 +61,8 @@ public class RequestCharacteristicDAO_MySQL extends DAO implements RequestCharac
         try {
             RequestCharacteristicProxy a = (RequestCharacteristicProxy)createRequestCharacteristic();
             a.setKey(rs.getInt("id"));
-            a.setRequestKey(rs.getInt("id_richiesta"));
-            a.setCharacteristicKey(rs.getInt("id_caratteristica"));
+            a.setRequestKey(rs.getInt("idRichiesta"));
+            a.setCharacteristicKey(rs.getInt("idCaratteristica"));
             a.setValue(rs.getString("valore"));
             a.setVersion(rs.getLong("versione"));
             return a;

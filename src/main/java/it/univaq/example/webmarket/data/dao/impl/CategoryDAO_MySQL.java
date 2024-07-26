@@ -28,11 +28,11 @@ public class CategoryDAO_MySQL extends DAO implements CategoryDAO {
         try {
             super.init();
             sCategoryByID = connection.prepareStatement("SELECT * FROM categoria WHERE id=?");
-            sFatherCategories = connection.prepareStatement("SELECT id FROM categoria WHERE id_categoria=NULL");
+            sFatherCategories = connection.prepareStatement("SELECT id FROM categoria WHERE idCategoriaPadre=NULL");
             sCategories = connection.prepareStatement("SELECT id FROM categoria");
-            sCategoriesSonsOf = connection.prepareStatement("SELECT id FROM categoria WHERE id_categoria=?");
-            iCategory = connection.prepareStatement("INSERT INTO categoria (nome,id_categoria,id_immagine) VALUES(?,?,?)", Statement.RETURN_GENERATED_KEYS);
-            uCategory = connection.prepareStatement("UPDATE categoria SET nome=?,id_categoria=?,id_immagine=?,versione=? WHERE id=? and versione=?");
+            sCategoriesSonsOf = connection.prepareStatement("SELECT id FROM categoria WHERE idCategoriaPadre=?");
+            iCategory = connection.prepareStatement("INSERT INTO categoria (nome,idCategoriaPadre,idImmagine) VALUES(?,?,?)", Statement.RETURN_GENERATED_KEYS);
+            uCategory = connection.prepareStatement("UPDATE categoria SET nome=?,idCategoriaPadre=?,idImmagine=?,versione=? WHERE id=? and versione=?");
             dCategory = connection.prepareStatement("DELETE FROM categoria WHERE id=?");
 
         } catch (SQLException ex) {
@@ -70,8 +70,8 @@ public class CategoryDAO_MySQL extends DAO implements CategoryDAO {
         try {
             a.setKey(rs.getInt("id"));
             a.setName(rs.getString("nome"));
-            a.setFatherCategoryKey(rs.getInt("id_categoria"));
-            a.setImageKey(rs.getInt("id_immagine"));
+            a.setFatherCategoryKey(rs.getInt("idCategoriaPadre"));
+            a.setImageKey(rs.getInt("idImmagine"));
             a.setVersion(rs.getLong("versione"));
         } catch (SQLException ex) {
             throw new DataException("Unable to create category object form ResultSet", ex);
@@ -149,8 +149,6 @@ public class CategoryDAO_MySQL extends DAO implements CategoryDAO {
     public void setCategory(Category category) throws DataException {
         try {
             if (category.getKey() != null && category.getKey() > 0) { //update
-                //non facciamo nulla se l'oggetto è un proxy e indica di non aver subito modifiche
-                //do not store the object if it is a proxy and does not indicate any modification
                 if (category instanceof DataItemProxy && !((DataItemProxy) category).isModified()) {
                     return;
                 }
@@ -204,6 +202,22 @@ public class CategoryDAO_MySQL extends DAO implements CategoryDAO {
             }
         } catch (SQLException | OptimisticLockException ex) {
             throw new DataException("Unable to store category", ex);
+        }
+    }
+
+    @Override
+    public void deleteCategory(Category category) throws DataException {
+        try {
+            if (category.getKey() != null && category.getKey() > 0) { //delete
+                dCategory.setInt(1, category.getKey());
+                if (dCategory.executeUpdate() == 0) {
+                    throw new OptimisticLockException(category);
+                } else {
+                    dataLayer.getCache().delete(Category.class, category);
+                }
+            }
+        } catch (SQLException | OptimisticLockException ex) {
+            throw new DataException("Unable to delete category", ex);
         }
     }
 }

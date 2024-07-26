@@ -44,6 +44,8 @@ public interface Request extends DataItem<Integer> {
 
     void setRequestCharacteristics(List<RequestCharacteristic> requestCharacteristics);
 
+    void addRequestCharacteristic(RequestCharacteristic requestCharacteristic);
+
     List<Proposal> getProposals();
 
     void setProposals(List<Proposal> proposals);

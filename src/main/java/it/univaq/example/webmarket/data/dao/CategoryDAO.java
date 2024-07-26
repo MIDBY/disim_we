@@ -17,5 +17,7 @@ public interface CategoryDAO {
     List<Category> getCategoriesSonsOf(int category_key) throws DataException;
 
     void setCategory(Category category) throws DataException;
+
+    void deleteCategory(Category category) throws DataException;
     
 }

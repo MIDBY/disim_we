@@ -13,9 +13,9 @@ public interface Notification extends DataItem<Integer> {
 
     void setMessage(String message);
 
-    LocalDate getDate();
+    LocalDate getCreationDate();
 
-    void setDate(LocalDate date);
+    void setCreationDate(LocalDate creationDate);
 
     Boolean isRead();
 

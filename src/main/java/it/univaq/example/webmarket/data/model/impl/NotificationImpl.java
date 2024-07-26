@@ -10,14 +10,14 @@ public class NotificationImpl extends DataItemImpl<Integer> implements Notificat
 
     private User recipient;
     private String message;
-    private LocalDate date;
+    private LocalDate creationDate;
     private Boolean read;
 
     public NotificationImpl() {
         super();
         recipient = null;
         message = "";
-        date = LocalDate.now();
+        creationDate = LocalDate.now();
         read = false;
     }
 
@@ -42,13 +42,13 @@ public class NotificationImpl extends DataItemImpl<Integer> implements Notificat
     }
 
     @Override
-    public LocalDate getDate() {
-        return date;
+    public LocalDate getCreationDate() {
+        return creationDate;
     }
 
     @Override
-    public void setDate(LocalDate date) {
-        this.date = date;
+    public void setCreationDate(LocalDate creationDate) {
+        this.creationDate = creationDate;
     }
 
     @Override

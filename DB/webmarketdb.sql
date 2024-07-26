@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Creato il: Lug 26, 2024 alle 17:45
+-- Creato il: Lug 26, 2024 alle 23:59
 -- Versione del server: 10.4.32-MariaDB
 -- Versione PHP: 8.2.12
 
@@ -30,8 +30,8 @@ SET time_zone = "+00:00";
 CREATE TABLE `caratteristica` (
   `id` int(11) NOT NULL,
   `nome` varchar(32) NOT NULL,
-  `id_categoria` int(11) NOT NULL,
-  `valori_default` varchar(512) NOT NULL,
+  `idCategoria` int(11) NOT NULL,
+  `valoriDefault` varchar(512) NOT NULL,
   `versione` tinyint(3) UNSIGNED NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -44,8 +44,8 @@ CREATE TABLE `caratteristica` (
 CREATE TABLE `categoria` (
   `id` int(11) NOT NULL,
   `nome` varchar(64) NOT NULL,
-  `id_categoria` int(11) DEFAULT NULL,
-  `id_immagine` int(11) NOT NULL,
+  `idCategoriaPadre` int(11) DEFAULT NULL,
+  `idImmagine` int(11) NOT NULL,
   `versione` tinyint(3) UNSIGNED NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -103,9 +103,9 @@ CREATE TABLE `immagine` (
 
 CREATE TABLE `notifica` (
   `id` int(11) NOT NULL,
-  `id_destinatario` int(11) NOT NULL,
+  `idDestinatario` int(11) NOT NULL,
   `messaggio` varchar(512) NOT NULL,
-  `data` date NOT NULL,
+  `dataCreazione` date NOT NULL,
   `letto` tinyint(1) NOT NULL DEFAULT 0,
   `versione` tinyint(3) UNSIGNED NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -113,21 +113,21 @@ CREATE TABLE `notifica` (
 -- --------------------------------------------------------
 
 --
--- Struttura della tabella `proposta_acquisto`
+-- Struttura della tabella `proposta`
 --
 
-CREATE TABLE `proposta_acquisto` (
+CREATE TABLE `proposta` (
   `id` int(11) NOT NULL,
-  `id_richiesta` int(11) NOT NULL,
-  `id_tecnico` int(11) NOT NULL,
-  `nome_prodotto` varchar(64) NOT NULL,
-  `nome_produttore` varchar(64) NOT NULL,
-  `descrizione_prodotto` varchar(1024) NOT NULL,
-  `prezzo_prodotto` float NOT NULL,
+  `idRichiesta` int(11) NOT NULL,
+  `idTecnico` int(11) NOT NULL,
+  `nomeProdotto` varchar(64) NOT NULL,
+  `nomeProduttore` varchar(64) NOT NULL,
+  `descrizioneProdotto` varchar(1024) NOT NULL,
+  `prezzoProdotto` float NOT NULL,
   `url` varchar(512) DEFAULT NULL,
   `note` varchar(1024) DEFAULT NULL,
-  `data_creazione` date NOT NULL,
-  `stato_proposta` enum('In attesa','Approvata','Respinta','') NOT NULL,
+  `dataCreazione` date NOT NULL,
+  `statoProposta` enum('In attesa','Approvata','Respinta','') NOT NULL,
   `motivazione` varchar(1024) NOT NULL,
   `versione` tinyint(3) UNSIGNED NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -135,19 +135,19 @@ CREATE TABLE `proposta_acquisto` (
 -- --------------------------------------------------------
 
 --
--- Struttura della tabella `richiesta_acquisto`
+-- Struttura della tabella `richiesta`
 --
 
-CREATE TABLE `richiesta_acquisto` (
+CREATE TABLE `richiesta` (
   `id` int(11) NOT NULL,
   `titolo` varchar(64) NOT NULL,
   `descrizione` varchar(511) NOT NULL,
-  `id_categoria` int(11) NOT NULL,
-  `id_ordinante` int(11) NOT NULL,
-  `id_tecnico` int(11) NOT NULL,
-  `stato_richiesta` enum('Nuovo','Presa in carico','Ordinato','Chiuso') NOT NULL DEFAULT 'Nuovo',
-  `stato_ordine` enum('Accettato','Respinto perché non conforme','Respinto perché non funzionante','') NOT NULL DEFAULT '',
-  `data_creazione` date NOT NULL,
+  `idCategoria` int(11) NOT NULL,
+  `idOrdinante` int(11) NOT NULL,
+  `idTecnico` int(11) NOT NULL,
+  `statoRichiesta` enum('Nuovo','Presa in carico','Ordinato','Chiuso') NOT NULL DEFAULT 'Nuovo',
+  `statoOrdine` enum('Accettato','Respinto perché non conforme','Respinto perché non funzionante','') NOT NULL,
+  `dataCreazione` date NOT NULL,
   `note` varchar(1024) DEFAULT NULL,
   `versione` tinyint(3) UNSIGNED NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -160,9 +160,9 @@ CREATE TABLE `richiesta_acquisto` (
 
 CREATE TABLE `richiesta_caratteristica` (
   `id` int(11) NOT NULL,
-  `id_richiesta` int(11) NOT NULL,
-  `id_caratteristica` int(11) NOT NULL,
-  `valore` varchar(255) NOT NULL
+  `idRichiesta` int(11) NOT NULL,
+  `idCaratteristica` int(11) NOT NULL,
+  `valore` varchar(255) NOT NULL,
   `versione` tinyint(3) UNSIGNED NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -215,15 +215,15 @@ CREATE TABLE `utente_gruppo` (
 ALTER TABLE `caratteristica`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `nome` (`nome`),
-  ADD UNIQUE KEY `categoria` (`id_categoria`);
+  ADD UNIQUE KEY `categoria` (`idCategoria`);
 
 --
 -- Indici per le tabelle `categoria`
 --
 ALTER TABLE `categoria`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `categoria_FK1` (`id_categoria`),
-  ADD KEY `categoria_FK2` (`id_immagine`);
+  ADD KEY `categoria_FK2` (`idImmagine`),
+  ADD KEY `categoria_FK1` (`idCategoriaPadre`);
 
 --
 -- Indici per le tabelle `gruppo`
@@ -249,33 +249,33 @@ ALTER TABLE `immagine`
 --
 ALTER TABLE `notifica`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `notifica_FK1` (`id_destinatario`);
+  ADD KEY `notifica_FK1` (`idDestinatario`);
 
 --
--- Indici per le tabelle `proposta_acquisto`
+-- Indici per le tabelle `proposta`
 --
-ALTER TABLE `proposta_acquisto`
+ALTER TABLE `proposta`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `proposta_FK2` (`id_tecnico`),
-  ADD KEY `id_richiesta` (`id_richiesta`,`id_tecnico`);
+  ADD KEY `proposta_FK2` (`idTecnico`),
+  ADD KEY `id_richiesta` (`idRichiesta`,`idTecnico`);
 
 --
--- Indici per le tabelle `richiesta_acquisto`
+-- Indici per le tabelle `richiesta`
 --
-ALTER TABLE `richiesta_acquisto`
+ALTER TABLE `richiesta`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `richiesta_FK1` (`id_categoria`),
-  ADD KEY `richiesta_FK2` (`id_ordinante`),
-  ADD KEY `richiesta_FK3` (`id_tecnico`);
+  ADD KEY `richiesta_FK1` (`idCategoria`),
+  ADD KEY `richiesta_FK2` (`idOrdinante`),
+  ADD KEY `richiesta_FK3` (`idTecnico`);
 
 --
 -- Indici per le tabelle `richiesta_caratteristica`
 --
 ALTER TABLE `richiesta_caratteristica`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `id_richiesta` (`id_richiesta`,`id_caratteristica`),
-  ADD KEY `richiesta_caratteristica_FK2` (`id_caratteristica`),
-  ADD KEY `id_richiesta_2` (`id_richiesta`);
+  ADD UNIQUE KEY `id_richiesta` (`idRichiesta`,`idCaratteristica`),
+  ADD KEY `richiesta_caratteristica_FK2` (`idCaratteristica`),
+  ADD KEY `id_richiesta_2` (`idRichiesta`);
 
 --
 -- Indici per le tabelle `servizio`
@@ -331,15 +331,15 @@ ALTER TABLE `notifica`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT per la tabella `proposta_acquisto`
+-- AUTO_INCREMENT per la tabella `proposta`
 --
-ALTER TABLE `proposta_acquisto`
+ALTER TABLE `proposta`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT per la tabella `richiesta_acquisto`
+-- AUTO_INCREMENT per la tabella `richiesta`
 --
-ALTER TABLE `richiesta_acquisto`
+ALTER TABLE `richiesta`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
@@ -368,14 +368,14 @@ ALTER TABLE `utente`
 -- Limiti per la tabella `caratteristica`
 --
 ALTER TABLE `caratteristica`
-  ADD CONSTRAINT `caratteristica_FK1` FOREIGN KEY (`id_categoria`) REFERENCES `categoria` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `caratteristica_FK1` FOREIGN KEY (`idCategoria`) REFERENCES `categoria` (`id`) ON DELETE CASCADE;
 
 --
 -- Limiti per la tabella `categoria`
 --
 ALTER TABLE `categoria`
-  ADD CONSTRAINT `categoria_FK1` FOREIGN KEY (`id_categoria`) REFERENCES `categoria` (`id`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `categoria_FK2` FOREIGN KEY (`id_immagine`) REFERENCES `immagine` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `categoria_FK1` FOREIGN KEY (`idCategoriaPadre`) REFERENCES `categoria` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `categoria_FK2` FOREIGN KEY (`idImmagine`) REFERENCES `immagine` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Limiti per la tabella `gruppo_servizio`
@@ -388,29 +388,29 @@ ALTER TABLE `gruppo_servizio`
 -- Limiti per la tabella `notifica`
 --
 ALTER TABLE `notifica`
-  ADD CONSTRAINT `notifica_FK1` FOREIGN KEY (`id_destinatario`) REFERENCES `utente` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `notifica_FK1` FOREIGN KEY (`idDestinatario`) REFERENCES `utente` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Limiti per la tabella `proposta_acquisto`
+-- Limiti per la tabella `proposta`
 --
-ALTER TABLE `proposta_acquisto`
-  ADD CONSTRAINT `proposta_FK1` FOREIGN KEY (`id_richiesta`) REFERENCES `richiesta_acquisto` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `proposta_FK2` FOREIGN KEY (`id_tecnico`) REFERENCES `utente` (`id`) ON UPDATE CASCADE;
+ALTER TABLE `proposta`
+  ADD CONSTRAINT `proposta_FK1` FOREIGN KEY (`idRichiesta`) REFERENCES `richiesta` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `proposta_FK2` FOREIGN KEY (`idTecnico`) REFERENCES `utente` (`id`) ON UPDATE CASCADE;
 
 --
--- Limiti per la tabella `richiesta_acquisto`
+-- Limiti per la tabella `richiesta`
 --
-ALTER TABLE `richiesta_acquisto`
-  ADD CONSTRAINT `richiesta_FK1` FOREIGN KEY (`id_categoria`) REFERENCES `categoria` (`id`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `richiesta_FK2` FOREIGN KEY (`id_ordinante`) REFERENCES `utente` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `richiesta_FK3` FOREIGN KEY (`id_tecnico`) REFERENCES `utente` (`id`) ON UPDATE CASCADE;
+ALTER TABLE `richiesta`
+  ADD CONSTRAINT `richiesta_FK1` FOREIGN KEY (`idCategoria`) REFERENCES `categoria` (`id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `richiesta_FK2` FOREIGN KEY (`idOrdinante`) REFERENCES `utente` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `richiesta_FK3` FOREIGN KEY (`idTecnico`) REFERENCES `utente` (`id`) ON UPDATE CASCADE;
 
 --
 -- Limiti per la tabella `richiesta_caratteristica`
 --
 ALTER TABLE `richiesta_caratteristica`
-  ADD CONSTRAINT `richiesta_caratteristica_FK1` FOREIGN KEY (`id_richiesta`) REFERENCES `richiesta_acquisto` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `richiesta_caratteristica_FK2` FOREIGN KEY (`id_caratteristica`) REFERENCES `caratteristica` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `richiesta_caratteristica_FK1` FOREIGN KEY (`idRichiesta`) REFERENCES `richiesta` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `richiesta_caratteristica_FK2` FOREIGN KEY (`idCaratteristica`) REFERENCES `caratteristica` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Limiti per la tabella `utente_gruppo`

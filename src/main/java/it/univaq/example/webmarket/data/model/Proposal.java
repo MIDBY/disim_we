@@ -26,9 +26,9 @@ public interface Proposal extends DataItem<Integer> {
 
     void setProductDescription(String productDescription);
 
-    Float getPrice();
+    Float getProductPrice();
 
-    void setPrice(Float price);
+    void setProductPrice(Float price);
 
     String getUrl();
 

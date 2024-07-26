@@ -13,7 +13,7 @@ public interface ProposalDAO {
 
     List<Proposal> getProposalsByRequest(int request_key) throws DataException;
 
-    List<Proposal> getProposals() throws DataException;
+    List<Proposal> getProposalsByTechnician(int user_key) throws DataException;
 
     List<Proposal> getProposalsByState(ProposalStateEnum value) throws DataException;
 

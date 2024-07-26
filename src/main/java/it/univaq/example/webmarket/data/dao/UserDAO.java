@@ -17,7 +17,7 @@ public interface UserDAO {
 
     User getUser(int user_key) throws DataException;
     
-    User getUserByName(String username) throws DataException;
+    User getUserByUsername(String username) throws DataException;
 
     User getUserByEmail(String email) throws DataException;
 

@@ -129,6 +129,12 @@ public class RequestImpl extends DataItemImpl<Integer> implements Request {
     }
 
     @Override
+    public void addRequestCharacteristic(RequestCharacteristic requestCharacteristic) {
+        this.characteristics.add(requestCharacteristic);
+    }
+
+
+    @Override
     public List<Proposal> getProposals() {
         return proposals;
     }

@@ -27,7 +27,6 @@ public class UserDAO_MySQL extends DAO implements UserDAO {
     public void init() throws DataException {
         try {
             super.init();
-
             //precompiliamo tutte le query utilizzate nella classe
             //precompile all the queries uses in this class
             sUserByID = connection.prepareStatement("SELECT * FROM utente WHERE id=?");
@@ -126,8 +125,7 @@ public class UserDAO_MySQL extends DAO implements UserDAO {
     }
 
     @Override
-    public User getUserByName(String username) throws DataException {
-
+    public User getUserByUsername(String username) throws DataException {
         try {
             sUserByUsername.setString(1, username);
             try ( ResultSet rs = sUserByUsername.executeQuery()) {
@@ -136,14 +134,13 @@ public class UserDAO_MySQL extends DAO implements UserDAO {
                 }
             }
         } catch (SQLException ex) {
-            throw new DataException("Unable to find user", ex);
+            throw new DataException("Unable to find users by username", ex);
         }
         return null;
     }
 
     @Override
     public User getUserByEmail(String email) throws DataException {
-
         try {
             sUserByEmail.setString(1, email);
             try ( ResultSet rs = sUserByEmail.executeQuery()) {
@@ -152,7 +149,7 @@ public class UserDAO_MySQL extends DAO implements UserDAO {
                 }
             }
         } catch (SQLException ex) {
-            throw new DataException("Unable to find user", ex);
+            throw new DataException("Unable to find users by email", ex);
         }
         return null;
     }
@@ -168,7 +165,7 @@ public class UserDAO_MySQL extends DAO implements UserDAO {
                 }
             }
         } catch (SQLException ex) {
-            throw new DataException("Unable to find user", ex);
+            throw new DataException("Unable to find users by accepted", ex);
         }
         return result;
     }

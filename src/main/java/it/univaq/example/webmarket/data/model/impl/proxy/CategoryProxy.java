@@ -10,7 +10,6 @@ import it.univaq.example.webmarket.data.model.Image;
 import it.univaq.framework.data.DataException;
 import it.univaq.framework.data.DataItemProxy;
 import it.univaq.framework.data.DataLayer;
-
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -90,7 +89,7 @@ public class CategoryProxy extends CategoryImpl implements DataItemProxy {
     public List<Characteristic> getCharacteristics() {
         if (super.getCharacteristics() == null) {
             try {
-                super.setCharacteristics(((CharacteristicDAO) dataLayer.getDAO(Characteristic.class)).getCharacteristics(this.getKey()));
+                super.setCharacteristics(((CharacteristicDAO) dataLayer.getDAO(Characteristic.class)).getCharacteristicsByCategory(this.getKey()));
             } catch (DataException ex) {
                 Logger.getLogger(CategoryProxy.class.getName()).log(Level.SEVERE, null, ex);
             }

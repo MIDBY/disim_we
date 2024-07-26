@@ -28,10 +28,10 @@ public class CharacteristicDAO_MySQL extends DAO implements CharacteristicDAO {
         try {
             super.init();
             sCharacteristicByID = connection.prepareStatement("SELECT * FROM caratteristica WHERE id=?");
-            sCharacteristicsByCategory = connection.prepareStatement("SELECT id FROM caratteristica WHERE id_categoria=?");
+            sCharacteristicsByCategory = connection.prepareStatement("SELECT id FROM caratteristica WHERE idCategoria=?");
             sCharacteristics = connection.prepareStatement("SELECT id FROM caratteristica");
-            iCharacteristic = connection.prepareStatement("INSERT INTO caratteristica (nome,id_categoria,valori_default) VALUES(?,?,?)", Statement.RETURN_GENERATED_KEYS);
-            uCharacteristic = connection.prepareStatement("UPDATE caratteristica SET nome=?,id_categoria=?,valori_default=?,versione=? WHERE id=? and versione=?");
+            iCharacteristic = connection.prepareStatement("INSERT INTO caratteristica (nome,idCategoria,valoriDefault) VALUES(?,?,?)", Statement.RETURN_GENERATED_KEYS);
+            uCharacteristic = connection.prepareStatement("UPDATE caratteristica SET nome=?,idCategoria=?,valoriDefault=?,versione=? WHERE id=? and versione=?");
             dCharacteristic = connection.prepareStatement("DELETE FROM caratteristica WHERE id=?");
 
         } catch (SQLException ex) {
@@ -41,10 +41,7 @@ public class CharacteristicDAO_MySQL extends DAO implements CharacteristicDAO {
 
     @Override
     public void destroy() throws DataException {
-        //anche chiudere i PreparedStamenent � una buona pratica...
-        //also closing PreparedStamenents is a good practice...
         try {
-
             sCharacteristicByID.close();
             sCharacteristicsByCategory.close();
             sCharacteristics.close();
@@ -69,8 +66,8 @@ public class CharacteristicDAO_MySQL extends DAO implements CharacteristicDAO {
         try {
             a.setKey(rs.getInt("id"));
             a.setName(rs.getString("nome"));
-            a.setCategoryKey(rs.getInt("id_categoria"));
-            a.setDefaultValues(rs.getString("valori_default"));
+            a.setCategoryKey(rs.getInt("idCategoria"));
+            a.setDefaultValues(rs.getString("valoriDefault"));
             a.setVersion(rs.getLong("versione"));
         } catch (SQLException ex) {
             throw new DataException("Unable to create characteristic object form ResultSet", ex);
@@ -81,20 +78,14 @@ public class CharacteristicDAO_MySQL extends DAO implements CharacteristicDAO {
     @Override
     public Characteristic getCharacteristic(int characteristic_key) throws DataException {
         Characteristic a = null;
-        //prima vediamo se l'oggetto è già stato caricato
-        //first look for this object in the cache
         if (dataLayer.getCache().has(Characteristic.class, characteristic_key)) {
             a = dataLayer.getCache().get(Characteristic.class, characteristic_key);
         } else {
-            //altrimenti lo carichiamo dal database
-            //otherwise load it from database
             try {
                 sCharacteristicByID.setInt(1, characteristic_key);
                 try (ResultSet rs = sCharacteristicByID.executeQuery()) {
                     if (rs.next()) {
                         a = createCharacteristic(rs);
-                        //e lo mettiamo anche nella cache
-                        //and put it also in the cache
                         dataLayer.getCache().add(Characteristic.class, a);
                     }
                 }
@@ -106,9 +97,8 @@ public class CharacteristicDAO_MySQL extends DAO implements CharacteristicDAO {
     }
 
     @Override
-    public List<Characteristic> getCharacteristics(int category_key) throws DataException {
+    public List<Characteristic> getCharacteristicsByCategory(int category_key) throws DataException {
         List<Characteristic> result = new ArrayList<Characteristic>();
-
         try {
             sCharacteristicsByCategory.setInt(1, category_key);
             try (ResultSet rs = sCharacteristicsByCategory.executeQuery()) {
@@ -125,7 +115,6 @@ public class CharacteristicDAO_MySQL extends DAO implements CharacteristicDAO {
     @Override
     public List<Characteristic> getCharacteristics() throws DataException {
         List<Characteristic> result = new ArrayList<Characteristic>();
-
         try (ResultSet rs = sCharacteristics.executeQuery()) {
             while (rs.next()) {
                 result.add((Characteristic) getCharacteristic(rs.getInt("id")));
@@ -189,6 +178,22 @@ public class CharacteristicDAO_MySQL extends DAO implements CharacteristicDAO {
             }
         } catch (SQLException | OptimisticLockException ex) {
             throw new DataException("Unable to store characteristic", ex);
+        }
+    }
+
+    @Override
+    public void deleteCharacteristic(Characteristic characteristic) throws DataException {
+        try {
+            if (characteristic.getKey() != null && characteristic.getKey() > 0) { //delete
+                dCharacteristic.setInt(1, characteristic.getKey());
+                if (dCharacteristic.executeUpdate() == 0) {
+                    throw new OptimisticLockException(characteristic);
+                } else {
+                    dataLayer.getCache().delete(Characteristic.class, characteristic);
+                }
+            }
+        } catch (SQLException | OptimisticLockException ex) {
+            throw new DataException("Unable to delete characteristic", ex);
         }
     }
 }

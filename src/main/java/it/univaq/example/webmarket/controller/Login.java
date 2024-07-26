@@ -11,7 +11,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import javax.servlet.*;
 import javax.servlet.http.*;
 
@@ -47,7 +46,7 @@ public class Login extends NewspaperBaseController {
 
         if (!username.isEmpty() && !password.isEmpty()) {
             try {
-                User u = ((NewspaperDataLayer) request.getAttribute("datalayer")).getUserDAO().getUserByName(username);
+                User u = ((NewspaperDataLayer) request.getAttribute("datalayer")).getUserDAO().getUserByUsername(username);
                 if (u != null && SecurityHelpers.checkPasswordHashPBKDF2(password, u.getPassword())) {
                     //se la validazione ha successo
                     //if the identity validation succeeds

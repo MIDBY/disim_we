@@ -18,7 +18,7 @@ public class ProposalImpl extends DataItemImpl<Integer> implements Proposal {
     private String productName;
     private String producerName;
     private String productDescription;
-    private Float price;
+    private Float productPrice;
     private String url;
     private String notes;
     private LocalDate creationDate;
@@ -32,7 +32,7 @@ public class ProposalImpl extends DataItemImpl<Integer> implements Proposal {
         productName = "";
         producerName = "";
         productDescription = "";
-        price = 0.00F;
+        productPrice = 0.00F;
         url = "";
         notes = "";
         creationDate = LocalDate.now();
@@ -91,15 +91,15 @@ public class ProposalImpl extends DataItemImpl<Integer> implements Proposal {
     }
 
     @Override
-    public Float getPrice() {
-        BigDecimal bd = new BigDecimal(price);
+    public Float getProductPrice() {
+        BigDecimal bd = new BigDecimal(productPrice);
         return bd.setScale(2, RoundingMode.HALF_EVEN).floatValue();
     }
 
     @Override
-    public void setPrice(Float price) {
+    public void setProductPrice(Float price) {
         BigDecimal bd = new BigDecimal(price);
-        this.price = bd.setScale(2, RoundingMode.HALF_EVEN).floatValue();
+        this.productPrice = bd.setScale(2, RoundingMode.HALF_EVEN).floatValue();
     }
 
     @Override

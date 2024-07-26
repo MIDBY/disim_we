@@ -59,8 +59,8 @@ public class NotificationProxy extends NotificationImpl implements DataItemProxy
     }
 
     @Override
-    public void setDate(LocalDate date) {
-        super.setDate(date);
+    public void setCreationDate(LocalDate creationDate) {
+        super.setCreationDate(creationDate);
         this.modified = true;
     }
 

@@ -29,10 +29,10 @@ public class NotificationDAO_MySQL extends DAO implements NotificationDAO {
         try {
             super.init();
             sNotificationByID = connection.prepareStatement("SELECT * FROM notifica WHERE id=?");
-            sNotificationsByUser = connection.prepareStatement("SELECT id FROM notifica WHERE id_destinatario=?");
-            sNotificationsNotReadByUser = connection.prepareStatement("SELECT id FROM notifica WHERE id_destinatario=? and letto=0");
-            iNotification = connection.prepareStatement("INSERT INTO notifica (id_destinatario,messaggio,data) VALUES(?,?,?)", Statement.RETURN_GENERATED_KEYS);
-            uNotification = connection.prepareStatement("UPDATE notifica SET id_destinatario=?,messaggio=?,data=?,letto=?,versione=? WHERE id=? and versione=?");
+            sNotificationsByUser = connection.prepareStatement("SELECT id FROM notifica WHERE idDestinatario=?");
+            sNotificationsNotReadByUser = connection.prepareStatement("SELECT id FROM notifica WHERE idDestinatario=? and letto=0");
+            iNotification = connection.prepareStatement("INSERT INTO notifica (idDestinatario,messaggio,dataCreazione) VALUES(?,?,?)", Statement.RETURN_GENERATED_KEYS);
+            uNotification = connection.prepareStatement("UPDATE notifica SET idDestinatario=?,messaggio=?,dataCreazione=?,letto=?,versione=? WHERE id=? and versione=?");
             dNotification = connection.prepareStatement("DELETE FROM notifica WHERE id=?");
         } catch (SQLException ex) {
             throw new DataException("Error initializing webshop data layer", ex);
@@ -49,7 +49,7 @@ public class NotificationDAO_MySQL extends DAO implements NotificationDAO {
             dNotification.close();
 
         } catch (SQLException ex) {
-            //
+            ex.printStackTrace();
         }
         super.destroy();
     }
@@ -64,9 +64,9 @@ public class NotificationDAO_MySQL extends DAO implements NotificationDAO {
         try {
             NotificationProxy a = (NotificationProxy)createNotification();
             a.setKey(rs.getInt("id"));
-            a.setRecipientKey(rs.getInt("id_destinatario"));
+            a.setRecipientKey(rs.getInt("idDestinatario"));
             a.setMessage(rs.getString("messaggio"));
-            a.setDate(rs.getObject("data", LocalDate.class));
+            a.setCreationDate(rs.getObject("dataCreazione", LocalDate.class));
             a.setRead(rs.getBoolean("letto"));
             a.setVersion(rs.getLong("versione"));
             return a;
@@ -141,7 +141,7 @@ public class NotificationDAO_MySQL extends DAO implements NotificationDAO {
                     uNotification.setNull(1, java.sql.Types.INTEGER);
                 }
                 uNotification.setString(2, notification.getMessage());
-                uNotification.setObject(3, notification.getDate());
+                uNotification.setObject(3, notification.getCreationDate());
                 uNotification.setBoolean(4, notification.isRead());
 
                 long current_version = notification.getVersion();
@@ -163,7 +163,7 @@ public class NotificationDAO_MySQL extends DAO implements NotificationDAO {
                     iNotification.setNull(1, java.sql.Types.INTEGER);
                 }
                 iNotification.setString(2, notification.getMessage());
-                iNotification.setObject(3, notification.getDate());
+                iNotification.setObject(3, notification.getCreationDate());
                 iNotification.setBoolean(4, notification.isRead());
                 if (iNotification.executeUpdate() == 1) {
                     try (ResultSet keys = iNotification.getGeneratedKeys()) {

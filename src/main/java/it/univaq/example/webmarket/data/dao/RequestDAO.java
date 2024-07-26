@@ -10,7 +10,11 @@ public interface RequestDAO {
 
     Request getRequest(int request_key) throws DataException;
 
-    List<Request> getRequests(int user_key) throws DataException;
+    List<Request> getRequestsByCategory(int category_key) throws DataException;
+
+    List<Request> getRequestsByOrdering(int user_key) throws DataException;
+
+    List<Request> getRequestsByTechnician(int user_key) throws DataException;
 
     List<Request> getRequests() throws DataException;
 

@@ -31,7 +31,7 @@ public class ServiceDAO_MySQL extends DAO implements ServiceDAO {
             sServices = connection.prepareStatement("SELECT id FROM servizio");
             sServicesByGroup = connection.prepareStatement("SELECT id_servizio FROM gruppo_servizio where id_gruppo=?");
             iService = connection.prepareStatement("INSERT INTO servizio (script) VALUES (?)", Statement.RETURN_GENERATED_KEYS);
-            uService = connection.prepareStatement("UPDATE servizio SET script=?, versione=? WHERE id=? and versione=?");
+            uService = connection.prepareStatement("UPDATE servizio SET script=?,versione=? WHERE id=? and versione=?");
             dService = connection.prepareStatement("DELETE FROM servizio WHERE id=?");
         } catch (SQLException ex) {
             throw new DataException("Error initializing webshop data layer", ex);
@@ -95,7 +95,6 @@ public class ServiceDAO_MySQL extends DAO implements ServiceDAO {
     @Override
     public List<Service> getServices() throws DataException {
         List<Service> result = new ArrayList<Service>();
-
         try (ResultSet rs = sServices.executeQuery()) {
             while (rs.next()) {
                 result.add(getService(rs.getInt("id")));
