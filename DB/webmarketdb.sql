@@ -90,7 +90,7 @@ CREATE TABLE `immagine` (
   `id` int(11) NOT NULL,
   `titolo` varchar(255) NOT NULL,
   `tipo` varchar(32) NOT NULL,
-  `nome_file` varchar(255) NOT NULL,
+  `nomeFile` varchar(255) NOT NULL,
   `grandezza` int(11) NOT NULL,
   `versione` tinyint(3) UNSIGNED NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;

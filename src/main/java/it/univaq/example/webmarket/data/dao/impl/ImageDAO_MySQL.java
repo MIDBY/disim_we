@@ -36,8 +36,8 @@ public class ImageDAO_MySQL extends DAO implements ImageDAO {
             sImageByID = connection.prepareStatement("SELECT * FROM immagine WHERE id=?");
             sImages = connection.prepareStatement("SELECT * FROM immagine");
             sImageByCategory = connection.prepareStatement("SELECT id_immagine FROM categoria WHERE id=?");
-            iImage = connection.prepareStatement("INSERT INTO immagine (titolo,tipo,nome_file,grandezza) VALUES(?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
-            uImage = connection.prepareStatement("UPDATE immagine SET titolo=?,tipo=?,nome_file=?,grandezza=?,versione=? WHERE id=? and versione=?");
+            iImage = connection.prepareStatement("INSERT INTO immagine (titolo,tipo,nomeFile,grandezza) VALUES(?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+            uImage = connection.prepareStatement("UPDATE immagine SET titolo=?,tipo=?,nomeFile=?,grandezza=?,versione=? WHERE id=? and versione=?");
             dImage = connection.prepareStatement("DELETE FROM immagine WHERE id=?");
 
         } catch (SQLException ex) {
@@ -74,7 +74,7 @@ public class ImageDAO_MySQL extends DAO implements ImageDAO {
             i.setCaption(rs.getString("titolo"));
             i.setImageSize(rs.getLong("grandezza"));
             i.setImageType(rs.getString("tipo"));
-            i.setFilename(rs.getString("nome_file"));
+            i.setFilename(rs.getString("nomeFile"));
             i.setVersion(rs.getLong("versione"));
         } catch (SQLException ex) {
             throw new DataException("Unable to create image object form ResultSet", ex);
