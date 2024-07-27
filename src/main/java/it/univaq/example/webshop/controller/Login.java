@@ -14,12 +14,7 @@ import java.util.logging.Logger;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
-/**
- *
- * @author Ingegneria del Web
- * @version
- */
-public class Login extends NewspaperBaseController {
+public class Login extends WebshopBaseController {
 
     private void action_default(HttpServletRequest request, HttpServletResponse response) throws IOException, TemplateManagerException {
         TemplateResult result = new TemplateResult(getServletContext());
@@ -41,16 +36,16 @@ public class Login extends NewspaperBaseController {
     //nota: usente di default nel database: nome a, password p
     //note: default user in the database: name: a, password p
     private void action_login(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String username = request.getParameter("u");
+        String email = request.getParameter("u");
         String password = request.getParameter("p");
 
-        if (!username.isEmpty() && !password.isEmpty()) {
+        if (!email.isEmpty() && !password.isEmpty()) {
             try {
-                User u = ((NewspaperDataLayer) request.getAttribute("datalayer")).getUserDAO().getUserByUsername(username);
+                User u = ((NewspaperDataLayer) request.getAttribute("datalayer")).getUserDAO().getUserByEmail(email);
                 if (u != null && SecurityHelpers.checkPasswordHashPBKDF2(password, u.getPassword())) {
                     //se la validazione ha successo
                     //if the identity validation succeeds
-                    SecurityHelpers.createSession(request, username, u.getKey());
+                    SecurityHelpers.createSession(request, email, u.getKey());
                     //se è stato trasmesso un URL di origine, torniamo a quell'indirizzo
                     //if an origin URL has been transmitted, return to it
                     if (request.getParameter("referrer") != null) {

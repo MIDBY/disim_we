@@ -1,6 +1,6 @@
 package it.univaq.example.webshop.controller;
 
-import it.univaq.example.webshop.data.dao.impl.NewspaperDataLayer;
+import it.univaq.example.webshop.data.dao.impl.WebshopDataLayer;
 import it.univaq.framework.data.DataException;
 import it.univaq.framework.result.DataModelFiller;
 import java.util.Map;
@@ -15,10 +15,11 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class DummyModelFiller implements DataModelFiller {
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public void fillDataModel(Map datamodel, HttpServletRequest request, ServletContext context) {        
         try {
-            datamodel.put("latest_issue", ((NewspaperDataLayer) request.getAttribute("datalayer")).getIssueDAO().getLatestIssue());
+            datamodel.put("latest_request", ((WebshopDataLayer) request.getAttribute("datalayer")).getRequestDAO().getLatestRequest());
         } catch (DataException ex) {
             Logger.getLogger(DummyModelFiller.class.getName()).log(Level.SEVERE, null, ex);
         }

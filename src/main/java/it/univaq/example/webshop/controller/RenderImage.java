@@ -1,6 +1,6 @@
 package it.univaq.example.webshop.controller;
 
-import it.univaq.example.webshop.data.dao.impl.NewspaperDataLayer;
+import it.univaq.example.webshop.data.dao.impl.WebshopDataLayer;
 import it.univaq.example.webshop.data.model.Image;
 import it.univaq.framework.data.DataException;
 import it.univaq.framework.result.StreamResult;
@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Giuseppe Della Penna
  */
-public class RenderImage extends NewspaperBaseController {
+public class RenderImage extends WebshopBaseController {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -48,7 +48,7 @@ public class RenderImage extends NewspaperBaseController {
 
     private void action_download(HttpServletRequest request, HttpServletResponse response, int imgid) throws IOException, DataException {
         StreamResult result = new StreamResult(getServletContext());
-        Image image = ((NewspaperDataLayer) request.getAttribute("datalayer")).getImageDAO().getImage(imgid);
+        Image image = ((WebshopDataLayer) request.getAttribute("datalayer")).getImageDAO().getImage(imgid);
         if (image != null) {
             //settiamo il tipo del file da trasmettere
             //set the media type of the file to send

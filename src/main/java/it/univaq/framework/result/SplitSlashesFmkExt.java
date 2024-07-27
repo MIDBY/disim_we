@@ -19,6 +19,7 @@ import java.util.List;
  */
 public class SplitSlashesFmkExt implements TemplateMethodModelEx {
 
+    @SuppressWarnings("rawtypes")
     @Override
     public Object exec(List list) throws TemplateModelException {
         //la lista contiene i parametri passati alla funzione nel template
