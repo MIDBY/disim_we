@@ -1,5 +1,6 @@
 package it.univaq.framework.data;
 
+@SuppressWarnings("rawtypes")
 public class DataItemProxyImpl extends DataItemImpl implements DataItemProxy {
 
     private boolean modified;

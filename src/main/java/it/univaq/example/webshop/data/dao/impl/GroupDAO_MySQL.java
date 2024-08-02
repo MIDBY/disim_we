@@ -2,7 +2,6 @@ package it.univaq.example.webshop.data.dao.impl;
 
 import it.univaq.example.webshop.data.dao.GroupDAO;
 import it.univaq.example.webshop.data.model.Group;
-import it.univaq.example.webshop.data.model.impl.GroupImpl;
 import it.univaq.example.webshop.data.model.impl.UserRoleEnum;
 import it.univaq.example.webshop.data.model.impl.proxy.GroupProxy;
 import it.univaq.framework.data.DAO;
@@ -16,7 +15,7 @@ import it.univaq.framework.data.DataLayer;
 
 public class GroupDAO_MySQL extends DAO implements GroupDAO {
 
-    private PreparedStatement sGroupByID, sGroups, sGroupByName;
+    private PreparedStatement sGroupByID, sGroupByUser, sGroups, sGroupByName;
 
     public GroupDAO_MySQL(DataLayer d) {
         super(d);
@@ -27,6 +26,7 @@ public class GroupDAO_MySQL extends DAO implements GroupDAO {
         try {
             super.init();
             sGroupByID = connection.prepareStatement("SELECT * FROM gruppo WHERE id=?");
+            sGroupByUser = connection.prepareStatement("SELECT idGruppo FROM utente_gruppo where idUtente=?");
             sGroups = connection.prepareStatement("SELECT id FROM gruppo");
             sGroupByName = connection.prepareStatement("SELECT id FROM gruppo where nome=?");
             
@@ -39,6 +39,7 @@ public class GroupDAO_MySQL extends DAO implements GroupDAO {
     public void destroy() throws DataException {
         try {
             sGroupByID.close();
+            sGroupByUser.close();
             sGroups.close();
             sGroupByName.close();
             
@@ -87,6 +88,21 @@ public class GroupDAO_MySQL extends DAO implements GroupDAO {
     }
 
     @Override
+    public Group getGroupByUser(int user_key) throws DataException {
+        try {
+            sGroupByUser.setInt(1, user_key);
+            try ( ResultSet rs = sGroupByUser.executeQuery()) {
+                if (rs.next()) {
+                    return getGroup(rs.getInt("id"));
+                }
+            }
+        } catch (SQLException ex) {
+            throw new DataException("Unable to find group by user", ex);
+        }
+        return null;
+    }
+
+    @Override
     public List<Group> getGroups() throws DataException {
         List<Group> result = new ArrayList<Group>();
         try (ResultSet rs = sGroups.executeQuery()) {
@@ -101,18 +117,17 @@ public class GroupDAO_MySQL extends DAO implements GroupDAO {
 
      @Override
     public Group getGroupByName(UserRoleEnum value) throws DataException {
-        Group result = new GroupImpl();
         try {
             sGroupByName.setString(1, value.toString());
             try (ResultSet rs = sGroupByName.executeQuery()) {
                 while(rs.next()) {
-                    result = getGroup(rs.getInt("id"));
+                    return getGroup(rs.getInt("id"));
                 }
             }
         } catch (SQLException e) {
             throw new DataException("Unable to load group by name", e);
         }
-        return result;
+        return null;
     }
 
 }

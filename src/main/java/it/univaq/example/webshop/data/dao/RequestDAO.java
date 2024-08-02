@@ -17,7 +17,7 @@ public interface RequestDAO {
 
     List<Request> getRequestsByTechnician(int user_key) throws DataException;
 
-    Request getLatestRequest() throws DataException;
+    //Request getLatestRequest() throws DataException;
 
     List<Request> getRequests() throws DataException;
 

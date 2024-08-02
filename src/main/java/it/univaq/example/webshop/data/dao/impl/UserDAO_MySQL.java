@@ -2,6 +2,7 @@ package it.univaq.example.webshop.data.dao.impl;
 
 import it.univaq.example.webshop.data.dao.UserDAO;
 import it.univaq.example.webshop.data.model.User;
+import it.univaq.example.webshop.data.model.impl.UserRoleEnum;
 import it.univaq.example.webshop.data.model.impl.proxy.UserProxy;
 import it.univaq.framework.data.DAO;
 import it.univaq.framework.data.DataException;
@@ -17,7 +18,7 @@ import java.util.List;
 
 public class UserDAO_MySQL extends DAO implements UserDAO {
 
-    private PreparedStatement sUserByID, sUserByUsername, sUserByEmail, sUsersByAccepted, sUsersByGroup, iUser, uUser;
+    private PreparedStatement sUserByID, sUserByUsername, sUserByEmail, sUsersByAccepted, sUsersByGroup, iUser, iUserGroup, uUser, uUserGroup;
 
     public UserDAO_MySQL(DataLayer d) {
         super(d);
@@ -33,9 +34,11 @@ public class UserDAO_MySQL extends DAO implements UserDAO {
             sUserByUsername = connection.prepareStatement("SELECT id FROM utente WHERE username=?");
             sUserByEmail = connection.prepareStatement("SELECT id FROM utente WHERE email=?");
             sUsersByAccepted = connection.prepareStatement("SELECT id FROM utente WHERE accettato=?");
-            sUsersByGroup = connection.prepareStatement("SELECT id_utente FROM utente_gruppo WHERE id_gruppo=?");
+            sUsersByGroup = connection.prepareStatement("SELECT idUtente FROM utente_gruppo WHERE idGruppo=?");
             iUser = connection.prepareStatement("INSERT INTO utente (username,email,password,indirizzo,accettato) VALUES(?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+            iUserGroup = connection.prepareStatement("INSERT INTO utente_gruppo (idUtente,idGruppo) VALUES (?,(SELECT id FROM gruppo WHERE nome=?))");
             uUser = connection.prepareStatement("UPDATE utente SET username=?,email=?,password=?,indirizzo=?,accettato=?,versione=? WHERE id=? and versione=?");
+            uUserGroup = connection.prepareStatement("UPDATE utente_gruppo SET idGruppo=(SELECT id FROM gruppo WHERE nome=?) WHERE idUtente=?");
         } catch (SQLException ex) {
             throw new DataException("Error initializing webshop data layer", ex);
         }
@@ -52,6 +55,7 @@ public class UserDAO_MySQL extends DAO implements UserDAO {
             sUsersByAccepted.close();
             sUsersByGroup.close();
             iUser.close();
+            iUserGroup.close();
             uUser.close();
 
         } catch (SQLException ex) {
@@ -246,6 +250,9 @@ public class UserDAO_MySQL extends DAO implements UserDAO {
                         }
                     }
                 }
+                iUserGroup.setInt(1, user.getKey());
+                iUserGroup.setObject(2, UserRoleEnum.ORDINANTE);
+                iUserGroup.executeQuery();
             }
 
             if (user instanceof DataItemProxy) {
@@ -253,6 +260,20 @@ public class UserDAO_MySQL extends DAO implements UserDAO {
             }
         } catch (SQLException | OptimisticLockException ex) {
             throw new DataException("Unable to store user", ex);
+        }
+    }
+
+    @Override
+    public void changeUserGroup(int user_key, UserRoleEnum value) throws DataException {
+        try {
+            if (user_key > 0) { //update
+                uUserGroup.setObject(1, value);
+                uUserGroup.setInt(2, user_key);
+
+                uUser.executeUpdate();
+            }
+        } catch (SQLException ex) {
+            throw new DataException("Unable to change user group", ex);
         }
     }
 }

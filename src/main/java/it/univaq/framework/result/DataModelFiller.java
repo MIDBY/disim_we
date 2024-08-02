@@ -31,6 +31,5 @@ public interface DataModelFiller {
 
     //request e context POSSONO ESSERE NULL
     //request and context MAY BE NULL
-    @SuppressWarnings("rawtypes")
-    public void fillDataModel(Map datamodel, HttpServletRequest request, ServletContext context);
+    public void fillDataModel(Map<String, Object> datamodel, HttpServletRequest request, ServletContext context);
 }

@@ -3,6 +3,7 @@ package it.univaq.example.webshop.data.dao;
 import java.util.List;
 
 import it.univaq.example.webshop.data.model.User;
+import it.univaq.example.webshop.data.model.impl.UserRoleEnum;
 import it.univaq.framework.data.DataException;
 
 public interface UserDAO {
@@ -27,4 +28,6 @@ public interface UserDAO {
     List<User> getUsersByAccepted(boolean accepted) throws DataException;
 
     void setUser(User user) throws DataException;
+
+    void changeUserGroup(int user_key, UserRoleEnum value) throws DataException;
 }

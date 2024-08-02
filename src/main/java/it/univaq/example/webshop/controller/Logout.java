@@ -19,7 +19,7 @@ public class Logout extends WebshopBaseController {
         if (request.getParameter("referrer") != null) {
             response.sendRedirect(request.getParameter("referrer"));
         } else {
-            response.sendRedirect("issues");
+            response.sendRedirect("login");
         }
     }
 

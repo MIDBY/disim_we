@@ -10,7 +10,7 @@ public class DataLayer implements AutoCloseable {
 
     private final DataSource datasource;
     private Connection connection;
-    private final Map<Class, DAO> daos;
+    private final Map<Class<?>, DAO> daos;
     private final DataCache cache;
 
     public DataLayer(DataSource datasource) throws SQLException {
@@ -21,12 +21,12 @@ public class DataLayer implements AutoCloseable {
         this.cache = new DataCache();
     }
 
-    public void registerDAO(Class entityClass, DAO dao) throws DataException {
+    public void registerDAO(Class<?> entityClass, DAO dao) throws DataException {
         daos.put(entityClass, dao);
         dao.init();
     }
 
-    public DAO getDAO(Class entityClass) {
+    public DAO getDAO(Class<?> entityClass) {
         return daos.get(entityClass);
     }
 

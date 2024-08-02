@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `webmarketdb`
+-- Database: `webshopdb`
 --
 
 -- --------------------------------------------------------
@@ -66,8 +66,8 @@ CREATE TABLE `gruppo` (
 
 INSERT INTO `gruppo` (`id`, `nome`) VALUES
 (1, 'ADMIN'),
-(2, 'ORDINANTE'),
-(3, 'TECNICO');
+(2, 'TECNICO'),
+(3, 'ORDINANTE');
 
 -- --------------------------------------------------------
 

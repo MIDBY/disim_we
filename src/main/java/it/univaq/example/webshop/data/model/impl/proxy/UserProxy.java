@@ -61,5 +61,4 @@ public class UserProxy extends UserImpl implements DataItemProxy  {
     public boolean isModified() {
         return modified;
     }
-
 }
