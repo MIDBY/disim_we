@@ -36,18 +36,13 @@
     </div>
 
     <!-- Right Icon menu Sidebar -->
-    <#if (right_menu??)>
-        <#include "outline_right_menu_sidebar.ftl.html">
-    </#if>
+    <#include "outline_right_menu_sidebar.ftl.html">
 
     <!-- Left Sidebar -->
-    <#if (left_sidebar??)>
-        <#include "outline_left_sidebar.ftl.html">
-    </#if>
+    <#include "outline_left_sidebar.ftl.html">
+
     <!-- Right Sidebar -->
-    <#if (right_sidebar??)>
-        <#include "outline_right_sidebar.ftl.html">
-    </#if>
+    <#include "outline_right_sidebar.ftl.html">
 
     <!-- Main Content -->
     <#include content_tpl>

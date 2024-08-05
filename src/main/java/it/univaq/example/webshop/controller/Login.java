@@ -1,7 +1,9 @@
 package it.univaq.example.webshop.controller;
 
 import it.univaq.example.webshop.data.dao.impl.WebshopDataLayer;
+import it.univaq.example.webshop.data.model.Group;
 import it.univaq.example.webshop.data.model.User;
+import it.univaq.example.webshop.data.model.impl.UserRoleEnum;
 import it.univaq.framework.data.DataException;
 import it.univaq.framework.result.TemplateManagerException;
 import it.univaq.framework.result.TemplateResult;
@@ -20,44 +22,60 @@ public class Login extends WebshopBaseController {
             throws IOException, TemplateManagerException {
         TemplateResult result = new TemplateResult(getServletContext());
         request.setAttribute("referrer", request.getParameter("referrer"));
-        request.setAttribute("title", "Sign-in");
+        request.setAttribute("title", "Sign-in");            
         result.activate("login.html", request, response);
-
-        // //esempio di creazione utente
-        // //create user example
-        // try {
-        // User u = ((NewspaperDataLayer)
-        // request.getAttribute("datalayer")).getUserDAO().createUser();
-        // u.setUsername("a");
-        // u.setPassword(SecurityHelpers.getPasswordHashPBKDF2("p"));
-        // ((NewspaperDataLayer)
-        // request.getAttribute("datalayer")).getUserDAO().storeUser(u);
-        // } catch (DataException | NoSuchAlgorithmException | InvalidKeySpecException
-        // ex) {
-        // Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
-        // }
     }
 
-    private void action_login(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private void action_login(HttpServletRequest request, HttpServletResponse response) throws IOException,TemplateManagerException {
         String email = request.getParameter("e");
         String password = request.getParameter("p");
 
         if (!email.isEmpty() && !password.isEmpty()) {
             try {
-                User u = ((WebshopDataLayer) request.getAttribute("datalayer")).getUserDAO().getUserByEmail(email);
-                if (u != null && SecurityHelpers.checkPasswordHashPBKDF2(password, u.getPassword())) {
-                    // se la validazione ha successo
-                    // if the identity validation succeeds
-                    SecurityHelpers.createSession(request, email, u.getKey());
-                    // se è stato trasmesso un URL di origine, torniamo a quell'indirizzo
-                    // if an origin URL has been transmitted, return to it
-                    if (request.getParameter("referrer") != null) {
-                        response.sendRedirect(request.getParameter("referrer"));
+                User user = ((WebshopDataLayer) request.getAttribute("datalayer")).getUserDAO().getUserByEmail(email);
+                if(user != null) {                
+                    Boolean correctPassword = SecurityHelpers.checkPasswordHashPBKDF2(password, user.getPassword());
+                    if (user != null && correctPassword) {
+                        //utente esiste e password corretta, 
+                        //controllo se l'utente è nel gruppo Ordinante ed accettato altrimenti passa 
+                        Group group = ((WebshopDataLayer) request.getAttribute("datalayer")).getGroupDAO().getGroupByUser(user.getKey());
+                        if(group.getName().equals(UserRoleEnum.ORDINANTE)) {
+                            if(user.isAccepted()) {         
+                                SecurityHelpers.createSession(request, email, user.getKey());                   
+                                //cambiare index con la prima pagina dello store
+                                if (request.getParameter("referrer") != null) {
+                                    response.sendRedirect(request.getParameter("referrer"));
+                                } else {                            
+                                    response.sendRedirect("index");
+                                }
+                            } else {
+                                //se ordinante non è stato ancora accettato compare pop up
+                                request.setAttribute("errorLogin", false);
+                                request.setAttribute("status", "userNotAllowed");
+                                action_default(request, response);
+                            }
+                        } else {
+                            //utente Amministratore o tecnino, reindirizzato al backend
+                            SecurityHelpers.createSession(request, email, user.getKey());
+                            if (request.getParameter("referrer") != null) {
+                                response.sendRedirect(request.getParameter("referrer"));
+                            } else {                            
+                                response.sendRedirect("homepage");
+                            }
+                        }
                     } else {
-                        response.sendRedirect("homepage");
+                        //password errata
+                        request.setAttribute("errorLogin", true);
+                        request.setAttribute("status", "null");
+                        action_default(request, response);
                     }
-                    return;
+                } else {
+                    //email errata
+                    request.setAttribute("errorLogin", true);
+                    request.setAttribute("status", "null");
+                    action_default(request, response);
                 }
+
             } catch (NoSuchAlgorithmException | InvalidKeySpecException | DataException ex) {
                 Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -84,6 +102,14 @@ public class Login extends WebshopBaseController {
             } else {
                 String https_redirect_url = SecurityHelpers.checkHttps(request);
                 request.setAttribute("https-redirect", https_redirect_url);
+                request.setAttribute("errorLogin", false);
+                //qui settare status
+                HttpSession s = request.getSession(false);
+                if (s == null) {
+                    request.setAttribute("status", "null");
+                } else {
+                    request.setAttribute("status", s.getAttribute("status").toString());
+                }
                 action_default(request, response);
             }
         } catch (IOException | TemplateManagerException ex) {

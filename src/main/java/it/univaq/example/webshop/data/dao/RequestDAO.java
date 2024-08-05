@@ -3,6 +3,8 @@ package it.univaq.example.webshop.data.dao;
 import java.util.List;
 
 import it.univaq.example.webshop.data.model.Request;
+import it.univaq.example.webshop.data.model.impl.OrderStateEnum;
+import it.univaq.example.webshop.data.model.impl.RequestStateEnum;
 import it.univaq.framework.data.DataException;
 
 public interface RequestDAO {
@@ -16,6 +18,10 @@ public interface RequestDAO {
     List<Request> getRequestsByOrdering(int user_key) throws DataException;
 
     List<Request> getRequestsByTechnician(int user_key) throws DataException;
+
+    List<Request> getRequestsByRequestState(RequestStateEnum value) throws DataException;
+
+    List<Request> getRequestsByOrderState(OrderStateEnum value) throws DataException;
 
     //Request getLatestRequest() throws DataException;
 

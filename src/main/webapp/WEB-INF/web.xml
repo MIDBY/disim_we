@@ -51,7 +51,7 @@
         <param-value>jdbc/webshopdb</param-value>
     </context-param>
     <servlet>
-        <servlet-name>Homepage</servlet-name>
+        <servlet-name>homepage</servlet-name>
         <servlet-class>it.univaq.example.webshop.controller.Homepage</servlet-class>
     </servlet>
     <servlet>
@@ -111,7 +111,7 @@
         <url-pattern>/logout</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>Homepage</servlet-name>
+        <servlet-name>homepage</servlet-name>
         <url-pattern>/homepage</url-pattern>
     </servlet-mapping>
     <servlet-mapping>

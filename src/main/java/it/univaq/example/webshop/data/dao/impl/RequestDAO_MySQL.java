@@ -20,7 +20,7 @@ import it.univaq.framework.data.OptimisticLockException;
 
 public class RequestDAO_MySQL extends DAO implements RequestDAO {
 
-    private PreparedStatement sRequestByID, sRequestsByCategory, sRequestsByOrdering, sRequestsByTechnician, sUnassignedRequests, 
+    private PreparedStatement sRequestByID, sRequestsByCategory, sRequestsByOrdering, sRequestsByTechnician, sRequestsByRequestState, sRequestsByOrderState, sUnassignedRequests, 
     //sGetLatestRequestKey, 
     sRequests, iRequest, uRequest;
 
@@ -36,6 +36,8 @@ public class RequestDAO_MySQL extends DAO implements RequestDAO {
             sRequestsByCategory = connection.prepareStatement("SELECT id FROM richiesta WHERE idCategoria=?");
             sRequestsByOrdering = connection.prepareStatement("SELECT id FROM richiesta WHERE idOrdinante=?");
             sRequestsByTechnician = connection.prepareStatement("SELECT id FROM richiesta WHERE idTecnico=?");
+            sRequestsByRequestState = connection.prepareStatement("SELECT id FROM richiesta WHERE statoRichiesta=?");
+            sRequestsByOrderState = connection.prepareStatement("SELECT id FROM richiesta WHERE statoOrdine=?");
             sUnassignedRequests = connection.prepareStatement("SELECT id FROM richiesta WHERE idTecnico=NULL");
             //sGetLatestRequestKey = connection.prepareStatement("SELECT id FROM richiesta WHERE 1");
             sRequests = connection.prepareStatement("SELECT id FROM richiesta");
@@ -54,6 +56,8 @@ public class RequestDAO_MySQL extends DAO implements RequestDAO {
             sRequestsByCategory.close();
             sRequestsByOrdering.close();
             sRequestsByTechnician.close();
+            sRequestsByRequestState.close();
+            sRequestsByOrderState.close();
             sUnassignedRequests.close();
             sRequests.close();
             iRequest.close();
@@ -156,6 +160,38 @@ public class RequestDAO_MySQL extends DAO implements RequestDAO {
             }
         } catch (SQLException ex) {
             throw new DataException("Unable to load requests by technician", ex);
+        }
+        return result;
+    }
+
+    @Override
+    public List<Request> getRequestsByRequestState(RequestStateEnum value) throws DataException {
+        List<Request> result = new ArrayList<Request>();
+        try {
+            sRequestsByRequestState.setString(1, value.toString());
+            try (ResultSet rs = sRequestsByRequestState.executeQuery()) {
+                while (rs.next()) {
+                    result.add((Request) getRequest(rs.getInt("id")));
+                }
+            }
+        } catch (SQLException ex) {
+            throw new DataException("Unable to load requests by request state", ex);
+        }
+        return result;
+    }
+
+    @Override
+    public List<Request> getRequestsByOrderState(OrderStateEnum value) throws DataException {
+        List<Request> result = new ArrayList<Request>();
+        try {
+            sRequestsByOrderState.setString(1, value.toString());
+            try (ResultSet rs = sRequestsByOrderState.executeQuery()) {
+                while (rs.next()) {
+                    result.add((Request) getRequest(rs.getInt("id")));
+                }
+            }
+        } catch (SQLException ex) {
+            throw new DataException("Unable to load requests by order state", ex);
         }
         return result;
     }

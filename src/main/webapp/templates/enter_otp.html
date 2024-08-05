@@ -35,7 +35,9 @@
                                 <span class="input-group-text"><i class="zmdi zmdi-lock"></i></span>
                             </div>
                         </div>
-                        <span></span>
+                        <#if errorOtp>
+                            <span class="text-center mb-3" style="color: red;">OTP wrong</span>
+                        </#if>    
                         <input class="btn btn-primary btn-block waves-effect waves-light" value="SUBMIT" name="validate_otp" type="submit">                        
                         <div class="signin_with mt-3">
                             <a href="login" class="link">Did you remembered password?</a>

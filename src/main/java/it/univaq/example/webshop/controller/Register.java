@@ -22,52 +22,40 @@ public class Register extends WebshopBaseController {
         request.setAttribute("referrer", request.getParameter("referrer"));
         request.setAttribute("title", "Sign-up");
         result.activate("register.html", request, response);
-
-        // //esempio di creazione utente
-        // //create user example
-        // try {
-        // User u = ((NewspaperDataLayer)
-        // request.getAttribute("datalayer")).getUserDAO().createUser();
-        // u.setUsername("a");
-        // u.setPassword(SecurityHelpers.getPasswordHashPBKDF2("p"));
-        // ((NewspaperDataLayer)
-        // request.getAttribute("datalayer")).getUserDAO().storeUser(u);
-        // } catch (DataException | NoSuchAlgorithmException | InvalidKeySpecException
-        // ex) {
-        // Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
-        // }
     }
 
-    // nota: usente di default nel database: nome a, password p
-    // note: default user in the database: name: a, password p
-    private void action_register(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private void action_register(HttpServletRequest request, HttpServletResponse response) throws IOException, TemplateManagerException {
         String username = request.getParameter("u");
         String email = request.getParameter("e");
         String password = request.getParameter("p");
-        String address = request.getParameter("a") + ", " + request.getParameter("c") + ", "
+        String address = request.getParameter("a") + ", " + request.getParameter("n") + ", " + request.getParameter("c") + ", "
                 + request.getParameter("k");
 
         if (!username.isEmpty() && !email.isEmpty() && !password.isEmpty()) {
             try {
-                User user = ((WebshopDataLayer) request.getAttribute("datalayer")).getUserDAO().createUser();
-                user.setUsername(username);
-                user.setEmail(email);
-                user.setPassword(SecurityHelpers.getPasswordHashPBKDF2(password));
-                user.setAddress(address);
+                User checkUser = ((WebshopDataLayer) request.getAttribute("datalayer")).getUserDAO().getUserByEmail(email);
+                if(checkUser == null) {
+                    //continuo la registrazione
+                    User user = ((WebshopDataLayer) request.getAttribute("datalayer")).getUserDAO().createUser();
+                    user.setUsername(username);
+                    user.setEmail(email);
+                    user.setPassword(SecurityHelpers.getPasswordHashPBKDF2(password));
+                    user.setAddress(address);
+                    ((WebshopDataLayer) request.getAttribute("datalayer")).getUserDAO().setUser(user);
 
-                ((WebshopDataLayer) request.getAttribute("datalayer")).getUserDAO().setUser(user);
-
-                User check = ((WebshopDataLayer) request.getAttribute("datalayer")).getUserDAO().getUser(user.getKey());
-                if (check != null && SecurityHelpers.checkPasswordHashPBKDF2(password, check.getPassword())) {
                     SecurityHelpers.createSession(request, email, user.getKey());
                     // se è stato trasmesso un URL di origine, torniamo a quell'indirizzo
                     // if an origin URL has been transmitted, return to it
                     if (request.getParameter("referrer") != null) {
                         response.sendRedirect(request.getParameter("referrer"));
                     } else {
-                        response.sendRedirect("homepage");
+                        request.getSession().setAttribute("status", "registrationSuccess");
+                        response.sendRedirect("login");
                     }                    
-                    return;
+                } else {
+                    //mostro messaggio utente già esistente
+                    request.setAttribute("errorRegister", true);
+                    action_default(request, response);
                 }
             } catch (NoSuchAlgorithmException | InvalidKeySpecException | DataException ex) {
                 Logger.getLogger(Register.class.getName()).log(Level.SEVERE, null, ex);
@@ -95,6 +83,7 @@ public class Register extends WebshopBaseController {
             } else {
                 String https_redirect_url = SecurityHelpers.checkHttps(request);
                 request.setAttribute("https-redirect", https_redirect_url);
+                request.setAttribute("errorRegister", false);
                 action_default(request, response);
             }
         } catch (IOException | TemplateManagerException ex) {

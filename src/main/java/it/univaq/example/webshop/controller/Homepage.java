@@ -1,8 +1,6 @@
 package it.univaq.example.webshop.controller;
 
 import java.io.*;
-import java.net.URLEncoder;
-
 import javax.servlet.*;
 import javax.servlet.http.*;
 import it.univaq.framework.result.TemplateManagerException;
@@ -16,17 +14,17 @@ public class Homepage extends WebshopBaseController {
         String completeRequestURL = request.getRequestURL()
                 + (request.getQueryString() != null ? "?" + request.getQueryString() : "");
         request.setAttribute("title", "Homepage");
-        request.setAttribute("completeRequestURL",
-                "\"login?referrer=" + URLEncoder.encode(completeRequestURL, "UTF-8") + "\\\"");
-        res.activate("admin_template/homepage.ftl.html", request, response);
+        request.setAttribute("completeRequestURL", "login?referrer=" + completeRequestURL);
+        res.activate("homepage.ftl.html", request, response);
     }
 
     private void action_logged(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException, TemplateManagerException {
         // try {
         TemplateResult res = new TemplateResult(getServletContext());
-        request.setAttribute("page_title", "Homepage");
-        res.activate("admin_template/homepage.ftl.html", request, response);
+        request.setAttribute("title", "Homepage");
+        request.setAttribute("completeRequestURL", "login");
+        res.activate("homepage.ftl.html", request, response);
         // } catch (DataException ex) {
         // handleError("Data access exception: " + ex.getMessage(), request, response);
         // }

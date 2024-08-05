@@ -79,22 +79,19 @@ public class ForgotPassword extends WebshopBaseController {
 
                     request.setAttribute("referrer", request.getParameter("referrer"));
                     request.setAttribute("title", "Password recovery");
+                    request.setAttribute("errorOtp", false);
                     result.activate("enter_otp.html", request, response);
 
                 } else {
                     //email non esiste
-                    request.setAttribute("errorEmail", "Entered email not exist, retry");
-                    //response.sendRedirect("forgot_password");
+                    request.setAttribute("errorEmail", true);
+                    action_default(request, response);
                 }
-                return;
-
             } catch (DataException ex) {
                 Logger.getLogger(ForgotPassword.class.getName()).log(Level.SEVERE, null, ex);
             }
 
         }
-        // se la validazione fallisce...
-        // if the validation fails...
         handleError("Password recovery with otp failed", request, response);
     }
 
@@ -103,42 +100,55 @@ public class ForgotPassword extends WebshopBaseController {
         int value = Integer.parseInt(request.getParameter("otp"));
         
         if(value == otp) {
-            request.setAttribute("email", email);
             request.setAttribute("referrer", request.getParameter("referrer"));
             request.setAttribute("title", "Password Recovery");
+            request.setAttribute("errorPassword", false);
+            request.setAttribute("errorEqual", false);
             result.activate("new_password.html", request, response);
-            return;
-            //}
         } else {
-            request.setAttribute("message", "Wrong OTP");
-            return;
+            request.setAttribute("referrer", request.getParameter("referrer"));
+            request.setAttribute("title", "Password recovery");
+            request.setAttribute("errorOtp", true);
+            result.activate("enter_otp.html", request, response);
         }
-        // se la validazione fallisce...
-        // if the validation fails...
-        //handleError("Validation otp failed", request, response);
+        handleError("Validation otp failed", request, response);
     }
 
-    private void action_newPassword(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        
+    private void action_newPassword(HttpServletRequest request, HttpServletResponse response) throws IOException,TemplateManagerException {
+        TemplateResult result = new TemplateResult(getServletContext());
+
         String newPassword = request.getParameter("p1");
         String confPassword = request.getParameter("p2");
 
         if (!newPassword.isEmpty() && !confPassword.isEmpty() && newPassword.equals(confPassword)) {
             try {
                 User user = ((WebshopDataLayer) request.getAttribute("datalayer")).getUserDAO().getUserByEmail(email);
-                user.setPassword(SecurityHelpers.getPasswordHashPBKDF2(newPassword));
+                if(!SecurityHelpers.checkPasswordHashPBKDF2(newPassword, user.getPassword())){
+                    //password nuova diversa dalla precedente, va bene
+                    user.setPassword(SecurityHelpers.getPasswordHashPBKDF2(newPassword));
+                    ((WebshopDataLayer) request.getAttribute("datalayer")).getUserDAO().setUser(user);
 
-                ((WebshopDataLayer) request.getAttribute("datalayer")).getUserDAO().setUser(user);
-
-                User check = ((WebshopDataLayer) request.getAttribute("datalayer")).getUserDAO().getUser(user.getKey());
-                if (check != null && SecurityHelpers.checkPasswordHashPBKDF2(newPassword, check.getPassword())) {
-                    request.setAttribute("status", "resetSuccess");
+                    SecurityHelpers.createSession(request, email, user.getKey());
+                    request.getSession().setAttribute("status", "resetSuccess");
                     response.sendRedirect("login");
-                    return;
+                } else {
+                    //password uguali, deve essere differente, mostra errore
+                    request.setAttribute("referrer", request.getParameter("referrer"));
+                    request.setAttribute("title", "Password Recovery");
+                    request.setAttribute("errorPassword", false);
+                    request.setAttribute("errorEqual", true);
+                    result.activate("new_password.html", request, response);
                 }
+                
             } catch (NoSuchAlgorithmException | InvalidKeySpecException | DataException ex) {
                 Logger.getLogger(ForgotPassword.class.getName()).log(Level.SEVERE, null, ex);
             }
+        } else {
+            request.setAttribute("referrer", request.getParameter("referrer"));
+            request.setAttribute("title", "Password Recovery");
+            request.setAttribute("errorPassword", true);
+            request.setAttribute("errorEqual", false);
+            result.activate("new_password.html", request, response);
         }
         // se la validazione fallisce...
         // if the validation fails...
@@ -166,6 +176,7 @@ public class ForgotPassword extends WebshopBaseController {
             } else {
                 String https_redirect_url = SecurityHelpers.checkHttps(request);
                 request.setAttribute("https-redirect", https_redirect_url);
+                request.setAttribute("errorEmail", false);
                 action_default(request, response);
             }
         } catch (IOException | TemplateManagerException ex) {

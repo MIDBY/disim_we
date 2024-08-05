@@ -108,7 +108,6 @@ public class ProposalImpl extends DataItemImpl<Integer> implements Proposal {
         return url;
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public boolean setUrl(String url) {
         try {

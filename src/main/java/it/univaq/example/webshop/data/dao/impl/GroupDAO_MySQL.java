@@ -59,7 +59,6 @@ public class GroupDAO_MySQL extends DAO implements GroupDAO {
             GroupProxy a = (GroupProxy)createGroup();
             a.setKey(rs.getInt("id"));
             a.setName(UserRoleEnum.valueOf(rs.getString("nome")));
-            a.setVersion(rs.getLong("versione"));
             return a;
         } catch (SQLException ex) {
             throw new DataException("Unable to create group object form ResultSet", ex);
@@ -93,7 +92,7 @@ public class GroupDAO_MySQL extends DAO implements GroupDAO {
             sGroupByUser.setInt(1, user_key);
             try ( ResultSet rs = sGroupByUser.executeQuery()) {
                 if (rs.next()) {
-                    return getGroup(rs.getInt("id"));
+                    return getGroup(rs.getInt("idGruppo"));
                 }
             }
         } catch (SQLException ex) {

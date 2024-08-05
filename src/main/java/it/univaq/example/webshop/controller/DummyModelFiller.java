@@ -16,7 +16,7 @@ public class DummyModelFiller implements DataModelFiller {
     @Override
     public void fillDataModel(Map<String, Object> datamodel, HttpServletRequest request, ServletContext context) {        
         try {
-            if( false){//request.getAttribute("userId") != null) {
+            if( request.getAttribute("userId") != null && Integer.parseInt(request.getAttribute("userId").toString()) > 0) {
                 int user_key = Integer.parseInt(request.getAttribute("userId").toString());
                 List<Notification> list = ((WebshopDataLayer) request.getAttribute("datalayer")).getNotificationDAO().getNotificationsByUser(user_key);
                 if(!list.isEmpty()) {

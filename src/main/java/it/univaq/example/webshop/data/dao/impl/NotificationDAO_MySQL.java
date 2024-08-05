@@ -29,7 +29,7 @@ public class NotificationDAO_MySQL extends DAO implements NotificationDAO {
         try {
             super.init();
             sNotificationByID = connection.prepareStatement("SELECT * FROM notifica WHERE id=?");
-            sNotificationsByUser = connection.prepareStatement("SELECT id FROM notifica WHERE idDestinatario=?");
+            sNotificationsByUser = connection.prepareStatement("SELECT id FROM notifica WHERE idDestinatario=? ORDER BY dataCreazione DESC");
             sNotificationsNotReadByUser = connection.prepareStatement("SELECT id FROM notifica WHERE idDestinatario=? and letto=0");
             iNotification = connection.prepareStatement("INSERT INTO notifica (idDestinatario,messaggio,dataCreazione) VALUES(?,?,?)", Statement.RETURN_GENERATED_KEYS);
             uNotification = connection.prepareStatement("UPDATE notifica SET idDestinatario=?,messaggio=?,dataCreazione=?,letto=?,versione=? WHERE id=? and versione=?");

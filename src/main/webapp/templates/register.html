@@ -22,7 +22,7 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-4 col-sm-12">
-                <form class="card auth_form" method="post" action="register" autocomplete="off">
+                <form class="card auth_form" method="post" action="register">
                     <div class="header">
                         <img class="logo" src="templates/admin_template/assets/images/logo.svg" alt="">
                         <h5>Sign Up</h5>
@@ -30,7 +30,7 @@
                     </div>
                     <div class="body">
                         <div class="input-group mb-3">
-                            <input type="text" name="u" class="form-control" placeholder="Username" required="true">
+                            <input type="text" name="u" class="form-control" placeholder="Username" autocomplete="off" required="true">
                             <div class="input-group-append">
                                 <span class="input-group-text"><i class="zmdi zmdi-account-circle"></i></span>
                             </div>
@@ -42,27 +42,36 @@
                             </div>
                         </div>  
                         <div class="input-group mb-3">
+                            <input type="number" name="n" class="form-control" placeholder="Number" required="true">
+                            <div class="input-group-append">
+                                <span class="input-group-text"><i class="zmdi zmdi-flag"></i></span>
+                            </div>
+                        </div> 
+                        <div class="input-group mb-3">
                             <input type="text" name="c" class="form-control" placeholder="City" required="true">
                             <div class="input-group-append">
                                 <span class="input-group-text"><i class="zmdi zmdi-city"></i></span>
                             </div>
                         </div>  
                         <div class="input-group mb-3">
-                            <input type="text" name="k" class="form-control" placeholder="CAP" required="true">
+                            <input type="number" name="k" class="form-control" placeholder="CAP" required="true">
                             <div class="input-group-append">
                                 <span class="input-group-text"><i class="zmdi zmdi-label"></i></span>
                             </div>
                         </div>  
                         <div class="input-group mb-3">
-                            <input autocomplete="false" type="text" name="e" class="form-control" placeholder="Email" required="true">
+                            <input type="email" name="e" class="form-control" placeholder="Email" pattern=".+@*\.com" autocomplete="username" required="true">
                             <div class="input-group-append">
                                 <span class="input-group-text"><i class="zmdi zmdi-email"></i></span>
                             </div>
-                        </div>                        
+                        </div>   
+                        <#if errorRegister>
+                            <span class="input-group text-center mb-3" style="color: red;">Email already exists</span>
+                        </#if>                     
                         <div class="input-group mb-3">
-                            <input autocomplete="false" type="password" name="p" class="form-control" id="password" placeholder="Password" required="true">
+                            <input type="password" name="p" class="form-control" id="password" placeholder="Password" required="true">
                             <div class="input-group-append">                                
-                                <span class="input-group-text"><a href="#" class="forgot" onclick="showPassword()"><i id="lock" class="zmdi zmdi-lock"></i></a></span>
+                                <span class="input-group-text"><a href="#" class="forgot" onclick="showPassword('lock','password')"><i id="lock" class="zmdi zmdi-lock"></i></a></span>
                             </div>                            
                         </div>
                         <div class="checkbox">

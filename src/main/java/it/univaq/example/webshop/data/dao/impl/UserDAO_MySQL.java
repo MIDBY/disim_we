@@ -251,8 +251,8 @@ public class UserDAO_MySQL extends DAO implements UserDAO {
                     }
                 }
                 iUserGroup.setInt(1, user.getKey());
-                iUserGroup.setObject(2, UserRoleEnum.ORDINANTE);
-                iUserGroup.executeQuery();
+                iUserGroup.setString(2, UserRoleEnum.ORDINANTE.toString());
+                iUserGroup.executeUpdate();
             }
 
             if (user instanceof DataItemProxy) {

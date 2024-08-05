@@ -17,7 +17,6 @@
 </head>
 
 <body class="theme-blush">
-
 <div class="authentication">
     <div class="container">
         <div class="row">
@@ -26,13 +25,14 @@
                     <#if (referrer??)>        
                         <input name="referrer" type="hidden" value="${referrer}"/>
                     </#if> 
+                    <input type="hidden" id="status" value="${status}">
                     <div class="header">
                         <img class="logo" src="templates/admin_template/assets/images/logo.svg" alt="">
                         <h5>Log in</h5>
                     </div>
                     <div class="body">
                         <div class="input-group mb-3">
-                            <input type="text" name="e" class="form-control" placeholder="Email" required="true">
+                            <input type="email" name="e" class="form-control" placeholder="Email" required="true">
                             <div class="input-group-append">
                                 <span class="input-group-text"><i class="zmdi zmdi-account-circle"></i></span>
                             </div>
@@ -43,6 +43,9 @@
                                 <span class="input-group-text"><a href="#" class="forgot" onclick="showPassword('lock','password')"><i id="lock" class="zmdi zmdi-lock"></i></a></span>
                             </div>                            
                         </div>
+                        <#if errorLogin>
+                            <span class="input-group text-center mb-3" style="color: red;">Wrong email or password</span>
+                        </#if>
                         <div>                            
                             <div class="checkbox">
                                 <input id="remember_me" type="checkbox" onchange="setAutocomplete()" checked>
@@ -79,6 +82,17 @@
 <!-- Jquery Core Js -->
 <script src="templates/admin_template/assets/bundles/libscripts.bundle.js"></script>
 <script src="templates/admin_template/assets/bundles/vendorscripts.bundle.js"></script> <!-- Lib Scripts Plugin Js -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="templates/admin_template/assets/js/custom.js"></script>
+<script type="text/javascript">
+    var status = document.getElementById("status").value;
+    if(status == "registrationSuccess") {
+        Swal.fire({title: "Congrats", text: "Registration with success. You'll receive an e-mail when authorized to enter!", icon: "success"});
+    } else if(status == "resetSuccess") {
+        Swal.fire({title: "Congrats", text: "Password reset successful!", icon: "success"});
+    } else if(status == "userNotAllowed") {
+        Swal.fire({title: "Sorry", text: "You're not allowed yet to enter. Wait for cofirmation email", icon: "warning"})
+    }
+</script>
 </body>
 </html>
