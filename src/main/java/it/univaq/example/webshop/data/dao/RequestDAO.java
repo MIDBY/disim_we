@@ -1,5 +1,6 @@
 package it.univaq.example.webshop.data.dao;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import it.univaq.example.webshop.data.model.Request;
@@ -22,6 +23,8 @@ public interface RequestDAO {
     List<Request> getRequestsByRequestState(RequestStateEnum value) throws DataException;
 
     List<Request> getRequestsByOrderState(OrderStateEnum value) throws DataException;
+
+    List<Request> getRequestsByCreationMonth(LocalDate date) throws DataException;
 
     //Request getLatestRequest() throws DataException;
 

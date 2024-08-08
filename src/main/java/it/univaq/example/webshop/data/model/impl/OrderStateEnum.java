@@ -1,5 +1,10 @@
 package it.univaq.example.webshop.data.model.impl;
 
 public enum OrderStateEnum {
-    INCORSO, ACCETTATO, RESPINTONONCONFORME, RESPINTONONFUNZIONANTE
+    EMPTY, ACCETTATO, RESPINTONONCONFORME, RESPINTONONFUNZIONANTE;
+
+    @Override
+    public String toString() {
+        return this == EMPTY ? "" : this.name();
+    }
 }

@@ -33,7 +33,7 @@ public class RequestImpl extends DataItemImpl<Integer> implements Request {
         technician = null;
         creationDate = LocalDate.now();
         requestState = RequestStateEnum.NUOVO;
-        orderState = OrderStateEnum.INCORSO;
+        orderState = OrderStateEnum.EMPTY;
         characteristics = null;
         proposals = null;
         notes = "";

@@ -1,5 +1,6 @@
 package it.univaq.example.webshop.data.dao;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import it.univaq.example.webshop.data.model.User;
@@ -24,6 +25,8 @@ public interface UserDAO {
     User getUserByEmail(String email) throws DataException;
 
     List<User> getUsersByGroup(int group_key) throws DataException;
+
+    List<User> getUsersBySubscriptionMonth(LocalDate date) throws DataException;
 
     List<User> getUsersByAccepted(boolean accepted) throws DataException;
 

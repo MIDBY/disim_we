@@ -20,7 +20,8 @@ import it.univaq.framework.data.OptimisticLockException;
 
 public class RequestDAO_MySQL extends DAO implements RequestDAO {
 
-    private PreparedStatement sRequestByID, sRequestsByCategory, sRequestsByOrdering, sRequestsByTechnician, sRequestsByRequestState, sRequestsByOrderState, sUnassignedRequests, 
+    private PreparedStatement sRequestByID, sRequestsByCategory, sRequestsByOrdering, sRequestsByTechnician, sRequestsByRequestState,
+     sRequestsByOrderState, sUnassignedRequests, sRequestsByCreationMonth,
     //sGetLatestRequestKey, 
     sRequests, iRequest, uRequest;
 
@@ -39,6 +40,7 @@ public class RequestDAO_MySQL extends DAO implements RequestDAO {
             sRequestsByRequestState = connection.prepareStatement("SELECT id FROM richiesta WHERE statoRichiesta=?");
             sRequestsByOrderState = connection.prepareStatement("SELECT id FROM richiesta WHERE statoOrdine=?");
             sUnassignedRequests = connection.prepareStatement("SELECT id FROM richiesta WHERE idTecnico=NULL");
+            sRequestsByCreationMonth = connection.prepareStatement("SELECT id FROM richiesta WHERE MONTH(dataCreazione)=? and YEAR(dataCreazione)=?");
             //sGetLatestRequestKey = connection.prepareStatement("SELECT id FROM richiesta WHERE 1");
             sRequests = connection.prepareStatement("SELECT id FROM richiesta");
             iRequest = connection.prepareStatement("INSERT INTO richiesta (titolo,descrizione,idCategoria,idOrdinante,idTecnico,statoRichiesta,statoOrdine,dataCreazione,note) VALUES(?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
@@ -59,6 +61,7 @@ public class RequestDAO_MySQL extends DAO implements RequestDAO {
             sRequestsByRequestState.close();
             sRequestsByOrderState.close();
             sUnassignedRequests.close();
+            sRequestsByCreationMonth.close();
             sRequests.close();
             iRequest.close();
             uRequest.close();
@@ -205,6 +208,23 @@ public class RequestDAO_MySQL extends DAO implements RequestDAO {
             }
         } catch (SQLException ex) {
             throw new DataException("Unable to load unassigned requests", ex);
+        }
+        return result;
+    }
+
+    @Override
+    public List<Request> getRequestsByCreationMonth(LocalDate date) throws DataException {
+        List<Request> result = new ArrayList<Request>();
+        try {
+            sRequestsByCreationMonth.setInt(1, date.getMonthValue());
+            sRequestsByCreationMonth.setInt(2, date.getYear());
+            try (ResultSet rs = sRequestsByCreationMonth.executeQuery()) {
+                while (rs.next()) {
+                    result.add((Request) getRequest(rs.getInt("id")));
+                }
+            }
+        } catch (SQLException ex) {
+            throw new DataException("Unable to load requests by creation date", ex);
         }
         return result;
     }

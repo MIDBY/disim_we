@@ -105,10 +105,10 @@ public class Login extends WebshopBaseController {
                 request.setAttribute("errorLogin", false);
                 //qui settare status
                 HttpSession s = request.getSession(false);
-                if (s == null) {
-                    request.setAttribute("status", "null");
-                } else {
+                try {
                     request.setAttribute("status", s.getAttribute("status").toString());
+                } catch (NullPointerException e) {
+                    request.setAttribute("status", "null");
                 }
                 action_default(request, response);
             }

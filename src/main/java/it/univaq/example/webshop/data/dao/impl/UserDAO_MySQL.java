@@ -13,12 +13,13 @@ import java.sql.SQLException;
 import it.univaq.framework.data.DataLayer;
 import it.univaq.framework.data.OptimisticLockException;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 public class UserDAO_MySQL extends DAO implements UserDAO {
 
-    private PreparedStatement sUserByID, sUserByUsername, sUserByEmail, sUsersByAccepted, sUsersByGroup, iUser, iUserGroup, uUser, uUserGroup;
+    private PreparedStatement sUserByID, sUserByUsername, sUserByEmail, sUsersBySubscriptionMonth, sUsersByAccepted, sUsersByGroup, iUser, iUserGroup, uUser, uUserGroup;
 
     public UserDAO_MySQL(DataLayer d) {
         super(d);
@@ -33,11 +34,12 @@ public class UserDAO_MySQL extends DAO implements UserDAO {
             sUserByID = connection.prepareStatement("SELECT * FROM utente WHERE id=?");
             sUserByUsername = connection.prepareStatement("SELECT id FROM utente WHERE username=?");
             sUserByEmail = connection.prepareStatement("SELECT id FROM utente WHERE email=?");
+            sUsersBySubscriptionMonth = connection.prepareStatement("SELECT id FROM utente WHERE MONTH(dataIscrizione)=? and YEAR(dataIscrizione)=?");
             sUsersByAccepted = connection.prepareStatement("SELECT id FROM utente WHERE accettato=?");
             sUsersByGroup = connection.prepareStatement("SELECT idUtente FROM utente_gruppo WHERE idGruppo=?");
             iUser = connection.prepareStatement("INSERT INTO utente (username,email,password,indirizzo,accettato) VALUES(?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
             iUserGroup = connection.prepareStatement("INSERT INTO utente_gruppo (idUtente,idGruppo) VALUES (?,(SELECT id FROM gruppo WHERE nome=?))");
-            uUser = connection.prepareStatement("UPDATE utente SET username=?,email=?,password=?,indirizzo=?,accettato=?,versione=? WHERE id=? and versione=?");
+            uUser = connection.prepareStatement("UPDATE utente SET username=?,email=?,password=?,indirizzo=?,dataIscrizione=?,accettato=?,versione=? WHERE id=? and versione=?");
             uUserGroup = connection.prepareStatement("UPDATE utente_gruppo SET idGruppo=(SELECT id FROM gruppo WHERE nome=?) WHERE idUtente=?");
         } catch (SQLException ex) {
             throw new DataException("Error initializing webshop data layer", ex);
@@ -52,6 +54,7 @@ public class UserDAO_MySQL extends DAO implements UserDAO {
             sUserByID.close();
             sUserByUsername.close();
             sUserByEmail.close();
+            sUsersBySubscriptionMonth.close();
             sUsersByAccepted.close();
             sUsersByGroup.close();
             iUser.close();
@@ -85,6 +88,7 @@ public class UserDAO_MySQL extends DAO implements UserDAO {
             a.setEmail(rs.getString("email"));
             a.setPassword(rs.getString("password"));
             a.setAddress(rs.getString("indirizzo"));
+            a.setSubscriptionDate(rs.getObject("dataIscrizione", LocalDate.class));
             a.setAccepted(rs.getBoolean("accettato"));
             a.setVersion(rs.getLong("versione"));
             return a;
@@ -159,12 +163,29 @@ public class UserDAO_MySQL extends DAO implements UserDAO {
     }
 
     @Override
+    public List<User> getUsersBySubscriptionMonth(LocalDate date) throws DataException {
+        List<User> result = new ArrayList<User>();
+        try {
+            sUsersBySubscriptionMonth.setInt(1, date.getMonthValue());
+            sUsersBySubscriptionMonth.setInt(2, date.getYear());
+            try ( ResultSet rs = sUsersBySubscriptionMonth.executeQuery()) {
+                while (rs.next()) {
+                    result.add((User) getUser(rs.getInt("id")));
+                }
+            }
+        } catch (SQLException ex) {
+            throw new DataException("Unable to find users by subscription date", ex);
+        }
+        return result;
+    }
+
+    @Override
     public List<User> getUsersByAccepted(boolean accepted) throws DataException {
         List<User> result = new ArrayList<User>();
         try {
             sUsersByAccepted.setBoolean(1, accepted);
             try ( ResultSet rs = sUsersByAccepted.executeQuery()) {
-                if (rs.next()) {
+                while (rs.next()) {
                     result.add((User) getUser(rs.getInt("id")));
                 }
             }
@@ -180,8 +201,8 @@ public class UserDAO_MySQL extends DAO implements UserDAO {
         try {
             sUsersByGroup.setInt(1, group_key);
             try ( ResultSet rs = sUsersByGroup.executeQuery()) {
-                if (rs.next()) {
-                    result.add((User) getUser(rs.getInt("id_utente")));
+                while (rs.next()) {
+                    result.add((User) getUser(rs.getInt("idUtente")));
                 }
             }
         } catch (SQLException ex) {
@@ -203,14 +224,15 @@ public class UserDAO_MySQL extends DAO implements UserDAO {
                 uUser.setString(2, user.getEmail());
                 uUser.setString(3, user.getPassword());
                 uUser.setString(4, user.getAddress());
-                uUser.setBoolean(5, user.isAccepted());
+                uUser.setString(5, user.getSubscriptionDate().toString());
+                uUser.setBoolean(6, user.isAccepted());
 
                 long current_version = user.getVersion();
                 long next_version = current_version + 1;
 
-                uUser.setLong(6, next_version);
-                uUser.setInt(7, user.getKey());
-                uUser.setLong(8, current_version);
+                uUser.setLong(7, next_version);
+                uUser.setInt(8, user.getKey());
+                uUser.setLong(9, current_version);
 
                 if (uUser.executeUpdate() == 0) {
                     throw new OptimisticLockException(user);
@@ -222,6 +244,7 @@ public class UserDAO_MySQL extends DAO implements UserDAO {
                 iUser.setString(2, user.getEmail());
                 iUser.setString(3, user.getPassword());
                 iUser.setString(4, user.getAddress());
+                //per default database la data iscrizione è inserita quella odierna
                 iUser.setBoolean(5, user.isAccepted());
 
                 if (iUser.executeUpdate() == 1) {

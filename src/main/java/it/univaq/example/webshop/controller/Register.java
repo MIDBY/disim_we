@@ -29,7 +29,7 @@ public class Register extends WebshopBaseController {
         String email = request.getParameter("e");
         String password = request.getParameter("p");
         String address = request.getParameter("a") + ", " + request.getParameter("n") + ", " + request.getParameter("c") + ", "
-                + request.getParameter("k");
+                + request.getParameter("k") + ", " + request.getParameter("t");
 
         if (!username.isEmpty() && !email.isEmpty() && !password.isEmpty()) {
             try {

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Creato il: Lug 26, 2024 alle 23:59
+-- Creato il: Ago 06, 2024 alle 23:41
 -- Versione del server: 10.4.32-MariaDB
 -- Versione PHP: 8.2.12
 
@@ -65,9 +65,9 @@ CREATE TABLE `gruppo` (
 --
 
 INSERT INTO `gruppo` (`id`, `nome`) VALUES
-(1, 'ADMIN'),
-(2, 'TECNICO'),
-(3, 'ORDINANTE');
+(1, 'AMMINISTRATORE'),
+(2, 'ORDINANTE'),
+(3, 'TECNICO');
 
 -- --------------------------------------------------------
 
@@ -127,7 +127,7 @@ CREATE TABLE `proposta` (
   `url` varchar(512) DEFAULT NULL,
   `note` varchar(1024) DEFAULT NULL,
   `dataCreazione` date NOT NULL,
-  `statoProposta` enum('In attesa','Approvata','Respinta','') NOT NULL,
+  `statoProposta` enum('INATTESA','APPROVATO','RESPINTO','') NOT NULL,
   `motivazione` varchar(1024) NOT NULL,
   `versione` tinyint(3) UNSIGNED NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -145,8 +145,8 @@ CREATE TABLE `richiesta` (
   `idCategoria` int(11) NOT NULL,
   `idOrdinante` int(11) NOT NULL,
   `idTecnico` int(11) NOT NULL,
-  `statoRichiesta` enum('Nuovo','Presa in carico','Ordinato','Chiuso') NOT NULL DEFAULT 'Nuovo',
-  `statoOrdine` enum('Accettato','Respinto perché non conforme','Respinto perché non funzionante','') NOT NULL,
+  `statoRichiesta` enum('NUOVO','PRESOINCARICO','ORDINATO','CHIUSO') NOT NULL DEFAULT 'NUOVO',
+  `statoOrdine` enum('ACCETTATO','RESPINTONONCONFORME','RESPINTONONFUNZIONANTE','') NOT NULL,
   `dataCreazione` date NOT NULL,
   `note` varchar(1024) DEFAULT NULL,
   `versione` tinyint(3) UNSIGNED NOT NULL DEFAULT 1
@@ -190,9 +190,17 @@ CREATE TABLE `utente` (
   `email` varchar(128) NOT NULL,
   `password` varchar(256) NOT NULL,
   `indirizzo` varchar(256) NOT NULL,
+  `dataIscrizione` date NOT NULL DEFAULT current_timestamp(),
   `accettato` tinyint(1) NOT NULL DEFAULT 0,
   `versione` tinyint(3) UNSIGNED NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dump dei dati per la tabella `utente`
+--
+
+INSERT INTO `utente` (`id`, `username`, `email`, `password`, `indirizzo`, `dataIscrizione`, `accettato`, `versione`) VALUES
+(1, 'Pietro', 'durbanomk@gmail.com', '086427feb8c2f77f3eba7e7255e9701a40529af29ec8fbde14301c0d06ed34ef6895631edf7c9171b80dc4cd3fba3317', '', '2024-08-06', 0, 5);
 
 -- --------------------------------------------------------
 
@@ -201,9 +209,16 @@ CREATE TABLE `utente` (
 --
 
 CREATE TABLE `utente_gruppo` (
-  `id_utente` int(11) NOT NULL,
-  `id_gruppo` int(11) NOT NULL
+  `idUtente` int(11) NOT NULL,
+  `idGruppo` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dump dei dati per la tabella `utente_gruppo`
+--
+
+INSERT INTO `utente_gruppo` (`idUtente`, `idGruppo`) VALUES
+(1, 1);
 
 --
 -- Indici per le tabelle scaricate
@@ -293,8 +308,8 @@ ALTER TABLE `utente`
 -- Indici per le tabelle `utente_gruppo`
 --
 ALTER TABLE `utente_gruppo`
-  ADD KEY `utente_gruppo_FK2` (`id_gruppo`),
-  ADD KEY `utente_gruppo_FK1` (`id_utente`);
+  ADD KEY `utente_gruppo_FK2` (`idGruppo`),
+  ADD KEY `utente_gruppo_FK1` (`idUtente`);
 
 --
 -- AUTO_INCREMENT per le tabelle scaricate
@@ -358,7 +373,7 @@ ALTER TABLE `servizio`
 -- AUTO_INCREMENT per la tabella `utente`
 --
 ALTER TABLE `utente`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- Limiti per le tabelle scaricate
@@ -416,8 +431,8 @@ ALTER TABLE `richiesta_caratteristica`
 -- Limiti per la tabella `utente_gruppo`
 --
 ALTER TABLE `utente_gruppo`
-  ADD CONSTRAINT `utente_gruppo_FK1` FOREIGN KEY (`id_utente`) REFERENCES `utente` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `utente_gruppo_FK2` FOREIGN KEY (`id_gruppo`) REFERENCES `gruppo` (`id`);
+  ADD CONSTRAINT `utente_gruppo_FK1` FOREIGN KEY (`idUtente`) REFERENCES `utente` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `utente_gruppo_FK2` FOREIGN KEY (`idGruppo`) REFERENCES `gruppo` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

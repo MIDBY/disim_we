@@ -19,7 +19,7 @@ import it.univaq.framework.data.OptimisticLockException;
 
 public class ProposalDAO_MySQL extends DAO implements ProposalDAO {
 
-    private PreparedStatement sProposalByID, sProposalsByRequest, sProposalsByTechnician, sProposalsByState, iProposal, uProposal;
+    private PreparedStatement sProposalByID, sProposalsByRequest, sLastProposalByRequest, sProposalsByTechnician, sProposalsByState, sProposalsByCreationMonth, iProposal, uProposal;
 
     public ProposalDAO_MySQL(DataLayer d) {
         super(d);
@@ -31,8 +31,10 @@ public class ProposalDAO_MySQL extends DAO implements ProposalDAO {
             super.init();
             sProposalByID = connection.prepareStatement("SELECT * FROM proposta WHERE id=?");
             sProposalsByRequest = connection.prepareStatement("SELECT id FROM proposta WHERE idRichiesta=?");
+            sLastProposalByRequest = connection.prepareStatement("SELECT MAX(id) as id FROM proposta WHERE idRichiesta=?");
             sProposalsByTechnician = connection.prepareStatement("SELECT id FROM proposta WHERE idTecnico=?");
             sProposalsByState = connection.prepareStatement("SELECT id FROM proposta WHERE statoProposta=?");
+            sProposalsByCreationMonth = connection.prepareStatement("SELECT id FROM proposta WHERE MONTH(dataCreazione)=? and YEAR(dataCreazione)=?");
             iProposal = connection.prepareStatement("INSERT INTO proposta (idRichiesta,idTecnico,nomeProdotto,nomeProduttore,descrizioneProdotto,prezzoProdotto,url,note,dataCreazione,statoProposta,motivazione) VALUES(?,?,?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
             uProposal = connection.prepareStatement("UPDATE proposta SET idRichiesta=?,idTecnico=?,nomeProdotto=?,nomeProduttore=?,descrizioneProdotto=?,prezzoProdotto=?,url=?,note=?,dataCreazione=?,statoProposta=?,motivazione=?,versione=? WHERE id=? and versione=?");
 
@@ -46,8 +48,10 @@ public class ProposalDAO_MySQL extends DAO implements ProposalDAO {
         try {
             sProposalByID.close();
             sProposalsByRequest.close();
+            sLastProposalByRequest.close();
             sProposalsByTechnician.close();
             sProposalsByState.close();
+            sProposalsByCreationMonth.close();
             iProposal.close();
             uProposal.close();
 
@@ -123,6 +127,21 @@ public class ProposalDAO_MySQL extends DAO implements ProposalDAO {
     }
 
     @Override
+    public Proposal getLastProposalByRequest(int request_key) throws DataException {
+        try {
+            sLastProposalByRequest.setInt(1, request_key);
+            try (ResultSet rs = sLastProposalByRequest.executeQuery()) {
+                if (rs.next()) {
+                     return (Proposal) getProposal(rs.getInt("id"));
+                }
+            }
+        } catch (SQLException ex) {
+            throw new DataException("Unable to load last proposal by request", ex);
+        }
+        return null;
+    }
+
+    @Override
     public List<Proposal> getProposalsByTechnician(int user_key) throws DataException {
         List<Proposal> result = new ArrayList<Proposal>();
         try {
@@ -150,6 +169,23 @@ public class ProposalDAO_MySQL extends DAO implements ProposalDAO {
             }
         } catch (SQLException ex) {
             throw new DataException("Unable to load proposals by state", ex);
+        }
+        return result;
+    }
+
+    @Override
+    public List<Proposal> getProposalsByCreationMonth(LocalDate date) throws DataException {
+        List<Proposal> result = new ArrayList<Proposal>();
+        try {
+            sProposalsByCreationMonth.setInt(1, date.getMonthValue());
+            sProposalsByCreationMonth.setInt(2, date.getYear());
+            try (ResultSet rs = sProposalsByCreationMonth.executeQuery()) {
+                while (rs.next()) {
+                    result.add((Proposal) getProposal(rs.getInt("id")));
+                }
+            }
+        } catch (SQLException ex) {
+            throw new DataException("Unable to load proposals by creation date", ex);
         }
         return result;
     }

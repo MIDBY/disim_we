@@ -17,7 +17,7 @@ import it.univaq.framework.data.OptimisticLockException;
 
 public class CategoryDAO_MySQL extends DAO implements CategoryDAO {
 
-    private PreparedStatement sCategoryByID, sCategories, sFatherCategories, sCategoriesSonsOf, iCategory, uCategory, dCategory;
+    private PreparedStatement sCategoryByID, sCategories, sFatherCategories, sCategoriesSonsOf, sMostSoldCategories, iCategory, uCategory, dCategory;
 
     public CategoryDAO_MySQL(DataLayer d) {
         super(d);
@@ -31,6 +31,7 @@ public class CategoryDAO_MySQL extends DAO implements CategoryDAO {
             sFatherCategories = connection.prepareStatement("SELECT id FROM categoria WHERE idCategoriaPadre=NULL");
             sCategories = connection.prepareStatement("SELECT id FROM categoria");
             sCategoriesSonsOf = connection.prepareStatement("SELECT id FROM categoria WHERE idCategoriaPadre=?");
+            sMostSoldCategories = connection.prepareStatement("SELECT categoria.id as id, count(*) as times FROM categoria join richiesta on categoria.id = richiesta.idCategoria GROUP BY categoria.id ORDER BY times DESC LIMIT 3");
             iCategory = connection.prepareStatement("INSERT INTO categoria (nome,idCategoriaPadre,idImmagine) VALUES(?,?,?)", Statement.RETURN_GENERATED_KEYS);
             uCategory = connection.prepareStatement("UPDATE categoria SET nome=?,idCategoriaPadre=?,idImmagine=?,versione=? WHERE id=? and versione=?");
             dCategory = connection.prepareStatement("DELETE FROM categoria WHERE id=?");
@@ -49,6 +50,8 @@ public class CategoryDAO_MySQL extends DAO implements CategoryDAO {
             sCategoryByID.close();
             sFatherCategories.close();
             sCategories.close();
+            sCategoriesSonsOf.close();
+            sMostSoldCategories.close();
             iCategory.close();
             uCategory.close();
             dCategory.close();
@@ -131,7 +134,6 @@ public class CategoryDAO_MySQL extends DAO implements CategoryDAO {
     @Override
     public List<Category> getCategoriesSonsOf(int category_key) throws DataException {
         List<Category> result = new ArrayList<Category>();
-        
         try {
             sCategoriesSonsOf.setInt(1, category_key);
             try (ResultSet rs = sCategoriesSonsOf.executeQuery()) {
@@ -141,6 +143,19 @@ public class CategoryDAO_MySQL extends DAO implements CategoryDAO {
             }
         } catch (SQLException ex) {
             throw new DataException("Unable to load categories sons", ex);
+        }
+        return result;
+    }
+
+    @Override
+    public List<Category> getMostSoldCategories() throws DataException {
+        List<Category> result = new ArrayList<Category>();
+        try (ResultSet rs = sMostSoldCategories.executeQuery()) {
+            while (rs.next()) {
+                result.add((Category) getCategory(rs.getInt("id")));
+            }
+        } catch (SQLException ex) {
+            throw new DataException("Unable to load 3 most sold categories", ex);
         }
         return result;
     }

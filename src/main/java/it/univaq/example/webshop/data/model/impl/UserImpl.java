@@ -1,5 +1,6 @@
 package it.univaq.example.webshop.data.model.impl;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import it.univaq.example.webshop.data.model.Notification;
@@ -12,6 +13,7 @@ public class UserImpl extends DataItemImpl<Integer> implements User {
     private String email;
     private String password;
     private String address;
+    private LocalDate subscriptionDate;
     private Boolean accepted;
     private List<Notification> notifications;
 
@@ -80,6 +82,21 @@ public class UserImpl extends DataItemImpl<Integer> implements User {
     public void setAddress(String address) {
         this.address = address;
     }
+
+        /**
+     * @return the subscription date
+     */
+    public LocalDate getSubscriptionDate() {
+        return subscriptionDate;
+    }
+
+    /**
+     * @param subscriptionDate the subscription date to set
+     */
+    public void setSubscriptionDate(LocalDate subscriptionDate) {
+        this.subscriptionDate = subscriptionDate;
+    }
+    
 
     /**
      * @return is accpeted

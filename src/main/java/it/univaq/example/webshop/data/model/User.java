@@ -1,5 +1,6 @@
 package it.univaq.example.webshop.data.model;
 
+import java.time.LocalDate;
 import java.util.List;
 import it.univaq.framework.data.DataItem;
 
@@ -20,6 +21,10 @@ public interface User extends DataItem<Integer> {
     String getAddress();
 
     void setAddress(String address);
+
+    LocalDate getSubscriptionDate();
+
+    void setSubscriptionDate(LocalDate subscriptionDate);
 
     Boolean isAccepted();
 

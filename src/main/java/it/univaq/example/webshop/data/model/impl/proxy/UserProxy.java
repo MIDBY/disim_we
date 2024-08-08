@@ -1,5 +1,7 @@
 package it.univaq.example.webshop.data.model.impl.proxy;
 
+import java.time.LocalDate;
+
 import it.univaq.example.webshop.data.model.impl.UserImpl;
 import it.univaq.framework.data.DataItemProxy;
 import it.univaq.framework.data.DataLayer;
@@ -48,6 +50,19 @@ public class UserProxy extends UserImpl implements DataItemProxy  {
         super.setAddress(address);
         this.modified = true;
     }
+
+    @Override
+    public void setSubscriptionDate(LocalDate subscriptionDate) {
+        super.setSubscriptionDate(subscriptionDate);
+        this.modified = true;
+    }
+
+    @Override
+    public void setAccepted(Boolean accepted) {
+        super.setAccepted(accepted);
+        this.modified = true;
+    }
+
 
     //METODI DEL PROXY
     //PROXY-ONLY METHODS
