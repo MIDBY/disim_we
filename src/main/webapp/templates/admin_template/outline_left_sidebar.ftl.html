@@ -14,10 +14,10 @@
                     </div>
                 </div>
             </li>
-            <li class="active open"><a href="homepage"><i class="zmdi zmdi-home"></i><span>Homepage</span></a></li>
-            <li><a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-apps"></i><span>Users</span></a>
+            <li <#if title?matches("homepage", "i")>class="active open"</#if>><a href="homepage"><i class="zmdi zmdi-home"></i><span>Homepage</span></a></li>
+            <li <#if title?matches("profile", "i") || title?matches("staff", "i") || title?matches("clients", "i")>class="active open"</#if>><a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-account"></i><span>Users</span></a>
                 <ul class="ml-menu">
-                    <li><a href="profile">My Account</a></li>
+                    <li><a href="profile">My Profile</a></li>
                     <li><a href="staff">Staff</a></li>
                     <li><a href="clients">Clients</a></li>               
                 </ul>

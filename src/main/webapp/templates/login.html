@@ -44,7 +44,7 @@
                             </div>                            
                         </div>
                         <#if errorLogin>
-                            <span class="input-group invalid-feedback mb-3">Wrong email or password</span>
+                            <span class="input-group text-danger mb-3">Wrong email or password</span>
                         </#if>
                         <div>                            
                             <div class="checkbox">
@@ -92,6 +92,8 @@
         Swal.fire({title: "Congrats", text: "Password reset successful!", icon: "success"});
     } else if(status == "userNotAllowed") {
         Swal.fire({title: "Sorry", text: "You're not allowed yet to enter. Wait for cofirmation email", icon: "warning"})
+    } else if(status == "credentialsSuccess") {
+        Swal.fire({title: "Congrats", text: "Credentials change successful!", icon: "success"});
     }
 </script>
 </body>

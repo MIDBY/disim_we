@@ -14,7 +14,7 @@ public class UserImpl extends DataItemImpl<Integer> implements User {
     private String password;
     private String address;
     private LocalDate subscriptionDate;
-    private Boolean accepted;
+    private boolean accepted;
     private List<Notification> notifications;
 
     public UserImpl() {
@@ -101,14 +101,14 @@ public class UserImpl extends DataItemImpl<Integer> implements User {
     /**
      * @return is accpeted
      */
-    public Boolean isAccepted() {
+    public boolean isAccepted() {
         return accepted;
     }
 
     /**
      * @param accepted the accepted to set
      */
-    public void setAccepted(Boolean accepted) {
+    public void setAccepted(boolean accepted) {
         this.accepted = accepted;
     }
 

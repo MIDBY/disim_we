@@ -58,7 +58,7 @@ public class UserProxy extends UserImpl implements DataItemProxy  {
     }
 
     @Override
-    public void setAccepted(Boolean accepted) {
+    public void setAccepted(boolean accepted) {
         super.setAccepted(accepted);
         this.modified = true;
     }

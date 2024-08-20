@@ -290,10 +290,10 @@ public class UserDAO_MySQL extends DAO implements UserDAO {
     public void changeUserGroup(int user_key, UserRoleEnum value) throws DataException {
         try {
             if (user_key > 0) { //update
-                uUserGroup.setObject(1, value);
+                uUserGroup.setString(1, value.name());
                 uUserGroup.setInt(2, user_key);
 
-                uUser.executeUpdate();
+                uUserGroup.executeUpdate();
             }
         } catch (SQLException ex) {
             throw new DataException("Unable to change user group", ex);

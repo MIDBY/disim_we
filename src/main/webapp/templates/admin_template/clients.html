@@ -1,0 +1,99 @@
+﻿<section class="content">
+    <div class="body_scroll">
+        <div class="block-header">
+            <div class="row">
+                <div class="col-lg-7 col-md-6 col-sm-12">
+                    <h2>Clients list</h2>
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="homepage"><i class="zmdi zmdi-home"></i> Aero</a></li>
+                        <li class="breadcrumb-item"><a href="profile">Profile</a></li>
+                        <li class="breadcrumb-item active">Clients</li>
+                    </ul>
+                    <button class="btn btn-primary btn-icon mobile_menu" type="button"><i class="zmdi zmdi-sort-amount-desc"></i></button>
+                </div>
+                <div class="col-lg-5 col-md-6 col-sm-12">                
+                    <button class="btn btn-primary btn-icon float-right right_icon_toggle_btn" type="button"><i class="zmdi zmdi-arrow-right"></i></button>                                
+                </div>
+            </div>
+        </div>
+
+        <div class="container-fluid">
+            <div class="row clearfix">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="header">
+                            <h2><strong>Clients</strong> in our site</h2>
+                        </div>
+                        <div class="body">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover dataTable js-exportable c_table theme-color">
+                                    <thead>
+                                        <tr>                                       
+                                            <th class="sorting_asc_disabled sorting_desc_disabled" style="width:50px;"></th>
+                                            <th>Name</th>
+                                            <th>Address</th>
+                                            <th>Requests done</th>   
+                                            <th>Subscription</th>
+                                            <th>Status</th>
+                                            <th class="sorting_asc_disabled sorting_desc_disabled">Accept Client</th>
+                                            <th class="sorting_asc_disabled sorting_desc_disabled">Convert</th>
+                                        </tr>
+                                    </thead>
+                                    <tfoot>
+                                        <tr>                                       
+                                            <th style="width:50px;"></th>
+                                            <th>Name</th>
+                                            <th>Address</th>
+                                            <th>Requests Done</th>                                        
+                                            <th>Subscription</th>
+                                            <th>Status</th>
+                                            <th>Accept Client</th>
+                                            <th>Convert</th>
+                                        </tr>
+                                    </tfoot>
+                                    <tbody>
+                                        <#if (users?size>0)>      
+                                            <#list users as user>
+                                                <#assign requestNum = 0>
+                                                <#list requests as key,val>
+                                                    <#if key == user.key>
+                                                        <#assign requestNum = val>
+                                                    </#if>
+                                                </#list>
+                                                <tr>
+                                                    <form id="converter${user.key}" method="post" action="clients?user=${user.key}">
+                                                        <input type="hidden" id="${user.key}" name="">
+                                                        <td>
+                                                            <img class="rounded avatar" src="templates/admin_template/assets/images/xs/client.png" alt="">
+                                                        </td>
+                                                        <td>
+                                                            <span class="badge badge-primary">${user.username}</span><br>
+                                                            <small>${user.email}</small>
+                                                        </td>
+                                                        <td>
+                                                            <#assign addressSplit = user.address?split(", ")>
+                                                            ${addressSplit[0]} ${addressSplit[1]}<br>
+                                                            ${addressSplit[2]} ${addressSplit[3]}<br>
+                                                            <small>${addressSplit[4]}</small>
+                                                        </td>
+                                                        <td>
+                                                            <strong>${requestNum}</strong>
+                                                        </td>
+                                                        <td>${user.subscriptionDate}</td>
+                                                        <td><span class="badge <#if !user.accepted>badge-danger<#else>badge-success</#if>"><#if !user.accepted>Not accepted<#else>Accepted</#if></span></td>
+                                                        <td><button type="submit" class="btn btn-primary" name="verify" <#if user.accepted>onclick="convertClientToUser(event,${user.key},'${user.username}','${user.email}')"<#else>onclick="convertUserToClient(event,${user.key},'${user.username}','${user.email}')"</#if>><#if !user.accepted>Accept as client<#else>Refuse as client</#if></button></td>
+                                                        <td><button type="submit" class="btn btn-primary" name="assume" onclick="convertUserToTech(event,'${user.key}','${user.username}')">Assume</button></td>
+                                                    </form>
+                                                </tr>
+                                            </#list>
+                                        </#if>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

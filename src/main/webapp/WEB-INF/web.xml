@@ -55,6 +55,18 @@
         <servlet-class>it.univaq.example.webshop.controller.Homepage</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>profile</servlet-name>
+        <servlet-class>it.univaq.example.webshop.controller.Profile</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ListStaff</servlet-name>
+        <servlet-class>it.univaq.example.webshop.controller.ManageStaff</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ListClients</servlet-name>
+        <servlet-class>it.univaq.example.webshop.controller.ManageClients</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>Image</servlet-name>
         <servlet-class>it.univaq.example.webshop.controller.RenderImage</servlet-class>
     </servlet>
@@ -113,6 +125,18 @@
     <servlet-mapping>
         <servlet-name>homepage</servlet-name>
         <url-pattern>/homepage</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>profile</servlet-name>
+        <url-pattern>/profile</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ListStaff</servlet-name>
+        <url-pattern>/staff</url-pattern>
+    </servlet-mapping>    
+    <servlet-mapping>
+        <servlet-name>ListClients</servlet-name>
+        <url-pattern>/clients</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>Issue</servlet-name>

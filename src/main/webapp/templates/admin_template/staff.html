@@ -1,0 +1,87 @@
+﻿<section class="content">
+    <div class="body_scroll">
+        <div class="block-header">
+            <div class="row">
+                <div class="col-lg-7 col-md-6 col-sm-12">
+                    <h2>Staff list</h2>
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="homepage"><i class="zmdi zmdi-home"></i> Aero</a></li>
+                        <li class="breadcrumb-item"><a href="profile">Profile</a></li>
+                        <li class="breadcrumb-item active">Staff</li>
+                    </ul>
+                    <button class="btn btn-primary btn-icon mobile_menu" type="button"><i class="zmdi zmdi-sort-amount-desc"></i></button>
+                </div>
+                <div class="col-lg-5 col-md-6 col-sm-12">                
+                    <button class="btn btn-primary btn-icon float-right right_icon_toggle_btn" type="button"><i class="zmdi zmdi-arrow-right"></i></button>                                
+                </div>
+            </div>
+        </div>
+
+        <div class="container-fluid">
+            <div class="row clearfix">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="header">
+                            <h2><strong>Techinicians</strong> in staff</h2>
+                        </div>
+                        <div class="body">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover dataTable js-exportable c_table theme-color">
+                                    <thead>
+                                        <tr>                                       
+                                            <th class="sorting_asc_disabled sorting_desc_disabled" style="width:50px;"></th>
+                                            <th>Name</th>
+                                            <th>Active Requests</th>                                        
+                                            <th>Status</th>
+                                            <th>Subscription</th>
+                                            <th class="sorting_asc_disabled sorting_desc_disabled">Convert User</th>
+                                        </tr>
+                                    </thead>
+                                    <tfoot>
+                                        <tr>                                       
+                                            <th style="width:50px;"></th>
+                                            <th>Name</th>
+                                            <th>Active Requests</th>                                        
+                                            <th>Status</th>
+                                            <th>Subscription</th>
+                                            <th>Convert User</th>
+                                        </tr>
+                                    </tfoot>
+                                    <tbody>
+                                        <#if (users?size>0)>      
+                                            <#list users as user>
+                                                <#assign requestNum = 0>
+                                                <#list requests as key,val>
+                                                    <#if key == user.key>
+                                                        <#assign requestNum = val>
+                                                    </#if>
+                                                </#list>
+                                                <tr>
+                                                    <form id="converter${user.key}" method="post" action="staff?user=${user.key}">
+                                                        <td>
+                                                            <img class="rounded avatar" src="templates/admin_template/assets/images/xs/developer.png" alt="">
+                                                        </td>
+                                                        <td>
+                                                            <span class="badge badge-primary">${user.username}</span><br>
+                                                            <small>Technician</small>
+                                                        </td>
+                                                        <td>
+                                                            <strong>${requestNum}</strong>
+                                                        </td>    
+                                                        <td><span class="badge <#if requestNum gt 0 >badge-danger<#else>badge-success</#if>"><#if requestNum gt 0 >Locked<#else>Unlocked</#if></span></td>
+                                                        <td>${user.subscriptionDate}</td>
+                                                        <td><button type="submit" class="btn btn-primary" <#if requestNum gt 0 > onclick="errorTechLocked(event)" <#else> onclick="convertTechToUser(event,${user.key})" </#if>>Fire</button></td>
+                                                    </form>
+                                                </tr>
+                                            </#list>
+                                        </#if>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

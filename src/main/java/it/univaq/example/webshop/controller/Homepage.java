@@ -249,6 +249,7 @@ public class Homepage extends WebshopBaseController {
                     request.setAttribute("pieName3", "Country 3");
                     request.setAttribute("pieValue3", 33);
                     request.setAttribute("pieValue3", 0);
+                    request.setAttribute("pieValue4", 0);
                 }
                 
 

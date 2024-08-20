@@ -26,9 +26,9 @@ public interface User extends DataItem<Integer> {
 
     void setSubscriptionDate(LocalDate subscriptionDate);
 
-    Boolean isAccepted();
+    boolean isAccepted();
 
-    void setAccepted(Boolean accepted);
+    void setAccepted(boolean accepted);
 
     List<Notification> getNotifications();
 
