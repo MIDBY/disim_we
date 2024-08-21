@@ -50,6 +50,14 @@
         <!-- qui configuriamo il nome della data source da usare nel codice -->
         <param-value>jdbc/webshopdb</param-value>
     </context-param>
+    <context-param>
+        <param-name>emailSender</param-name>
+        <param-value>rossofuoco1999@gmail.com</param-value>
+    </context-param>
+    <context-param>
+        <param-name>securityCode</param-name>
+        <param-value>vmne carf ozpp qqyd</param-value>
+    </context-param>
     <servlet>
         <servlet-name>homepage</servlet-name>
         <servlet-class>it.univaq.example.webshop.controller.Homepage</servlet-class>
@@ -65,6 +73,14 @@
     <servlet>
         <servlet-name>ListClients</servlet-name>
         <servlet-class>it.univaq.example.webshop.controller.ManageClients</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ListRequests</servlet-name>
+        <servlet-class>it.univaq.example.webshop.controller.ManageRequests</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ListTickets</servlet-name>
+        <servlet-class>it.univaq.example.webshop.controller.ManageTickets</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>Image</servlet-name>
@@ -137,6 +153,14 @@
     <servlet-mapping>
         <servlet-name>ListClients</servlet-name>
         <url-pattern>/clients</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ListRequests</servlet-name>
+        <url-pattern>/requests</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ListTickets</servlet-name>
+        <url-pattern>/tickets</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>Issue</servlet-name>

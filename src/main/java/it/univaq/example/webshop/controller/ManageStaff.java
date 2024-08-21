@@ -2,8 +2,10 @@ package it.univaq.example.webshop.controller;
 
 import it.univaq.example.webshop.data.dao.impl.WebshopDataLayer;
 import it.univaq.example.webshop.data.model.Group;
+import it.univaq.example.webshop.data.model.Notification;
 import it.univaq.example.webshop.data.model.Request;
 import it.univaq.example.webshop.data.model.User;
+import it.univaq.example.webshop.data.model.impl.NotificationTypeEnum;
 import it.univaq.example.webshop.data.model.impl.RequestStateEnum;
 import it.univaq.example.webshop.data.model.impl.UserRoleEnum;
 import it.univaq.framework.data.DataException;
@@ -11,17 +13,25 @@ import it.univaq.framework.result.TemplateResult;
 import it.univaq.framework.result.TemplateManagerException;
 import it.univaq.framework.security.SecurityHelpers;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 public class ManageStaff extends WebshopBaseController {
-
 
     private void action_anonymous(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException, TemplateManagerException {
@@ -61,7 +71,7 @@ public class ManageStaff extends WebshopBaseController {
                 requests.put(u.getKey(), count);
             }
             request.setAttribute("requests", requests);
-            res.activate("staff.html", request, response);
+            res.activate("listStaff.html", request, response);
         } catch (DataException ex) {
             handleError("Data access exception: " + ex.getMessage(), request, response);
         }
@@ -79,6 +89,9 @@ public class ManageStaff extends WebshopBaseController {
                     user.setAccepted(false);
                     ((WebshopDataLayer) request.getAttribute("datalayer")).getUserDAO().setUser(user);
                 }
+                //sends really emails, than activate it when there is a real email or it will send accidentally mails to real email's people 
+                sendFiredMail(user.getEmail());
+                sendNotification(request, response, user, "We're sorry, you're not allowed anymore to stay in Webshop. Bye!", NotificationTypeEnum.INFO, "");
                 action_default(request, response);
             } else {
                 handleError("Cannot update user", request, response);
@@ -86,6 +99,51 @@ public class ManageStaff extends WebshopBaseController {
             
         } catch (DataException ex) {
             handleError("Data access exception: " + ex.getMessage(), request, response);
+        }
+    }
+
+    private void sendNotification(HttpServletRequest request, HttpServletResponse response, User user, String message, NotificationTypeEnum type, String link) {
+        try {
+            Notification notification = ((WebshopDataLayer) request.getAttribute("datalayer")).getNotificationDAO().createNotification();
+            notification.setRecipient(user);
+            notification.setCreationDate(LocalDateTime.now());
+            notification.setMessage(message);
+            notification.setType(type);
+            notification.setLink(link);
+            ((WebshopDataLayer) request.getAttribute("datalayer")).getNotificationDAO().setNotification(notification);
+        } catch (DataException e) {
+            handleError("Send notification exception: " + e.getMessage(), request, response);
+        }
+    }
+
+    private void sendFiredMail(String email) {
+        String sender = getServletContext().getInitParameter("emailSender");
+        String securityCode = getServletContext().getInitParameter("securityCode");
+        String to = email;
+        Properties props = new Properties();
+        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.socketFactory.port", "465");
+        props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.port", "465");
+
+        Session session = Session.getDefaultInstance(props, new javax.mail.Authenticator() {
+            protected PasswordAuthentication getPasswordAuthentication(){
+                return new PasswordAuthentication(sender, securityCode);
+            }
+        });
+        //compose message
+        try {
+            MimeMessage message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(email));
+            message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
+            message.setSubject("WebMarket");
+            message.setText("Administration Mail: You're been fired from our site. Have a nice day");
+
+            Transport.send(message);
+            System.out.println("Message sent successfully");
+        } catch (MessagingException ex) {
+            throw new RuntimeException(ex);
         }
     }
 

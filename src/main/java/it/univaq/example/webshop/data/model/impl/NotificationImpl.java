@@ -1,7 +1,6 @@
 package it.univaq.example.webshop.data.model.impl;
 
-import java.time.LocalDate;
-
+import java.time.LocalDateTime;
 import it.univaq.example.webshop.data.model.Notification;
 import it.univaq.example.webshop.data.model.User;
 import it.univaq.framework.data.DataItemImpl;
@@ -10,14 +9,18 @@ public class NotificationImpl extends DataItemImpl<Integer> implements Notificat
 
     private User recipient;
     private String message;
-    private LocalDate creationDate;
+    private String link;
+    private NotificationTypeEnum type;
+    private LocalDateTime creationDate;
     private Boolean read;
 
     public NotificationImpl() {
         super();
         recipient = null;
         message = "";
-        creationDate = LocalDate.now();
+        link = "";
+        type = NotificationTypeEnum.INFO;
+        creationDate = LocalDateTime.now();
         read = false;
     }
 
@@ -42,12 +45,32 @@ public class NotificationImpl extends DataItemImpl<Integer> implements Notificat
     }
 
     @Override
-    public LocalDate getCreationDate() {
+    public String getLink() {
+        return link;
+    }
+
+    @Override
+    public void setLink(String link) {
+        this.link = link;
+    }
+
+    @Override
+    public NotificationTypeEnum getType() {
+        return type;
+    }
+
+    @Override
+    public void setType(NotificationTypeEnum value) {
+        this.type = value;
+    }
+
+    @Override
+    public LocalDateTime getCreationDate() {
         return creationDate;
     }
 
     @Override
-    public void setCreationDate(LocalDate creationDate) {
+    public void setCreationDate(LocalDateTime creationDate) {
         this.creationDate = creationDate;
     }
 

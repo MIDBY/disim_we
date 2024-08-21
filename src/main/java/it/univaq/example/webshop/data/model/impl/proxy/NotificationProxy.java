@@ -1,12 +1,12 @@
 package it.univaq.example.webshop.data.model.impl.proxy;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import it.univaq.example.webshop.data.dao.UserDAO;
 import it.univaq.example.webshop.data.model.User;
 import it.univaq.example.webshop.data.model.impl.NotificationImpl;
+import it.univaq.example.webshop.data.model.impl.NotificationTypeEnum;
 import it.univaq.framework.data.DataException;
 import it.univaq.framework.data.DataItemProxy;
 import it.univaq.framework.data.DataLayer;
@@ -60,7 +60,19 @@ public class NotificationProxy extends NotificationImpl implements DataItemProxy
     }
 
     @Override
-    public void setCreationDate(LocalDate creationDate) {
+    public void setLink(String link) {
+        super.setLink(link);
+        this.modified = true;
+    }
+
+    @Override
+    public void setType(NotificationTypeEnum value) {
+        super.setType(value);
+        this.modified = true;
+    }
+
+    @Override
+    public void setCreationDate(LocalDateTime creationDate) {
         super.setCreationDate(creationDate);
         this.modified = true;
     }

@@ -49,7 +49,8 @@ public class ForgotPassword extends WebshopBaseController {
                     //Send otp
                     Random rand = new Random();
                     otp = rand.nextInt(1255650);
-
+                    String sender = getServletContext().getInitParameter("emailSender");
+                    String securityCode = getServletContext().getInitParameter("securityCode");
                     String to = email;
                     Properties props = new Properties();
                     props.put("mail.smtp.host", "smtp.gmail.com");
@@ -60,7 +61,7 @@ public class ForgotPassword extends WebshopBaseController {
 
                     Session session = Session.getDefaultInstance(props, new javax.mail.Authenticator() {
                         protected PasswordAuthentication getPasswordAuthentication(){
-                            return new PasswordAuthentication("rossofuoco1999@gmail.com", "vmne carf ozpp qqyd ");
+                            return new PasswordAuthentication(sender, securityCode);
                         }
                     });
                     //compose message
