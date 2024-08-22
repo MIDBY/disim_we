@@ -93,7 +93,11 @@
                         <div class="card mcard_3">
                             <div class="body">
                                 <div class="img">
-                                    <img src="templates/admin_template/assets/images/lg/avatar1.jpg" class="rounded-circle" alt="profile-image">
+                                    <#if usernameTechnician?matches("No winner", "i")>
+                                        <img src="templates/admin_template/assets/images/xs/loser.png" class="rounded-circle" alt="profile-image">
+                                    <#else>
+                                        <img src="templates/admin_template/assets/images/xs/developer.png" class="rounded-circle" alt="profile-image">
+                                    </#if>
                                 </div>
                                 <div class="user">
                                     <h5 class="mt-2 mb-1">${usernameTechnician}</h5>

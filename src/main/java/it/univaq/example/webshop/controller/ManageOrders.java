@@ -125,7 +125,6 @@ public class ManageOrders extends WebshopBaseController {
         }
     }
 
-    @SuppressWarnings("unused")
     private void sendNotification(HttpServletRequest request, HttpServletResponse response, User user, String message, NotificationTypeEnum type, String link) {
         try {
             Notification notification = ((WebshopDataLayer) request.getAttribute("datalayer")).getNotificationDAO().createNotification();

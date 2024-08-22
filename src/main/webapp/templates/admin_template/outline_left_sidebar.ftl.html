@@ -7,7 +7,17 @@
         <ul class="list">
             <li>
                 <div class="user-info">
-                    <a class="image" href="profile"><img src="templates/admin_template/assets/images/profile_av.jpg" alt="User"></a>
+                    <a class="image" href="profile">
+                        <#if group?matches("AMMINISTRATORE", "i")>
+                            <img src="templates/admin_template/assets/images/xs/boss.png" alt="User">
+                        <#else>
+                            <#if group?matches("TECNICO", "i")>
+                                <img src="templates/admin_template/assets/images/xs/developer.png" alt="User">
+                            <#else>
+                                <img src="templates/admin_template/assets/images/xs/hacker.png" alt="User">
+                            </#if>
+                        </#if>
+                    </a>
                     <div class="detail">
                         <h4>${username}</h4>
                         <small>${group}</small>                        
