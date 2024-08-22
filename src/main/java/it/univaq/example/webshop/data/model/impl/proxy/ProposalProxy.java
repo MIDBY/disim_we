@@ -82,7 +82,7 @@ public class ProposalProxy extends ProposalImpl implements DataItemProxy {
 
     @Override
     public void setProducerName(String producerName) {
-        super.setProductName(producerName);
+        super.setProducerName(producerName);
         this.modified = true;
     }
 

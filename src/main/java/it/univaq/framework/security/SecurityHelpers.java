@@ -56,15 +56,23 @@ public class SecurityHelpers {
         if (refresh_ts == null) {
             refresh_ts = start_ts;
         }
-        //secondi trascorsi dall'inizio della sessione
-        //seconds from the session start           
-        long seconds_from_start = start_ts != null ? Duration.between(start_ts, now_ts).abs().getSeconds() : 0;
-        //secondi trascorsi dall'ultima azione
-        //seconds from the last valid action
-        long seconds_from_action = Duration.between(action_ts, now_ts).abs().getSeconds();
-        //secondi trascorsi dall'ultimo refresh della sessione
-        //seconds from the last session refresh
-        long seconds_from_refresh = Duration.between(refresh_ts, now_ts).abs().getSeconds();
+        long seconds_from_start = 0;
+        long seconds_from_action = 0;
+        long seconds_from_refresh = 0;
+        try{
+            //secondi trascorsi dall'inizio della sessione
+            //seconds from the session start           
+            seconds_from_start = start_ts != null ? Duration.between(start_ts, now_ts).abs().getSeconds() : 0;
+            //secondi trascorsi dall'ultima azione
+            //seconds from the last valid action
+            seconds_from_action = Duration.between(action_ts, now_ts).abs().getSeconds();
+            //secondi trascorsi dall'ultimo refresh della sessione
+            //seconds from the last session refresh
+            seconds_from_refresh = Duration.between(refresh_ts, now_ts).abs().getSeconds();
+        } catch(NullPointerException e) {
+            s.invalidate();
+            return null;
+        }
         //
         if (s.getAttribute("userid") == null || start_ts == null) {
             //check sulla validità della sessione

@@ -4,13 +4,14 @@ import it.univaq.example.webshop.data.dao.impl.WebshopDataLayer;
 import it.univaq.example.webshop.data.model.Group;
 import it.univaq.example.webshop.data.model.Notification;
 import it.univaq.example.webshop.data.model.Request;
+import it.univaq.example.webshop.data.model.RequestCharacteristic;
 import it.univaq.example.webshop.data.model.User;
 import it.univaq.example.webshop.data.model.impl.NotificationTypeEnum;
-import it.univaq.example.webshop.data.model.impl.UserRoleEnum;
+import it.univaq.example.webshop.data.model.impl.RequestStateEnum;
 import it.univaq.framework.data.DataException;
 import it.univaq.framework.result.TemplateResult;
-import it.univaq.framework.result.TemplateManagerException;
 import it.univaq.framework.security.SecurityHelpers;
+import it.univaq.framework.result.TemplateManagerException;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -28,8 +29,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-public class ManageClients extends WebshopBaseController {
+ 
+public class ManageOrders extends WebshopBaseController {
 
     private void action_anonymous(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException, TemplateManagerException {
@@ -52,49 +53,45 @@ public class ManageClients extends WebshopBaseController {
             request.setAttribute("username", user.getUsername());
             request.setAttribute("group", group.getName());            
             
-            Group ord = ((WebshopDataLayer) request.getAttribute("datalayer")).getGroupDAO().getGroupByName(UserRoleEnum.ORDINANTE);
-            List<User> users = ((WebshopDataLayer) request.getAttribute("datalayer")).getUserDAO().getUsersByGroup(ord.getKey());
-            request.setAttribute("users", users);
-
-            Map<Integer,Integer> requests = new HashMap<>();
-            for(User u : users){
-                int count = 0;
-                List<Request> req = ((WebshopDataLayer) request.getAttribute("datalayer")).getRequestDAO().getRequestsByOrdering(u.getKey());
-                count += req.size(); 
-                requests.put(u.getKey(), count);
+            List<Request> requests = ((WebshopDataLayer) request.getAttribute("datalayer")).getRequestDAO().getUnassignedRequests();
+            Map<String, String> chars = new HashMap<>();
+            for(Request r : requests) {
+                r.getCategory();
+                r.getOrdering();
+                r.getRequestCharacteristics();
+                for(RequestCharacteristic reqc : r.getRequestCharacteristics()) {
+                    chars.put(reqc.getCharacteristic().getName(), reqc.getValue());
+                }
             }
             request.setAttribute("requests", requests);
-            res.activate("listClients.html", request, response);
+            request.setAttribute("reqChars", chars);
+
+            res.activate("listOrders.html", request, response);
         } catch (DataException ex) {
             handleError("Data access exception: " + ex.getMessage(), request, response);
         }
     }
 
-    private void action_verify(HttpServletRequest request, HttpServletResponse response, int user_key) throws IOException, ServletException, TemplateManagerException {
+    private void action_update(HttpServletRequest request, HttpServletResponse response, int req_key) throws IOException, ServletException, TemplateManagerException {
         try {
-            User user = null;
-            if (user_key > 0) {
-                user = ((WebshopDataLayer) request.getAttribute("datalayer")).getUserDAO().getUser(user_key);
+            Request req = null;
+            if (req_key > 0) {
+                req = ((WebshopDataLayer) request.getAttribute("datalayer")).getRequestDAO().getRequest(req_key);
             }
-            if (user != null) {
-                if(request.getParameter("verify").equals("1"))
-                    user.setAccepted(true);
-                else
-                    user.setAccepted(false);
-                ((WebshopDataLayer) request.getAttribute("datalayer")).getUserDAO().setUser(user);
+            if (req != null) {
+                int user_key = Integer.parseInt(request.getSession().getAttribute("userid").toString());
+                User user = ((WebshopDataLayer)request.getAttribute("datalayer")).getUserDAO().getUser(user_key);
+                req.getCategory();
+                req.getOrdering();
+                req.setTechnician(user);
+                req.setRequestState(RequestStateEnum.PRESOINCARICO);
+                ((WebshopDataLayer) request.getAttribute("datalayer")).getRequestDAO().setRequest(req);
                 //sends really emails, than activate it when there is a real email or it will send accidentally mails to real email's people 
-                if(user.isAccepted()){
-                    //sendMail(user.getEmail(), "Administration Mail: You're been verified from our site. Now you can login and buy everything you want! Have a nice day");
-                    sendNotification(request, response, user, "Welcome in Webshop, new client!", NotificationTypeEnum.INFO, "");
-                    //TODO: Inserire link per pagina index dello shop
-                } else {
-                    //sendMail(user.getEmail(), "Administration Mail: We're sorry, you're not longer verified on our site. Write to our mail to get informations about");
-                    sendNotification(request, response, user, "We're sorry, you're not allowed anymore to stay in Webshop. Bye!", NotificationTypeEnum.INFO, "");
-                }
-
-                action_default(request, response);
+                //sendMail(req.getOrdering().getEmail(), "Info mail: Your request: '+req.getTitle()+' has been taken in charge by one of our operators. You will soon receive a proposal from our operator.");
+                sendNotification(request, response, req.getOrdering(), "Great news! Your request "+req.getTitle()+" has been taken in charge by one of our operators!", NotificationTypeEnum.INFO, "");
+                response.sendRedirect("orders?myOrders");
             } else {
-                handleError("Cannot verify user", request, response);
+                handleError("Cannot update request", request, response);
             }
             
         } catch (DataException ex) {
@@ -102,28 +99,33 @@ public class ManageClients extends WebshopBaseController {
         }
     }
 
-    private void action_assume(HttpServletRequest request, HttpServletResponse response, int user_key) throws IOException, ServletException, TemplateManagerException {
+    private void action_myOrders(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException, TemplateManagerException {
         try {
-            User user = null;
-            if (user_key > 0) {
-                user = ((WebshopDataLayer) request.getAttribute("datalayer")).getUserDAO().getUser(user_key);
-            }
-            if (user != null) {
-                ((WebshopDataLayer) request.getAttribute("datalayer")).getUserDAO().changeUserGroup(user_key, UserRoleEnum.TECNICO);
-                //sends really emails, than activate it when there is a real email or it will send accidentally mails to real email's people 
-                //sendMail(user.getEmail(), "Administration Mail: Congratulations! You're been assumed in our site as technician. From now you can work with os! Have a nice day");
-                sendNotification(request, response, user, "Welcome in Webshop, new technician!", NotificationTypeEnum.INFO, "profile");
+            TemplateResult res = new TemplateResult(getServletContext());
+            int user_key = Integer.parseInt(request.getSession().getAttribute("userid").toString());
+            User user = ((WebshopDataLayer)request.getAttribute("datalayer")).getUserDAO().getUser(user_key);
+            Group group = ((WebshopDataLayer) request.getAttribute("datalayer")).getGroupDAO().getGroupByUser(user_key);
 
-                action_default(request, response);
-            } else {
-                handleError("Cannot update user", request, response);
-            }
+            request.setAttribute("username", user.getUsername());
+            request.setAttribute("group", group.getName());            
             
+            List<Request> requests = ((WebshopDataLayer) request.getAttribute("datalayer")).getRequestDAO().getRequestsByTechnician(user_key);
+            for(Request r : requests) {
+                r.getCategory();
+                r.getOrdering();
+                r.getTechnician();
+                r.getRequestCharacteristics();
+                r.getProposals();
+            }
+            request.setAttribute("requests", requests);
+
+            res.activate("listMyOrders.html", request, response);
         } catch (DataException ex) {
             handleError("Data access exception: " + ex.getMessage(), request, response);
         }
     }
 
+    @SuppressWarnings("unused")
     private void sendNotification(HttpServletRequest request, HttpServletResponse response, User user, String message, NotificationTypeEnum type, String link) {
         try {
             Notification notification = ((WebshopDataLayer) request.getAttribute("datalayer")).getNotificationDAO().createNotification();
@@ -162,7 +164,6 @@ public class ManageClients extends WebshopBaseController {
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
             message.setSubject("WebMarket");
             message.setText(text);
-
             Transport.send(message);
             System.out.println("Message sent successfully");
         } catch (MessagingException ex) {
@@ -174,21 +175,21 @@ public class ManageClients extends WebshopBaseController {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException {
 
-        request.setAttribute("title", "Clients");
+        request.setAttribute("title", "Orders");
         request.setAttribute("userid", request.getSession().getAttribute("userid"));
 
-        int user_key;
+        int req_key;
         try {
             HttpSession s = request.getSession(false);
             if (s != null) {
-                if(request.getParameter("verify") != null) {
-                    user_key = SecurityHelpers.checkNumeric(request.getParameter("user"));
-                    action_verify(request, response, user_key);
-                } else if (request.getParameter("assume") != null) {
-                    user_key = SecurityHelpers.checkNumeric(request.getParameter("user"));
-                    action_assume(request, response, user_key);
+                if (request.getParameter("myOrders") != null) {
+                    action_myOrders(request, response);
                 } else {
-                    action_default(request, response);
+                    if(request.getParameter("order") != null) {
+                        req_key = SecurityHelpers.checkNumeric(request.getParameter("order"));
+                        action_update(request, response, req_key);
+                    } else
+                        action_default(request, response);
                 }
             } else {
                 action_anonymous(request, response);
@@ -207,7 +208,7 @@ public class ManageClients extends WebshopBaseController {
      */
     @Override
     public String getServletInfo() {
-        return "Manage Clients servlet";
+        return "Manage Order servlet";
     }// </editor-fold>
   
 

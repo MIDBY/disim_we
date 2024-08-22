@@ -32,7 +32,7 @@ public class Homepage extends WebshopBaseController {
         TemplateResult res = new TemplateResult(getServletContext());
         String completeRequestURL = request.getRequestURL()
                 + (request.getQueryString() != null ? "?" + request.getQueryString() : "");
-        request.setAttribute("title", "Homepage");
+        
         request.setAttribute("username", "Hacker");
         request.setAttribute("group", "Stranger");
         request.setAttribute("completeRequestURL", "login?referrer=" + completeRequestURL);
@@ -48,7 +48,6 @@ public class Homepage extends WebshopBaseController {
                 Group group = ((WebshopDataLayer) request.getAttribute("datalayer")).getGroupDAO().getGroupByUser(user_key);
 
                 TemplateResult res = new TemplateResult(getServletContext());
-                request.setAttribute("title", "Homepage");
                 request.setAttribute("username", user.getUsername());
                 request.setAttribute("group", group.getName());
 
@@ -66,7 +65,7 @@ public class Homepage extends WebshopBaseController {
                     request.setAttribute("percentageRequests", percentageRequests);
                     request.setAttribute("percentageRequestsText", "% lower");
                 }
-                request.setAttribute("percentageRequestsCSS", "style=\"width:" + percentageRequests + "%;\"");
+                request.setAttribute("percentageRequestsCSS", "style=width:" + percentageRequests + "%;");
 
                 //riquadro vendite
                 int reqThisMonthClosed = 0;
@@ -86,7 +85,7 @@ public class Homepage extends WebshopBaseController {
                     request.setAttribute("percentageSells", percentageSells);
                     request.setAttribute("percentageSellsText", "% lower");
                 }
-                request.setAttribute("percentageSellsCSS", "style=\"width:" + percentageSells + "%;\"");
+                request.setAttribute("percentageSellsCSS", "style=width:" + percentageSells + "%;");
 
                 //riquadro clienti
                 Group groupOrdering = ((WebshopDataLayer) request.getAttribute("datalayer")).getGroupDAO().getGroupByName(UserRoleEnum.ORDINANTE);
@@ -298,6 +297,9 @@ public class Homepage extends WebshopBaseController {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException {
+
+        request.setAttribute("userid", request.getSession().getAttribute("userid"));
+        request.setAttribute("title", "Homepage");
         try {
             HttpSession s = request.getSession(false);
             if (s == null) {

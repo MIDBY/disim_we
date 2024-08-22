@@ -33,7 +33,7 @@ $(function () {
         bodyTag: 'fieldset',
         transitionEffect: 'slideLeft',
         onInit: function (event, currentIndex) {
-            $.AdminAero.input.activate();
+            //$.AdminAero.input.activate();
 
             //Set tab width
             var $tab = $(event.currentTarget).find('ul[role="tablist"] li');
@@ -62,7 +62,7 @@ $(function () {
             return form.valid();
         },
         onFinished: function (event, currentIndex) {
-            swal("Good job!", "Submitted!", "success");
+            $('#wizard_with_validation').submit();
         }
     });
 

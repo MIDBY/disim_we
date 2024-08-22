@@ -79,10 +79,14 @@
         <servlet-class>it.univaq.example.webshop.controller.ManageRequests</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>ListTickets</servlet-name>
-        <servlet-class>it.univaq.example.webshop.controller.ManageTickets</servlet-class>
+        <servlet-name>ListOrders</servlet-name>
+        <servlet-class>it.univaq.example.webshop.controller.ManageOrders</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>OrderDetail</servlet-name>
+        <servlet-class>it.univaq.example.webshop.controller.ManageOrderDetail</servlet-class>
+    </servlet>
+     <servlet>
         <servlet-name>Image</servlet-name>
         <servlet-class>it.univaq.example.webshop.controller.RenderImage</servlet-class>
     </servlet>
@@ -159,8 +163,12 @@
         <url-pattern>/requests</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>ListTickets</servlet-name>
-        <url-pattern>/tickets</url-pattern>
+        <servlet-name>ListOrders</servlet-name>
+        <url-pattern>/orders</url-pattern>
+    </servlet-mapping>
+        <servlet-mapping>
+        <servlet-name>OrderDetail</servlet-name>
+        <url-pattern>/orderDetail</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>Issue</servlet-name>

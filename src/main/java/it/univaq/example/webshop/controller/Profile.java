@@ -28,7 +28,6 @@ public class Profile extends WebshopBaseController {
         TemplateResult res = new TemplateResult(getServletContext());
         String completeRequestURL = request.getRequestURL()
                 + (request.getQueryString() != null ? "?" + request.getQueryString() : "");
-        request.setAttribute("title", "Profile");
         request.setAttribute("username", "Hacker");
         request.setAttribute("group", "Stranger");
         request.setAttribute("completeRequestURL", "login?referrer=" + completeRequestURL);
@@ -47,7 +46,6 @@ public class Profile extends WebshopBaseController {
                 if(!user.getAddress().isEmpty()) address = user.getAddress().split(", ");
                 
                 TemplateResult res = new TemplateResult(getServletContext());
-                request.setAttribute("title", "Profile");
                 request.setAttribute("username", user.getUsername());
                 request.setAttribute("group", group.getName());
                 request.setAttribute("address", address[0]);
@@ -135,9 +133,9 @@ public class Profile extends WebshopBaseController {
                     request.setAttribute("cTechEarned", cTechEarned);
                     request.setAttribute("totalCash", totCash);
                     request.setAttribute("percentageRequests", percentageRequests);
-                    request.setAttribute("percentageRequestsCSS", "style=\"width:" + percentageRequests + "%;\"");
+                    request.setAttribute("percentageRequestsCSS", "style=width:" + percentageRequests + "%;");
                     request.setAttribute("percentageCash", percentageCash);
-                    request.setAttribute("percentageCashCSS", "style=\"width:" + percentageCash + "%;\"");
+                    request.setAttribute("percentageCashCSS", "style=width:" + percentageCash + "%;");
                 } else {
                     request.setAttribute("techUser", false);
                 }
@@ -263,6 +261,10 @@ public class Profile extends WebshopBaseController {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException {
+
+        request.setAttribute("title", "Profile");
+        request.setAttribute("userid", request.getSession().getAttribute("userid"));
+
         try {
             HttpSession s = request.getSession(false);
             if (s != null) {

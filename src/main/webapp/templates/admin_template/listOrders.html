@@ -1,0 +1,57 @@
+﻿<section class="content">
+    <div class="body_scroll">
+        <div class="block-header">
+            <div class="row">
+                <div class="col-lg-7 col-md-6 col-sm-12">
+                    <h2>Order list</h2>
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="homepage"><i class="zmdi zmdi-home"></i> Aero</a></li>
+                        <li class="breadcrumb-item active">Orders</li>
+                    </ul>
+                    <button class="btn btn-primary btn-icon mobile_menu" type="button"><i class="zmdi zmdi-sort-amount-desc"></i></button>
+                </div>
+                <div class="col-lg-5 col-md-6 col-sm-12">                
+                    <button class="btn btn-primary btn-icon float-right right_icon_toggle_btn" type="button"><i class="zmdi zmdi-arrow-right"></i></button>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="row clearfix">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="card project_list">
+                        <div class="table-responsive">
+                            <table class="table table-hover c_table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Category</th>
+                                        <th>Title</th>
+                                        <th>Description</th>
+                                        <th>Ordering</th>
+                                        <th>Created on</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <#if (requests?size>0)>      
+                                        <#list requests as request>
+                                            <form id="take${request.key}" method="post" action="orders?order=${request.key}">
+                                                <tr onclick="acceptRequest(event,'${request.key}','${request.title}','<#list reqChars as key,val>${key}:${val}<#sep>,</#list>')">
+                                                    <td><strong>${request.key}</strong></td>
+                                                    <td>${request.category.name}</td>
+                                                    <td>${request.title}</td>
+                                                    <td><textarea cols="32" style="white-space: pre-wrap;" disabled>${request.description}</textarea></td>
+                                                    <td><span class="badge badge-primary">${request.ordering.username}</span></td>
+                                                    <td>${request.creationDate}</td>
+                                                </tr>
+                                            </form>
+                                        </#list>
+                                    </#if>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

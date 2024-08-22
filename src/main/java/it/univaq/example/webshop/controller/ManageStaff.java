@@ -90,7 +90,7 @@ public class ManageStaff extends WebshopBaseController {
                     ((WebshopDataLayer) request.getAttribute("datalayer")).getUserDAO().setUser(user);
                 }
                 //sends really emails, than activate it when there is a real email or it will send accidentally mails to real email's people 
-                sendFiredMail(user.getEmail());
+                //sendMail(user.getEmail(), "Administration Mail: You're been fired from our site. Have a nice day");
                 sendNotification(request, response, user, "We're sorry, you're not allowed anymore to stay in Webshop. Bye!", NotificationTypeEnum.INFO, "");
                 action_default(request, response);
             } else {
@@ -116,7 +116,8 @@ public class ManageStaff extends WebshopBaseController {
         }
     }
 
-    private void sendFiredMail(String email) {
+    @SuppressWarnings("unused")
+    private void sendMail(String email, String text) {
         String sender = getServletContext().getInitParameter("emailSender");
         String securityCode = getServletContext().getInitParameter("securityCode");
         String to = email;
@@ -138,7 +139,7 @@ public class ManageStaff extends WebshopBaseController {
             message.setFrom(new InternetAddress(email));
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
             message.setSubject("WebMarket");
-            message.setText("Administration Mail: You're been fired from our site. Have a nice day");
+            message.setText(text);
 
             Transport.send(message);
             System.out.println("Message sent successfully");
@@ -152,6 +153,7 @@ public class ManageStaff extends WebshopBaseController {
             throws ServletException {
 
         request.setAttribute("title", "Staff");
+        request.setAttribute("userid", request.getSession().getAttribute("userid"));
 
         int user_key;
         try {

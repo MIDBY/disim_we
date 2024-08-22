@@ -171,7 +171,6 @@ public class NotificationDAO_MySQL extends DAO implements NotificationDAO {
                 iNotification.setString(3, notification.getLink());
                 iNotification.setString(4, notification.getType().toString());
                 iNotification.setObject(5, notification.getCreationDate());
-                iNotification.setBoolean(6, notification.isRead());
                 if (iNotification.executeUpdate() == 1) {
                     try (ResultSet keys = iNotification.getGeneratedKeys()) {
                         if (keys.next()) {

@@ -148,7 +148,65 @@ function errorTechLocked(event){
   event.preventDefault();
   Swal.fire({
       title: "Oops.. Technician is locked",
-      text: "You can't fire technician until has requests active! Wait until are closed",
+      text: "You can't fire technician until has requests active! Wait until they closed",
       icon: "error"
+    });
+}
+
+function acceptRequest(event, reqId, reqTitle, reqChars){
+  event.preventDefault();
+  var text = '<strong>Title: </string>'+reqTitle+'<br>';
+  for(const i of reqChars.split(',')) {
+    text += "<strong>"
+    const j = i.split(":");
+    text += j[0] + ": </strong>" + j[1]
+    if(i != reqChars.split(',')[reqChars.split(',').length - 1])
+      text +="<br>"
+  }
+  Swal.fire({
+      title: "Are you sure to take request #"+reqId+":",
+      html: text,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, accept it!"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire({
+          title: "Congrats!",
+          text: "This request now is yours! Now you'll be redirected to My Orders.",
+          icon: "success"
+        }).then(() => {
+          $("#take"+reqId).submit();
+        });
+      }
+    });
+}
+
+function editProposal(event, propId){
+  event.preventDefault();
+  Swal.fire({
+      title: "Are you sure to edit this proposal?",
+      html: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, edit it!"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        //abilita form 
+        document.getElementById("wizard_with_validation").removeAttribute("inert");
+        document.getElementById("wizard_with_validation-p-0").removeAttribute("disabled");
+
+        //sposta i dati dallo storico al form
+        document.getElementById("productName").value = document.getElementById("productName2").value;
+        document.getElementById("producerName").value = document.getElementById("producerName2").value;
+        document.getElementById("productDescription").value = document.getElementById("productDescription2").value;
+        document.getElementById("productPrice").value = document.getElementById("productPrice2").value;
+        document.getElementById("url").value = document.getElementById("url2").value;
+        document.getElementById("notes").value = document.getElementById("notes2").value;
+      }
     });
 }

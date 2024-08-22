@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Creato il: Ago 20, 2024 alle 17:52
+-- Creato il: Ago 22, 2024 alle 12:23
 -- Versione del server: 10.4.32-MariaDB
 -- Versione PHP: 8.2.12
 
@@ -35,6 +35,15 @@ CREATE TABLE `caratteristica` (
   `versione` tinyint(3) UNSIGNED NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dump dei dati per la tabella `caratteristica`
+--
+
+INSERT INTO `caratteristica` (`id`, `nome`, `idCategoria`, `valoriDefault`, `versione`) VALUES
+(1, 'Memoria ROM', 1, '256Gb,512Gb,1Tb,2Tb', 1),
+(2, 'Memoria RAM', 1, '2Gb,4Gb,8Gb,16Gb,32Gb', 1),
+(3, 'Schermo', 2, '12\",14\",16\"', 1);
+
 -- --------------------------------------------------------
 
 --
@@ -48,6 +57,14 @@ CREATE TABLE `categoria` (
   `idImmagine` int(11) NOT NULL,
   `versione` tinyint(3) UNSIGNED NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dump dei dati per la tabella `categoria`
+--
+
+INSERT INTO `categoria` (`id`, `nome`, `idCategoriaPadre`, `idImmagine`, `versione`) VALUES
+(1, 'Pc', NULL, 1, 1),
+(2, 'Portatile', 1, 2, 1);
 
 -- --------------------------------------------------------
 
@@ -95,6 +112,14 @@ CREATE TABLE `immagine` (
   `versione` tinyint(3) UNSIGNED NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dump dei dati per la tabella `immagine`
+--
+
+INSERT INTO `immagine` (`id`, `titolo`, `tipo`, `nomeFile`, `grandezza`, `versione`) VALUES
+(1, 'prova', 'jpg', 'Prova.jpg', 2048, 1),
+(2, 'Portatile', 'png', 'Portatile.png', 4096, 1);
+
 -- --------------------------------------------------------
 
 --
@@ -111,6 +136,15 @@ CREATE TABLE `notifica` (
   `letto` tinyint(1) NOT NULL DEFAULT 0,
   `versione` tinyint(3) UNSIGNED NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dump dei dati per la tabella `notifica`
+--
+
+INSERT INTO `notifica` (`id`, `idDestinatario`, `messaggio`, `link`, `tipo`, `dataCreazione`, `letto`, `versione`) VALUES
+(1, 21, 'We\'re sorry, you\'re not allowed anymore to stay in Webshop. Bye!', '', 'INFO', '2024-08-21 13:56:36', 0, 1),
+(2, 21, 'Welcome in Webshop, new client!', '', 'INFO', '2024-08-21 13:56:43', 0, 1),
+(3, 22, 'Great news! Your request Poratile super performante has been taken in charge by one of our operators!', '', 'INFO', '2024-08-21 19:19:15', 0, 1);
 
 -- --------------------------------------------------------
 
@@ -129,7 +163,7 @@ CREATE TABLE `proposta` (
   `url` varchar(512) DEFAULT NULL,
   `note` varchar(1024) DEFAULT NULL,
   `dataCreazione` date NOT NULL,
-  `statoProposta` enum('INATTESA','APPROVATO','RESPINTO','') NOT NULL,
+  `statoProposta` enum('INATTESA','APPROVATO','RESPINTO') NOT NULL DEFAULT 'INATTESA',
   `motivazione` varchar(1024) NOT NULL,
   `versione` tinyint(3) UNSIGNED NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -146,13 +180,20 @@ CREATE TABLE `richiesta` (
   `descrizione` varchar(511) NOT NULL,
   `idCategoria` int(11) NOT NULL,
   `idOrdinante` int(11) NOT NULL,
-  `idTecnico` int(11) NOT NULL,
+  `idTecnico` int(11) DEFAULT NULL,
   `statoRichiesta` enum('NUOVO','PRESOINCARICO','ORDINATO','CHIUSO','ANNULLATO') NOT NULL DEFAULT 'NUOVO',
-  `statoOrdine` enum('ACCETTATO','RESPINTONONCONFORME','RESPINTONONFUNZIONANTE','') NOT NULL,
+  `statoOrdine` enum('ACCETTATO','RESPINTONONCONFORME','RESPINTONONFUNZIONANTE','EMPTY') NOT NULL,
   `dataCreazione` date NOT NULL,
   `note` varchar(1024) DEFAULT NULL,
   `versione` tinyint(3) UNSIGNED NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dump dei dati per la tabella `richiesta`
+--
+
+INSERT INTO `richiesta` (`id`, `titolo`, `descrizione`, `idCategoria`, `idOrdinante`, `idTecnico`, `statoRichiesta`, `statoOrdine`, `dataCreazione`, `note`, `versione`) VALUES
+(1, 'Poratile super performante', 'Vorrei un pc portatile che non si riscalda mai neanche se gioco in un forno', 2, 22, 1, 'PRESOINCARICO', 'EMPTY', '2024-08-21', 'Lo voglio fiammeggiante', 2);
 
 -- --------------------------------------------------------
 
@@ -167,6 +208,15 @@ CREATE TABLE `richiesta_caratteristica` (
   `valore` varchar(255) NOT NULL,
   `versione` tinyint(3) UNSIGNED NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dump dei dati per la tabella `richiesta_caratteristica`
+--
+
+INSERT INTO `richiesta_caratteristica` (`id`, `idRichiesta`, `idCaratteristica`, `valore`, `versione`) VALUES
+(1, 1, 1, '2Tb', 1),
+(2, 1, 2, '16Gb', 1),
+(3, 1, 3, '16\"', 1);
 
 -- --------------------------------------------------------
 
@@ -204,8 +254,8 @@ CREATE TABLE `utente` (
 INSERT INTO `utente` (`id`, `username`, `email`, `password`, `indirizzo`, `dataIscrizione`, `accettato`, `versione`) VALUES
 (1, 'Pietro', 'durbanomk@gmail.com', '8cc8d85ae3084a966c24f7c61683a42675247c0f7f4d19138b8470e803a0701bee581b06a5062c5d28811c410151c618', 'Via pazzi, 2,  Tokyo,  123, Italy(IT)', '2024-08-06', 0, 14),
 (20, 'Paperino', 'paperino@gmail.com', 'ebe1b163e84668a295c4d4e0a5463ff0889f6aa4f9f67a43a1849ac496d8ee4f7a8cfa7bd92a18027031c571c9cdab6e', 'Via papere, 313, Paperopoli, 55120, Afghanistan(AF)', '2024-08-07', 1, 1),
-(21, 'Paperoga', 'paperoga@gmail.com', 'a5a2fe8fc3a262cef3c5f80dd5e0c40e969ef99ff2f61f083938c30f246c439bdc9ca5d0ecbc4d48e2d7b5532ddbcf7d', 'Via papere, 777, Paperopoli, 55241, Denmark(DK)', '2024-08-07', 1, 5),
-(22, 'Zio Paperone', 'paperone@gmail.com', '3723936bd22d4c1932d09b61dd02db8d0012be4e56f1ad0562c81f51bc6bdb103ba3e1e068c6ba5bfa115db14ffb2874', 'Via ricconi, 1, Paperopoli, 55124, Barbados(BB)', '2024-08-07', 0, 10),
+(21, 'Paperoga', 'paperoga@gmail.com', 'a5a2fe8fc3a262cef3c5f80dd5e0c40e969ef99ff2f61f083938c30f246c439bdc9ca5d0ecbc4d48e2d7b5532ddbcf7d', 'Via papere, 777, Paperopoli, 55241, Denmark(DK)', '2024-08-07', 1, 9),
+(22, 'Zio Paperone', 'paperone@gmail.com', '3723936bd22d4c1932d09b61dd02db8d0012be4e56f1ad0562c81f51bc6bdb103ba3e1e068c6ba5bfa115db14ffb2874', 'Via ricconi, 1, Paperopoli, 55124, Barbados(BB)', '2024-08-07', 1, 11),
 (23, 'Topolino', 'topolino@gmail.com', '16c8baf7852f0b93f3303fd810e98e70fb62625ac56294e2ff6ffe228636d064b92288eb68ce81793b2c8626c25a85e6', 'Via topa, 69, Topolinia, 74254, United States(US)', '2024-08-08', 0, 10),
 (24, 'Topolina', 'topolina@gmail.com', '76a516535893d7a81ecebcb4c51416744d4655c8e75bf06de39f9d9824a8412fe499300a8738c721be7909479d5d01c6', 'Via Appia, 98, Napoli, 44150, Afghanistan(AF)', '2024-08-08', 1, 9),
 (25, 'Pippo', 'pippo@gmail.com', '05a243172fa9edddfc6b95e4926d8a80b0d90e2ec6af3e2b9612a24109d2c00ed0d31291c1601171c7f4d7fc53ce50fe', 'Via da Cane, 9, Pippopoli, 89542, United States(US)', '2024-08-08', 1, 12);
@@ -227,7 +277,7 @@ CREATE TABLE `utente_gruppo` (
 
 INSERT INTO `utente_gruppo` (`idUtente`, `idGruppo`) VALUES
 (1, 1),
-(20, 2),
+(20, 3),
 (21, 2),
 (22, 2),
 (23, 2),
@@ -244,7 +294,7 @@ INSERT INTO `utente_gruppo` (`idUtente`, `idGruppo`) VALUES
 ALTER TABLE `caratteristica`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `nome` (`nome`),
-  ADD UNIQUE KEY `categoria` (`idCategoria`);
+  ADD KEY `categoria` (`idCategoria`) USING BTREE;
 
 --
 -- Indici per le tabelle `categoria`
@@ -333,13 +383,13 @@ ALTER TABLE `utente_gruppo`
 -- AUTO_INCREMENT per la tabella `caratteristica`
 --
 ALTER TABLE `caratteristica`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT per la tabella `categoria`
 --
 ALTER TABLE `categoria`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT per la tabella `gruppo`
@@ -351,13 +401,13 @@ ALTER TABLE `gruppo`
 -- AUTO_INCREMENT per la tabella `immagine`
 --
 ALTER TABLE `immagine`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT per la tabella `notifica`
 --
 ALTER TABLE `notifica`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT per la tabella `proposta`
@@ -369,13 +419,13 @@ ALTER TABLE `proposta`
 -- AUTO_INCREMENT per la tabella `richiesta`
 --
 ALTER TABLE `richiesta`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT per la tabella `richiesta_caratteristica`
 --
 ALTER TABLE `richiesta_caratteristica`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT per la tabella `servizio`

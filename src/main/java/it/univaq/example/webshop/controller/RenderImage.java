@@ -69,6 +69,9 @@ public class RenderImage extends WebshopBaseController {
     @Override
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException {
+
+        request.setAttribute("userid", request.getSession().getAttribute("userid"));
+
         try {
             int imgid = SecurityHelpers.checkNumeric(request.getParameter("imgid"));
             action_download(request, response, imgid);

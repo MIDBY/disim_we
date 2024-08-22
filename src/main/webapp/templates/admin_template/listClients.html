@@ -33,7 +33,7 @@
                                             <th>Name</th>
                                             <th>Address</th>
                                             <th>Requests done</th>   
-                                            <th>Subscription</th>
+                                            <th>Signed up</th>
                                             <th>Status</th>
                                             <th class="sorting_asc_disabled sorting_desc_disabled">Accept Client</th>
                                             <th class="sorting_asc_disabled sorting_desc_disabled">Convert</th>
@@ -45,7 +45,7 @@
                                             <th>Name</th>
                                             <th>Address</th>
                                             <th>Requests Done</th>                                        
-                                            <th>Subscription</th>
+                                            <th>Signed up</th>
                                             <th>Status</th>
                                             <th>Accept Client</th>
                                             <th>Convert</th>
@@ -72,8 +72,8 @@
                                                         </td>
                                                         <td>
                                                             <#assign addressSplit = user.address?split(", ")>
-                                                            ${addressSplit[0]} ${addressSplit[1]}<br>
-                                                            ${addressSplit[2]} ${addressSplit[3]}<br>
+                                                            ${addressSplit[0]}, ${addressSplit[1]}<br>
+                                                            ${addressSplit[2]}, ${addressSplit[3]}<br>
                                                             <small>${addressSplit[4]}</small>
                                                         </td>
                                                         <td>

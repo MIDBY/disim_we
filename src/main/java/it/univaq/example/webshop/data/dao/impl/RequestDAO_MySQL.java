@@ -39,7 +39,7 @@ public class RequestDAO_MySQL extends DAO implements RequestDAO {
             sRequestsByTechnician = connection.prepareStatement("SELECT id FROM richiesta WHERE idTecnico=?");
             sRequestsByRequestState = connection.prepareStatement("SELECT id FROM richiesta WHERE statoRichiesta=?");
             sRequestsByOrderState = connection.prepareStatement("SELECT id FROM richiesta WHERE statoOrdine=?");
-            sUnassignedRequests = connection.prepareStatement("SELECT id FROM richiesta WHERE idTecnico=NULL");
+            sUnassignedRequests = connection.prepareStatement("SELECT id FROM richiesta WHERE idTecnico IS NULL");
             sRequestsByCreationMonth = connection.prepareStatement("SELECT id FROM richiesta WHERE MONTH(dataCreazione)=? and YEAR(dataCreazione)=?");
             //sGetLatestRequestKey = connection.prepareStatement("SELECT id FROM richiesta WHERE 1");
             sRequests = connection.prepareStatement("SELECT id FROM richiesta");
@@ -278,9 +278,12 @@ public class RequestDAO_MySQL extends DAO implements RequestDAO {
                 } else {
                     uRequest.setNull(5, java.sql.Types.INTEGER);
                 }   
-                uRequest.setObject(6, request.getCreationDate());
-                uRequest.setString(7, request.getRequestState().toString());
-                uRequest.setString(8, request.getOrderState().toString());
+                uRequest.setString(6, request.getRequestState().toString());
+                if(request.getOrderState().toString().equals(""))
+                    uRequest.setString(7, OrderStateEnum.EMPTY.name());
+                else
+                    uRequest.setString(7, request.getOrderState().toString());                            
+                uRequest.setObject(8, request.getCreationDate());
                 uRequest.setString(9, request.getNotes());
 
                 long current_version = request.getVersion();
