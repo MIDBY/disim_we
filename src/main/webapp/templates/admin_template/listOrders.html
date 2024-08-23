@@ -41,7 +41,7 @@
                                                     <td>${request.title}</td>
                                                     <td><textarea cols="32" style="white-space: pre-wrap;" disabled>${request.description}</textarea></td>
                                                     <td><span class="badge badge-primary">${request.ordering.username}</span></td>
-                                                    <td>${request.creationDate}</td>
+                                                    <td>${request.creationDate.format('dd/MM/yyyy)}</td>
                                                 </tr>
                                             </form>
                                         </#list>

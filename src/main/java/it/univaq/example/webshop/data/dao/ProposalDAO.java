@@ -1,6 +1,6 @@
 package it.univaq.example.webshop.data.dao;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import it.univaq.example.webshop.data.model.Proposal;
 import it.univaq.example.webshop.data.model.impl.ProposalStateEnum;
@@ -20,7 +20,7 @@ public interface ProposalDAO {
 
     List<Proposal> getProposalsByState(ProposalStateEnum value) throws DataException;
 
-    List<Proposal> getProposalsByCreationMonth(LocalDate date) throws DataException;
+    List<Proposal> getProposalsByCreationMonth(LocalDateTime date) throws DataException;
 
     void setProposal(Proposal proposal) throws DataException;
 }

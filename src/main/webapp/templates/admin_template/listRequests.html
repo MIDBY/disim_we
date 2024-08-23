@@ -65,7 +65,7 @@
                                                     <td><#if request.technician??><span class="badge badge-success">${request.technician.username}</span><#else><span class="badge badge-danger">No Technician</span></#if></td>
                                                     <td>${request.requestState}</td>
                                                     <td>${request.orderState}</td>
-                                                    <td>${request.creationDate}</td>
+                                                    <td>${request.creationDate.format('dd/MM/yyyy)}</td>
                                                 </tr>
                                             </#list>
                                         </#if>
@@ -125,7 +125,7 @@
                                                     <td><#if crequest.technician??><span class="badge badge-success">${crequest.technician.username}</span><#else><span class="badge badge-danger">No Technician</span></#if></td>
                                                     <td>${crequest.requestState}</td>
                                                     <td>${crequest.orderState}</td>
-                                                    <td>${crequest.creationDate}</td>
+                                                    <td>${crequest.creationDate.format('dd/MM/yyyy)}</td>
                                                 </tr>
                                             </#list>
                                         </#if>

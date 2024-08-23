@@ -5,8 +5,7 @@ import java.math.RoundingMode;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.time.LocalDate;
-
+import java.time.LocalDateTime;
 import it.univaq.example.webshop.data.model.Proposal;
 import it.univaq.example.webshop.data.model.Request;
 import it.univaq.example.webshop.data.model.User;
@@ -22,7 +21,7 @@ public class ProposalImpl extends DataItemImpl<Integer> implements Proposal {
     private Float productPrice;
     private String url;
     private String notes;
-    private LocalDate creationDate;
+    private LocalDateTime creationDate;
     private ProposalStateEnum proposalState;
     private String motivation;
 
@@ -36,7 +35,7 @@ public class ProposalImpl extends DataItemImpl<Integer> implements Proposal {
         productPrice = 0.00F;
         url = "";
         notes = "";
-        creationDate = LocalDate.now();
+        creationDate = LocalDateTime.now();
         proposalState = ProposalStateEnum.INATTESA;
         motivation = "";
     }
@@ -134,12 +133,12 @@ public class ProposalImpl extends DataItemImpl<Integer> implements Proposal {
     }
 
     @Override
-    public LocalDate getCreationDate() {
+    public LocalDateTime getCreationDate() {
         return creationDate;
     }
 
     @Override
-    public void setCreationDate(LocalDate creationDate) {
+    public void setCreationDate(LocalDateTime creationDate) {
         this.creationDate = creationDate;
     }
 

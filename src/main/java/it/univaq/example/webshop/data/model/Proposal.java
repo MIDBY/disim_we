@@ -1,7 +1,6 @@
 package it.univaq.example.webshop.data.model;
 
-import java.time.LocalDate;
-
+import java.time.LocalDateTime;
 import it.univaq.example.webshop.data.model.impl.ProposalStateEnum;
 import it.univaq.framework.data.DataItem;
 
@@ -39,9 +38,9 @@ public interface Proposal extends DataItem<Integer> {
 
     void setNotes(String notes);
 
-    LocalDate getCreationDate();
+    LocalDateTime getCreationDate();
 
-    void setCreationDate(LocalDate creationDate);
+    void setCreationDate(LocalDateTime creationDate);
 
     ProposalStateEnum getProposalState();
 

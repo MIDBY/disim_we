@@ -49,7 +49,7 @@
                                                 <td>${request.category.name}</td>
                                                 <td>${request.title}</td>
                                                 <td><textarea cols="32" style="white-space: pre-wrap;" disabled>${request.description}</textarea></td>
-                                                <td>${request.creationDate}</td>
+                                                <td>${request.creationDate.format('dd/MM/yyyy)}</td>
                                                 <#if (request.proposals?size>0)>
                                                     <td>${prop.productName}</td>
                                                     <#if (prop.proposalState == 'INATTESA')>

@@ -2,6 +2,7 @@ package it.univaq.example.webshop.controller;
 
 import java.io.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -9,7 +10,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
 import javax.servlet.*;
 import javax.servlet.http.*;
 import it.univaq.example.webshop.data.dao.impl.WebshopDataLayer;
@@ -135,7 +135,7 @@ public class Homepage extends WebshopBaseController {
 
                 int[] data2 = new int[12];
                 j = 0;
-                for(LocalDate i = LocalDate.now().minusMonths(11); i.isBefore(LocalDate.now().plusDays(1)); i = i.plusMonths(1)) {
+                for(LocalDateTime i = LocalDateTime.now().minusMonths(11); i.isBefore(LocalDateTime.now().plusDays(1)); i = i.plusMonths(1)) {
                     data2[j] = ((WebshopDataLayer) request.getAttribute("datalayer")).getProposalDAO().getProposalsByCreationMonth(i).size();
                     j++;
                 }

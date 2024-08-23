@@ -162,7 +162,7 @@ CREATE TABLE `proposta` (
   `prezzoProdotto` float NOT NULL,
   `url` varchar(512) DEFAULT NULL,
   `note` varchar(1024) DEFAULT NULL,
-  `dataCreazione` date NOT NULL,
+  `dataCreazione` datetime NOT NULL DEFAULT current_timestamp(),
   `statoProposta` enum('INATTESA','APPROVATO','RESPINTO') NOT NULL DEFAULT 'INATTESA',
   `motivazione` varchar(1024) NOT NULL,
   `versione` tinyint(3) UNSIGNED NOT NULL DEFAULT 1

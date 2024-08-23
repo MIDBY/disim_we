@@ -11,7 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import it.univaq.framework.data.DataLayer;
@@ -79,7 +79,7 @@ public class ProposalDAO_MySQL extends DAO implements ProposalDAO {
             a.setProductPrice(rs.getFloat("prezzoProdotto"));
             a.setUrl(rs.getString("url"));
             a.setNotes(rs.getString("note"));
-            a.setCreationDate(rs.getObject("dataCreazione", LocalDate.class));
+            a.setCreationDate(rs.getObject("dataCreazione", LocalDateTime.class));
             a.setProposalState(ProposalStateEnum.valueOf(rs.getString("statoProposta")));
             a.setMotivation(rs.getString("motivazione"));
             a.setVersion(rs.getLong("versione"));
@@ -174,7 +174,7 @@ public class ProposalDAO_MySQL extends DAO implements ProposalDAO {
     }
 
     @Override
-    public List<Proposal> getProposalsByCreationMonth(LocalDate date) throws DataException {
+    public List<Proposal> getProposalsByCreationMonth(LocalDateTime date) throws DataException {
         List<Proposal> result = new ArrayList<Proposal>();
         try {
             sProposalsByCreationMonth.setInt(1, date.getMonthValue());

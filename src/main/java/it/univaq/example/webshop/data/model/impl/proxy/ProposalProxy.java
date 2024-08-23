@@ -9,7 +9,7 @@ import it.univaq.example.webshop.data.model.impl.ProposalStateEnum;
 import it.univaq.framework.data.DataException;
 import it.univaq.framework.data.DataItemProxy;
 import it.univaq.framework.data.DataLayer;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -111,7 +111,7 @@ public class ProposalProxy extends ProposalImpl implements DataItemProxy {
     }
 
     @Override
-    public void setCreationDate(LocalDate date) {
+    public void setCreationDate(LocalDateTime date) {
         super.setCreationDate(date);
         this.modified = true;
     }

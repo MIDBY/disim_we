@@ -15,7 +15,6 @@ import it.univaq.framework.result.TemplateResult;
 import it.univaq.framework.security.SecurityHelpers;
 import it.univaq.framework.result.TemplateManagerException;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -169,15 +168,21 @@ public class ManageOrderDetail extends WebshopBaseController {
                 proposal.setUrl(url);
                 proposal.setNotes(request.getParameter("notes"));
                 if(newP) { 
-                    proposal.setCreationDate(LocalDate.now());
+                    proposal.setCreationDate(LocalDateTime.now());
                     proposal.setProposalState(ProposalStateEnum.INATTESA);
                 }
                 ((WebshopDataLayer) request.getAttribute("datalayer")).getProposalDAO().setProposal(proposal);
 
                 //sends really emails, than activate it when there is a real email or it will send accidentally mails to real email's people 
-                //sendMail(req.getOrdering().getEmail(), ""Info mail: Your request: '+req.getTitle()+' has received a new proposal, go to check it!");
-                sendNotification(request, response, req.getOrdering(), "Our technician has sent a proposal to you, go to check it!", NotificationTypeEnum.NUOVO, ""); 
-                //TODO: Inserire link per pagina visualizzazione proposta del cliente
+                if(newP) {
+                    //sendMail(req.getOrdering().getEmail(), "Info mail: Your request: '+req.getTitle()+' has received a new proposal, go to check it!");
+                    sendNotification(request, response, req.getOrdering(), "Request: "+req.getTitle()+".\n Our technician has sent a new proposal to you, go to check it!", NotificationTypeEnum.NUOVO, ""); 
+                    //TODO: Inserire link per pagina visualizzazione proposta del cliente
+                } else {
+                    //sendMail(req.getOrdering().getEmail(), "Info mail: Proposal of your request: '+req.getTitle()+' has been edited, go to check it!");
+                    sendNotification(request, response, req.getOrdering(), "Request: "+req.getTitle()+".\n Our technician has edited proposal, go to check it!", NotificationTypeEnum.NUOVO, ""); 
+                    //TODO: Inserire link per pagina visualizzazione proposta del cliente
+                }
                 action_default(request, response, req_key);
             } else {
                 handleError("Cannot update request", request, response);

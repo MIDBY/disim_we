@@ -75,7 +75,7 @@
                             <p>${request.notes}</p>
                             <hr>
                             <small class="text-muted">Created on: </small>
-                            <p>${request.creationDate}</p>
+                            <p>${request.creationDate.format('dd/MM/yyyy)}</p>
                             <hr>
                             <small class="text-muted">Status: </small>
                             <p>${request.requestState}</p>
@@ -106,12 +106,6 @@
                     </div>
                 </div>
                 <div class="col-lg-8 col-md-12">
-                    <div class="card">
-                        <div class="body">
-                            <h5>Order</h5>
-                            <span>Cosa ci metterò mai?</span>
-                        </div>
-                    </div>
                     <div class="card">
                         <div class="header">
                             <h2><strong>Order</strong> Proposal</h2>
@@ -208,7 +202,8 @@
                                                         <input type="hidden" id="notes2" name="notes" value="${p.notes}">
                                                     </#if>
                                                     <h5>${p.technician.username}</h5>
-                                                    <span class="comment-date">${p.creationDate} &#9; version: ${p.version}</span>
+                                                    <span class="comment-date mr-3">${p.creationDate.format('dd/MM/yyyy HH:mm')}</span>
+                                                    <span class="comment-date">version: ${p.version}</span>
                                                     <#if editable><a href="#" onclick="editProposal(event)" class="replybutton"><i class="zmdi zmdi-edit"></i> Edit</a></#if>
                                                     <#if (p.proposalState == 'INATTESA')>
                                                         <span class="replybutton badge mr-3 badge-warning">IN ATTESA</span>
