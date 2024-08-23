@@ -204,7 +204,9 @@ public class TemplateResult {
             localdatamodel.putAll(datamodel);
         }
         String outline_name = (String) localdatamodel.get("outline_tpl");
-        try {
+        try {   
+            //TDODO: nel caso di necessità per il front-end di usare un template base (vedi outline.ftl.html) su cui caricare le varie pagine,
+            //      è possibile inserire qui sotto l'implementazione che in caso di accesso cliente porta al caricamento dell'outline per il front-end
             if (tplname.contains("login.html") || tplname.contains("register.html") || tplname.contains("forgot_password.html")
                 || tplname.contains("enter_otp.html") || tplname.contains("new_password.html"))
                 t = cfg.getTemplate(tplname);

@@ -42,10 +42,10 @@ public class Login extends WebshopBaseController {
                         if(group.getName().equals(UserRoleEnum.ORDINANTE)) {
                             if(user.isAccepted()) {         
                                 SecurityHelpers.createSession(request, email, user.getKey());                   
-                                //cambiare index con la prima pagina dello store
                                 if (request.getParameter("referrer") != null) {
                                     response.sendRedirect(request.getParameter("referrer"));
-                                } else {                            
+                                } else {       
+                                    //TODO: cambiare index con la prima pagina dello store
                                     response.sendRedirect("index");
                                 }
                             } else {
