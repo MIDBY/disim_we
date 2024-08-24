@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Richiesta di Acquisto Avanzata - WebMarket</title>
+    <link rel="stylesheet" href="css/purchase_request.css">
+</head>
+
+<body>
+
+    <header>
+        <div class="top-header">
+            <div class="container">
+                <span><i class="fas fa-phone"></i> 0862-326798</span>
+                <span><i class="fas fa-envelope"></i> info@email.com</span>
+                <span><i class="fas fa-map-marker-alt"></i> 1734 Stonecoal Road</span>
+                <span><i class="fas fa-dollar-sign"></i> EUR    </span>
+                <span><i class="fas fa-user"></i> My Account</span>
+            </div>
+        </div>
+        <div class="main-header">
+            <div class="container">
+                <h1 class="logo">Electro<span class="red-dot">.</span></h1>
+                <div class="search-bar">
+                    <select>
+                        <option>All Categories</option>
+                    </select>
+                    <input type="text" placeholder="Search here">
+                    <button class="search-btn">Search</button>
+                </div>
+                <div class="user-actions">
+                    <a href="#" class="wishlist"><i class="fas fa-heart"></i> Your Wishlist <span class="count">2</span></a>
+                    <a href="#" class="cart"><i class="fas fa-shopping-cart"></i> Your Cart <span class="count">3</span></a>
+                    <a href="#" class="menu-toggle"><i class="fas fa-bars"></i> Menu</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div id="breadcrumb">
+        <div class="container">
+            <h3 class="breadcrumb-header">Nuova Richiesta di Acquisto Avanzata</h3>
+            <ul class="breadcrumb-tree">
+                <li><a href="#">Home</a></li>
+                <li>Richiesta di Acquisto</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="container">
+        <form id="purchaseRequestForm">
+            <div class="form-group">
+                <label for="category">Categoria:</label>
+                <select id="category" name="category" class="input-select" required>
+                    <option value="">Seleziona una categoria</option>
+                    <option value="pc-desktop">PC Desktop</option>
+                    <option value="notebook">Notebook</option>
+                    <option value="monitor">Monitor</option>
+                </select>
+                <div class="error-message" id="category-error">Seleziona una categoria</div>
+            </div>
+
+            <div id="characteristicsContainer"></div>
+
+            <div class="form-group">
+                <label for="notes">Note aggiuntive (opzionale):</label>
+                <textarea id="notes" name="notes" class="input" rows="4"></textarea>
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="primary-btn">Invia Richiesta</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="overlay" id="overlay"></div>
+    <div class="popup" id="successPopup">
+        <div class="popup-content">
+            <h4>Richiesta Inviata</h4>
+            <p>La tua richiesta di acquisto è stata inviata con successo.</p>
+            <button class="popup-close" onclick="closePopup()">Chiudi</button>
+        </div>
+    </div>
+
+    <script src="js/purchase_request.js"></script>
+</body>
+</html>
