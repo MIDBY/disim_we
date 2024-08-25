@@ -1,21 +1,21 @@
 package it.univaq.example.webshop.controller;
 
 import it.univaq.example.webshop.data.dao.impl.WebshopDataLayer;
+import it.univaq.example.webshop.data.model.Category;
 import it.univaq.example.webshop.data.model.Group;
-import it.univaq.example.webshop.data.model.Request;
 import it.univaq.example.webshop.data.model.User;
-import it.univaq.example.webshop.data.model.impl.RequestStateEnum;
 import it.univaq.framework.data.DataException;
 import it.univaq.framework.result.TemplateResult;
 import it.univaq.framework.result.TemplateManagerException;
 import java.io.IOException;
 import java.util.List;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-public class ManageRequests extends WebshopBaseController {
+public class ManageCategories extends WebshopBaseController {
 
     private void action_anonymous(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException, TemplateManagerException {
@@ -32,41 +32,23 @@ public class ManageRequests extends WebshopBaseController {
         try {
             TemplateResult res = new TemplateResult(getServletContext());
             int user_key = Integer.parseInt(request.getSession().getAttribute("userid").toString());
-            User user = ((WebshopDataLayer)request.getAttribute("datalayer")).getUserDAO().getUser(user_key);
+            User user = ((WebshopDataLayer) request.getAttribute("datalayer")).getUserDAO().getUser(user_key);
             Group group = ((WebshopDataLayer) request.getAttribute("datalayer")).getGroupDAO().getGroupByUser(user_key);
 
             request.setAttribute("username", user.getUsername());
-            request.setAttribute("group", group.getName());           
+            request.setAttribute("group", group.getName());   
             
-            List<Request> requests = ((WebshopDataLayer) request.getAttribute("datalayer")).getRequestDAO().getRequests();
-            for(Request r : requests) {
-                if(r.getRequestState().equals(RequestStateEnum.CHIUSO)) {
-                    requests.remove(r);
-                    continue;
-                }
-                r.getCategory();
-                r.getCategory().getImage();
-                r.getOrdering();
-                if(r.getTechnician() != null)
-                    r.setTechnician(r.getTechnician());
-                r.getRequestCharacteristics();
-                r.getProposals();
+            List<Category> categories = ((WebshopDataLayer) request.getAttribute("datalayer")).getCategoryDAO().getCategories();
+            for(Category c : categories) {
+                c.getCharacteristics();
+                c.getFatherCategory();
+                c.getImage();
             }
-            request.setAttribute("requests", requests);
-
-            List<Request> closedRequests = ((WebshopDataLayer) request.getAttribute("datalayer")).getRequestDAO().getRequestsByRequestState(RequestStateEnum.CHIUSO);
-            for(Request r : closedRequests) {
-                r.getCategory();
-                r.getCategory().getImage();
-                r.getOrdering();
-                if(r.getTechnician() != null)
-                    r.setTechnician(r.getTechnician());
-                r.setRequestCharacteristics(r.getRequestCharacteristics());
-                r.setProposals(r.getProposals());
-            }
-            request.setAttribute("crequests", closedRequests);
+            request.setAttribute("categories", categories);
             
-            res.activate("listRequests.html", request, response);
+            
+            
+            res.activate("listCategories.html", request, response);
         } catch (DataException ex) {
             handleError("Data access exception: " + ex.getMessage(), request, response);
         }
@@ -76,12 +58,14 @@ public class ManageRequests extends WebshopBaseController {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException {
 
-        request.setAttribute("title", "Requests");
+        request.setAttribute("title", "Categories");
         request.setAttribute("userid", request.getSession().getAttribute("userid"));
 
         try {
             HttpSession s = request.getSession(false);
             if (s != null) {
+                //if(request.getAttribute("edit") != null)
+
                 action_default(request, response);
             } else {
                 action_anonymous(request, response);
@@ -100,7 +84,7 @@ public class ManageRequests extends WebshopBaseController {
      */
     @Override
     public String getServletInfo() {
-        return "Manage Requests servlet";
+        return "Manage Categories servlet";
     }// </editor-fold>
   
 

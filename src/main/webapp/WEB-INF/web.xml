@@ -86,9 +86,27 @@
         <servlet-name>OrderDetail</servlet-name>
         <servlet-class>it.univaq.example.webshop.controller.ManageOrderDetail</servlet-class>
     </servlet>
-     <servlet>
+    <servlet>
+        <servlet-name>ListFiles</servlet-name>
+        <servlet-class>it.univaq.example.webshop.controller.ManageFiles</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>Image</servlet-name>
         <servlet-class>it.univaq.example.webshop.controller.RenderImage</servlet-class>
+        <multipart-config>
+            <max-file-size>20848820</max-file-size>
+            <!-- max size of accepted uploadd (DEF: unlimited!) -->
+            <max-request-size>418018841</max-request-size>
+            <!-- max size of multipart requests (may contain more files or data) (DEF: ulimited!) -->
+        </multipart-config>
+    </servlet>
+    <servlet>
+        <servlet-name>ListCategories</servlet-name>
+        <servlet-class>it.univaq.example.webshop.controller.ManageCategories</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>CategoryDetail</servlet-name>
+        <servlet-class>it.univaq.example.webshop.controller.ManageCategoryDetail</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>Issue</servlet-name>
@@ -171,6 +189,22 @@
         <url-pattern>/orderDetail</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
+        <servlet-name>ListFiles</servlet-name>
+        <url-pattern>/files</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Image</servlet-name>
+        <url-pattern>/image</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ListCategories</servlet-name>
+        <url-pattern>/categories</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CategoryDetail</servlet-name>
+        <url-pattern>/categoryDetail</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
         <servlet-name>Issue</servlet-name>
         <url-pattern>/issue</url-pattern>
     </servlet-mapping>
@@ -181,10 +215,6 @@
     <servlet-mapping>
         <servlet-name>ComposeIssue</servlet-name>
         <url-pattern>/compose</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>Image</servlet-name>
-        <url-pattern>/image</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>ListIssues</servlet-name>

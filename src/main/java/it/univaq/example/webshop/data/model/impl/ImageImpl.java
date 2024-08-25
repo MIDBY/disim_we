@@ -21,7 +21,7 @@ public class ImageImpl  extends DataItemImpl<Integer> implements Image {
   
 
     public ImageImpl() {
-         super();
+        super();
         caption = "";
         imageSize = 0;
         imageType = "";

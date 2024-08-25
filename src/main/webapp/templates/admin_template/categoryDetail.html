@@ -1,0 +1,141 @@
+﻿<section class="content">
+    <div class="body_scroll">
+        <div class="block-header">
+            <div class="row">
+                <div class="col-lg-7 col-md-6 col-sm-12">
+                    <h2>Basic Form Elements</h2>
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="homepage"><i class="zmdi zmdi-home"></i> Aero</a></li>
+                        <li class="breadcrumb-item"><a href="javascript:void(0);">Forms</a></li>
+                        <li class="breadcrumb-item active">Basic Form</li>
+                    </ul>
+                </div>
+                <div class="col-lg-5 col-md-6 col-sm-12">                
+                    <button class="btn btn-primary btn-icon float-right right_icon_toggle_btn" type="button"><i class="zmdi zmdi-arrow-right"></i></button>                                
+                </div>
+            </div>
+        </div>
+        
+        <div class="container-fluid">
+            <div class="row clearfix">
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    <div class="card">
+                        <div class="header">
+                            <h2><strong>Category</strong></h2>
+                        </div>
+                        <div class="body">
+                            <form method="post" action="categoryDetail?catid=${category.key}" enctype="multipart/form-data">
+                            <div class="row clearfix">
+                                <div class="col-sm-6">
+                                    <div class="form-group">                                    
+                                        <input type="text" class="form-control" name="name" placeholder="Name" value="<#if category??>${category.name}</#if>" required/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-sm-6">
+                                    <div class="form-group">   
+                                        <select name="fatherCategory" class="form-control" required>
+                                            <option value="0" <#if !category.fatherCategory??>selected</#if>>Has no father</option>
+                                            <#if (categories?size>0)>
+                                                <#list categories as c>
+                                                    <option <#if category.fatherCategory?has_content && c.key == category.fatherCategory.key> selected </#if> value="${c.key}">${c.name}</option>
+                                                </#list>
+                                            </#if>
+                                        </select>                                 
+                                    </div>
+                                </div>
+                            </div>
+                            <h2 class="card-inside-title">Image of category</h2>
+                            <p>Upload png or jpg not larger than 100 KB</p>
+                            <div class="row clearfix">
+                                <#if category.image?has_content>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">                                   
+                                            <img src="image?imgid=${category.image.key}" alt="${category.image.caption!'Image'}" width="48">
+                                        </div>
+                                    </div>
+                                </#if>
+                                <div class="col-sm-6">
+                                    <div class="form-group">                                   
+                                        <input type="file" name="image" class="dropify" accept="image/png, image/jpeg" data-max-file-size="100K" <#if !category.image?has_content>required</#if>>                                
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="form-group">                                   
+                                        <input type="text" name="caption" class="form-control" placeholder="Image caption" value="<#if category.image?has_content>${category.image.caption}</#if>" required/>                                
+                                    </div>
+                                </div>
+                            </div>
+                            <h2 class="card-inside-title">Characteristics</h2>
+                            <div class="row clearfix" id="parentInput">
+                                <#if category.characteristics?has_content && (category.characteristics?size>0)>
+                                    <#list category.characteristics as chars>
+                                        <#if (chars?index > 0)>
+                                            <div class="col-sm-4" id="a${chars?index}">
+                                                <div class="form-group">      
+                                                    <input type="hidden" name="characteristicKey[]" value="${chars.key}">                             
+                                                    <input type="text" name="characteristicName[]" class="form-control" placeholder="Name" value="${chars.name}" required/>                                   
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4" id="b${chars?index}">
+                                                <div class="form-group">    
+                                                    <input type="text" name="characteristicValue[]" class="form-control" placeholder="Add values separated by ','" pattern="([^,]*[,])*[^,][^,]*" value="${chars.defaultValues}" required/>                                    
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <div class="form-group">    
+                                                    <button class="btn btn-warning" type="button" id="c${chars?index}" onclick="removeInput(this)"><i class="zmdi zmdi-delete"></i> Delete row</button>                                
+                                                </div>
+                                            </div>
+                                        <#else>
+                                            <div class="col-sm-4">
+                                                <div class="form-group">       
+                                                    <input type="hidden" name="characteristicKey[]" value="${chars.key}">                                                         
+                                                    <input type="text" name="characteristicName[]" class="form-control" placeholder="Name" value="${chars.name}" required/>                                   
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <div class="form-group">    
+                                                    <input type="text" name="characteristicValue[]" class="form-control" placeholder="Add values separated by ','" pattern="([^,]*[,])*[^,][^,]*" value="${chars.defaultValues}" required/>                                    
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <div class="form-group">    
+                                                    <button class="btn btn-success" id="d${category.characteristics?size}" type="button" onclick="addInput(this)"><i class="zmdi zmdi-plus"></i>Add row</button>                                                       
+                                                </div>
+                                            </div>
+                                        </#if>
+                                    </#list>
+                                <#else>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">                                   
+                                            <input type="text" name="characteristicName[]" class="form-control" placeholder="Name" required/>                                   
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">    
+                                            <input type="text" name="characteristicValue[]" class="form-control" placeholder="Add values separated by ','" pattern="([^,]*[,])*[^,][^,]*" required/>                                    
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">    
+                                            <button class="btn btn-success" id="d1" type="button" onclick="addInput(this)"><i class="zmdi zmdi-plus"></i>Add row</button>                                                       
+                                        </div>
+                                    </div>
+                                </#if>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-sm-12">
+                                    <div class="form-group">                                   
+                                        <input type="submit" class="btn btn-primary" value="Save" name="save" />                                    
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

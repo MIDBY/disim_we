@@ -19,6 +19,8 @@ public interface CategoryDAO {
 
     List<Category> getMostSoldCategories() throws DataException;
 
+    List<Category> getCategoriesByImage(int image_key) throws DataException;
+
     void setCategory(Category category) throws DataException;
 
     void deleteCategory(Category category) throws DataException;

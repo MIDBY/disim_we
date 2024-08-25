@@ -6,8 +6,8 @@
                     <h2>Order Detail</h2>
                     <ul class="breadcrumb">
                         <li class="breadcrumb-item"><a href="homepage"><i class="zmdi zmdi-home"></i> Aero</a></li>
-                        <li class="breadcrumb-item">Orders</li>
-                        <li class="breadcrumb-item">My orders</li>
+                        <li class="breadcrumb-item"><a href="orders">Orders</a></li>
+                        <li class="breadcrumb-item"><a href="orders?myOrders">My Orders</a></li>
                         <li class="breadcrumb-item active">Detail</li>
                     </ul>
                     <button class="btn btn-primary btn-icon mobile_menu" type="button"><i class="zmdi zmdi-sort-amount-desc"></i></button>
@@ -75,7 +75,7 @@
                             <p>${request.notes}</p>
                             <hr>
                             <small class="text-muted">Created on: </small>
-                            <p>${request.creationDate.format('dd/MM/yyyy)}</p>
+                            <p>${request.creationDate.format('dd/MM/yyyy')}</p>
                             <hr>
                             <small class="text-muted">Status: </small>
                             <p>${request.requestState}</p>

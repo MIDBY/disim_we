@@ -1,0 +1,120 @@
+<section class="content">
+    <div class="body_scroll">
+        <div class="block-header">
+            <div class="row">
+                <div class="col-lg-7 col-md-6 col-sm-12">
+                    <h2>File Manager</h2>
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="homepage"><i class="zmdi zmdi-home"></i> Aero</a></li>
+                        <li class="breadcrumb-item active">Dashboard</li>
+                    </ul>
+                    <button class="btn btn-primary btn-icon mobile_menu" type="button"><i class="zmdi zmdi-sort-amount-desc"></i></button>
+                </div>
+                <div class="col-lg-5 col-md-6 col-sm-12">
+                    <button class="btn btn-primary btn-icon float-right right_icon_toggle_btn" type="button"><i class="zmdi zmdi-arrow-right"></i></button>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">            
+            <div class="row clearfix">
+                <div class="col-lg-3 col-md-6 col-sm-12">
+                    <div class="card widget_2">
+                        <div class="body big_icon storage">
+                            <h6>Storage</h6>
+                            <h2>${storageWeight} <small class="info">of 1Tb</small></h2>                            
+                            <div class="progress m-t-10">
+                            <div class="progress-bar l-green" role="progressbar" aria-valuenow="${percentageStorage}" aria-valuemin="0" aria-valuemax="100" ${percentageStorageCSS}></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>                   
+                <div class="col-lg-3 col-md-6 col-sm-12">
+                    <div class="card widget_2">
+                        <div class="body big_icon images">
+                            <h6>Images</h6>
+                            <h2>${images?size} <small class="info">images uploaded</small></h2>
+                            <div class="progress m-t-10">
+                                <div class="progress-bar l-blue" role="progressbar" aria-valuenow="<#if (images?size>0)>100<#else>0</#if>" aria-valuemin="0" aria-valuemax="100" <#if (images?size>0)>style="width: 100%;"<#else>style="width: 0%;"</#if>></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row clearfix">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <ul class="nav nav-tabs pl-0 pr-0">
+                            <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#list_view">List View</a></li>
+                            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#grid_view">Grid View</a></li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="list_view">
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-hover dataTable js-exportable c_table theme-color">
+                                        <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th data-breakpoints="xs">Caption</th>
+                                                <th data-breakpoints="xs sm md">Usages</th>
+                                                <th data-breakpoints="xs">File size</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <#list images as image>
+                                                <#assign usages = 0>
+                                                <#list imageUsages as key,val>
+                                                    <#if key==image.key>
+                                                        <#assign usages = val>
+                                                    </#if>
+                                                </#list>
+                                                <tr>
+                                                    <td><span><i class="zmdi zmdi-image-o w25 text-blue"></i> ${image.filename}</span></td>
+                                                    <td><span class="owner">${image.caption}</span></td>
+                                                    <td><span class="date"></span>${usages}</td>
+                                                    <td><span class="size"><#if image.imageSize??>${image.imageSize} bit<#else>-</#if></span></td>
+                                                </tr>
+                                            </#list>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="tab-pane file_manager" id="grid_view">
+                                <div class="row clearfix">
+                                    <#list images as image>
+                                        <#assign usages = 0>
+                                        <#list imageUsages as key,val>
+                                            <#if key==image.key>
+                                                <#assign usages = val>
+                                            </#if>
+                                        </#list>
+                                        <form id="delete${image.key}" method="post" action="files?delete&imgid=${image.key}"></form>
+                                        <div class="col-lg-3 col-md-4 col-sm-12">
+                                            <div class="card">
+                                                <a href="javascript:void(0);" class="file">
+                                                    <#if (usages==0)>
+                                                        <div class="hover">
+                                                            <button type="button" class="btn btn-icon btn-icon-mini btn-round btn-danger" onclick="deleteImage(event, '${image.key}', '${image.filename}')">
+                                                                <i class="zmdi zmdi-delete"></i>
+                                                            </button>
+                                                        </div>
+                                                    </#if>
+                                                    <div class="image">
+                                                        <img src="image?imgid=${image.key}" alt="${image.caption!'Image'}" class="img-fluid">
+                                                    </div>
+                                                    <div class="file-name">
+                                                        <p class="m-b-5 text-muted">${image.filename}</p>
+                                                        <small>Size: ${image.imageSize} <span class="date">Usages: ${usages}</span></small>
+                                                    </div>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </#list>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

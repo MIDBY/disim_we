@@ -207,7 +207,7 @@ public class ManageOrders extends WebshopBaseController {
      */
     @Override
     public String getServletInfo() {
-        return "Manage Order servlet";
+        return "Manage Orders servlet";
     }// </editor-fold>
   
 

@@ -210,3 +210,106 @@ function editProposal(event, propId){
       }
     });
 }
+
+function deleteImage(event, imageId, imageName){
+  event.preventDefault();
+  Swal.fire({
+      title: "Are you sure to delete image "+imageName+"?",
+      text: "You won't be able to revert this!",
+      icon: "danger",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+    }).then((result) => {
+      if (result.isConfirmed) {
+          $("#delete"+imageId).submit();
+      }
+    });
+}
+
+function addInput(btn) {
+  var num = btn.id.replace("d","");
+
+  var div4 = document.createElement("div");
+  div4.setAttribute("class", "col-sm-4");
+  div4.setAttribute("id", "a"+num);
+  var div42 = document.createElement("div");
+  div42.setAttribute("class", "col-sm-4");
+  div42.setAttribute("id", "b"+num);
+  var div43 = document.createElement("div");
+  div43.setAttribute("class", "col-sm-4");
+  div43.setAttribute("id", "c"+num);
+
+  var divF = document.createElement("div");
+  divF.setAttribute("class", "form-group");
+  var divF2 = document.createElement("div");
+  divF2.setAttribute("class", "form-group");
+  var divF3 = document.createElement("div");
+  divF3.setAttribute("class", "form-group");
+
+  var x = document.createElement("input");
+  x.setAttribute("type", "text");
+  x.setAttribute("name", "characteristicName[]");
+  x.setAttribute("class", "form-control");
+  x.setAttribute("placeholder", "Name");
+  x.setAttribute("required", "true");
+
+  var y = document.createElement("input");
+  y.setAttribute("type", "text");
+  y.setAttribute("name", "characteristicValue[]");
+  y.setAttribute("class", "form-control");
+  y.setAttribute("placeholder", "Add values separated by ','");
+  y.setAttribute("pattern", "([^,]*[,])*[^,][^,]*");
+  y.setAttribute("required", "true");
+
+  var z = document.createElement("button");
+  z.setAttribute("class", "btn btn-warning")
+  z.setAttribute("type", "button");
+  z.setAttribute("onclick", "removeInput(this)");
+  z.setAttribute("id", num);
+
+  var i = document.createElement("i");
+  i.setAttribute("class", "zmdi zmdi-delete");
+  i.textContent = " Delete row";
+  
+  divF.appendChild(x);
+  div4.appendChild(divF);
+  divF2.appendChild(y);
+  div42.appendChild(divF2);
+  z.appendChild(i);
+  divF3.appendChild(z);
+  div43.appendChild(divF3);
+  document.getElementById("parentInput").appendChild(div4);
+  document.getElementById("parentInput").appendChild(div42);
+  document.getElementById("parentInput").appendChild(div43);
+
+  num = parseInt(num) + 1;
+  btn.setAttribute("id", "d"+num);
+
+}
+
+function removeInput(btn) { 
+  var num = btn.id.replace("c","");
+  num = parseInt(num);
+
+  var a = document.getElementById("a"+num);
+  var b = document.getElementById("b"+num);
+  var c = document.getElementById("c"+num);
+  a.remove();
+  b.remove();
+  c.remove();
+}
+
+function addSelect() {
+  var x = document.createElement("select");
+  x.setAttribute("type", "text");
+  x.setAttribute("name", "You Just added a text field ");
+  document.getElementById("parentDiv").appendChild(x);
+
+  for (var i = 0; i < array.length; i++) {
+    var option = document.createElement("option");
+    option.value = array[i];
+    option.text = array[i];
+    selectList.appendChild(option);
+}
+}
