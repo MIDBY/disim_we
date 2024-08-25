@@ -109,7 +109,7 @@ public class ManageCategoryDetail extends WebshopBaseController {
                     for(String elem : elems) {
                         value += elem.trim() + ",";
                     }
-                    value = value.substring(0, value.length()-1);
+                    value += "Indifferent";
                     s = value;
                 }
 

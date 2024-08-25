@@ -23,7 +23,7 @@ public interface Request extends DataItem<Integer> {
 
     User getOrdering();
 
-    void setOrderding(User orderingUser);
+    void setOrdering(User orderingUser);
 
     User getTechnician();
 

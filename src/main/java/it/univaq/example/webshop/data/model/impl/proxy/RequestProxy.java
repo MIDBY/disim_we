@@ -79,7 +79,7 @@ public class RequestProxy extends RequestImpl implements DataItemProxy {
     public User getOrdering() {
         if (super.getOrdering() == null && ordering_key > 0) {
             try {
-                super.setOrderding(((UserDAO) dataLayer.getDAO(User.class)).getUser(ordering_key));
+                super.setOrdering(((UserDAO) dataLayer.getDAO(User.class)).getUser(ordering_key));
             } catch (DataException ex) {
                 Logger.getLogger(RequestProxy.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -88,8 +88,8 @@ public class RequestProxy extends RequestImpl implements DataItemProxy {
     }
 
     @Override
-    public void setOrderding(User ordering) {
-        super.setOrderding(ordering);
+    public void setOrdering(User ordering) {
+        super.setOrdering(ordering);
         this.ordering_key = ordering.getKey();
         this.modified = true;
     }
@@ -204,7 +204,7 @@ public class RequestProxy extends RequestImpl implements DataItemProxy {
 
     public void setOrderingKey(int ordering_key) {
         this.ordering_key = ordering_key;
-        super.setOrderding(null);
+        super.setOrdering(null);
     }
 
     public void setTechnicianKey(int technician_key) {

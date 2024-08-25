@@ -75,7 +75,7 @@ public class RequestImpl extends DataItemImpl<Integer> implements Request {
     }
 
     @Override
-    public void setOrderding(User orderingUser) {
+    public void setOrdering(User orderingUser) {
         ordering = orderingUser;
     }
 
