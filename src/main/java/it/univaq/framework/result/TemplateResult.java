@@ -23,6 +23,11 @@ import freemarker.template.Template;
 import freemarker.template.TemplateDateModel;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
+import it.univaq.example.webshop.data.dao.impl.WebshopDataLayer;
+import it.univaq.example.webshop.data.model.Group;
+import it.univaq.example.webshop.data.model.impl.UserRoleEnum;
+import it.univaq.framework.data.DataException;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -164,6 +169,38 @@ public class TemplateResult {
         return default_data_model;
     }
 
+    protected Map<String, Object> getDefaultDataModel2(HttpServletRequest request) {
+        // inizializziamo il contenitore per i dati di deafult
+        // initialize the container for default data
+        Map<String, Object> default_data_model = new HashMap<String, Object>();
+
+        // iniettiamo alcuni dati di default nel data model
+        // inject some default data in the data model
+        default_data_model.put("compiled_on", LocalDateTime.now()); // data di compilazione del template
+        default_data_model.put("outline_tpl", context.getInitParameter("view.outline_template2")); // eventuale template di outline
+
+        // aggiungiamo altri dati di inizializzazione presi dal web.xml
+        // add other data taken from web.xml
+        Map<String, Object> init_tpl_data = new HashMap<String, Object>();
+        default_data_model.put("defaults", init_tpl_data);
+        Enumeration<?> parms = context.getInitParameterNames();
+        while (parms.hasMoreElements()) {
+            String name = (String) parms.nextElement();
+            if (name.startsWith("view.data.static.")) {
+                init_tpl_data.put(name.substring(17).replace(".", "_"), context.getInitParameter(name));
+            }
+        }
+
+        // se sono state specificate delle classi filler, facciamo loro riempire il
+        // default data model
+        // if filler classes have been specified, let them fill the default data model
+        for (DataModelFiller f : fillers) {
+            f.fillDataModel(default_data_model, request, context);
+        }
+
+        return default_data_model;
+    }
+
     // questo metodo restituisce un data model estratto dagli attributi della
     // request
     // this method returns the data model extracted from the request attributes
@@ -191,7 +228,23 @@ public class TemplateResult {
         // assicuriamoci di avere sempre un data model da passare al template, che
         // contenga anche tutti i default
         // ensure we have a data model, initialized with some default data
-        Map<String, Object> localdatamodel = getDefaultDataModel(request);
+        int user_key = 0;
+        Map<String, Object> localdatamodel = new HashMap<>();
+        if(request.getAttribute("userid") != null) {
+            try {
+                user_key = Integer.parseInt(request.getSession().getAttribute("userid").toString());
+                Group group = ((WebshopDataLayer) request.getAttribute("datalayer")).getGroupDAO().getGroupByUser(user_key);
+                if(group.getName().equals(UserRoleEnum.ORDINANTE))
+                    localdatamodel = getDefaultDataModel2(request);
+                else 
+                    localdatamodel = getDefaultDataModel(request);
+
+            } catch (DataException e) {
+                e.printStackTrace();
+            }
+            
+        } else
+            localdatamodel = getDefaultDataModel(request);
         // nota: in questo modo il data model utente può eventualmente sovrascrivere i
         // dati precaricati da getDefaultDataModel
         // ad esempio per disattivare l'outline template basta porre a null la

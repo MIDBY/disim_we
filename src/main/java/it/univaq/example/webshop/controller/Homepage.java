@@ -316,7 +316,7 @@ public class Homepage extends WebshopBaseController {
      * Returns a short description of the servlet.
      */
     public String getServletInfo() {
-        return "Main Webshop servlet";
+        return "Homepage Back-end Webshop servlet";
     }
     // </editor-fold>
 }

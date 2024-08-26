@@ -12,7 +12,7 @@ import it.univaq.framework.security.SecurityHelpers;
 import it.univaq.framework.result.TemplateManagerException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -79,15 +79,17 @@ public class ManageCategoryDetail extends WebshopBaseController {
                 int father_key = Integer.parseInt(request.getParameter("fatherCategory").toString());
                 if(father_key > 0)
                     cat.setFatherCategory(((WebshopDataLayer) request.getAttribute("datalayer")).getCategoryDAO().getCategory(father_key));
-                
+                                    
                 Part file_to_upload = request.getPart("image");
-                if(file_to_upload != null){
+                if(file_to_upload.getSubmittedFileName() != ""){
                     Image image = ((WebshopDataLayer) request.getAttribute("datalayer")).getImageDAO().createImage();
-                    image.setFilename(file_to_upload.getSubmittedFileName());
+                    image.setFilename(SecurityHelpers.sanitizeFilename(file_to_upload.getSubmittedFileName()));
                     image.setImageType(file_to_upload.getContentType());
                     image.setImageSize(file_to_upload.getSize()); 
-                    image.setImageData(file_to_upload.getInputStream());
-                    image.setCaption(request.getParameter("caption"));
+                    image.setCaption(cat.getName() + "image");
+                    if (image.getImageSize() > 0 && image.getFilename() != null && !image.getFilename().isBlank()) {
+                        image.setImageData(file_to_upload.getInputStream());
+                    }
                     ((WebshopDataLayer) request.getAttribute("datalayer")).getImageDAO().setImage(image);
                     cat.setImage(image);
                 }
@@ -97,52 +99,62 @@ public class ManageCategoryDetail extends WebshopBaseController {
                 String[] characteristicKeyA = request.getParameterValues("characteristicKey[]");
                 String[] characteristicNameA = request.getParameterValues("characteristicName[]");
                 String[] characteristicValueA = request.getParameterValues("characteristicValue[]");
-                List<String> characteristicKey = new ArrayList<String>(Arrays.asList(characteristicKeyA));
-                List<String> characteristicName = new ArrayList<String>(Arrays.asList(characteristicNameA));
-                List<String> characteristicValue = new ArrayList<String>(Arrays.asList(characteristicValueA));
-
+                
+                List<Characteristic> insert = new ArrayList<>();
+                for(int i=0; i<characteristicNameA.length; i++) {
+                    Characteristic c = ((WebshopDataLayer) request.getAttribute("datalayer")).getCharacteristicDAO().createCharacteristic();
+                    if(characteristicKeyA != null && characteristicKeyA.length > i)
+                        c.setKey(Integer.parseInt(characteristicKeyA[i]));
+                    else
+                        c.setKey(0);
+                    c.setName(characteristicNameA[i]);
+                    c.setDefaultValues(characteristicValueA[i]);
+                    insert.add(c);
+                }
 
                 //formatto i valori di default come "valore1","valore2"... così via senza spazi tra le virgole
-                for(String s : characteristicValue) {
+                for(Characteristic s : insert) {
                     String value = "";
-                    String[] elems = s.split(",");
+                    String[] elems = s.getDefaultValues().split(",");
                     for(String elem : elems) {
                         value += elem.trim() + ",";
                     }
+                    if(value.contains("Indifferent")){
+                        value = value.replaceAll("Indifferent,", "");
+                    }
                     value += "Indifferent";
-                    s = value;
+                    s.setDefaultValues(value);
                 }
 
                 //ritrovo le vecchie caratteristiche se sono da aggiornare
                 if(!characteristics.isEmpty()) {
                     for(Characteristic c : characteristics) {
-                        for(int i=0;i<characteristicKey.size();i++) {
-                            if(characteristicKey.get(i).equals(c.getKey().toString())) {
+                        Iterator<Characteristic> iterator = insert.iterator();
+                        while (iterator.hasNext()) {
+                            Characteristic i = iterator.next();
+                            if(i.getKey() == c.getKey()) {
                                 c.setCategory(cat);
-                                c.setName(characteristicName.get(i));
-                                c.setDefaultValues(characteristicValue.get(i));
-                                characteristicKey.remove(i);
-                                characteristicName.remove(i);
-                                characteristicValue.remove(i);
-                                continue;
+                                c.setName(i.getName());
+                                c.setDefaultValues(i.getDefaultValues());
+                                iterator.remove(); // safely remove the element
                             }
                         }
                     }
                 }
 
                 //se sono state inviate altre caratteristiche, le inserisco
-                if(characteristicName.size()>0) {
-                    for(int i=0; i<characteristicName.size();i++) {
+                if(insert.size()>0) {
+                    for(Characteristic c : insert) {
                         Characteristic element = ((WebshopDataLayer) request.getAttribute("datalayer")).getCharacteristicDAO().createCharacteristic();
                         element.setCategory(cat);
-                        element.setName(characteristicName.get(i));
-                        element.setDefaultValues(characteristicValue.get(i));
+                        element.setName(c.getName());
+                        element.setDefaultValues(c.getDefaultValues());
                         characteristics.add(element);
                     }
                 }
-
-
-
+                
+                for(Characteristic c : characteristics)
+                    ((WebshopDataLayer) request.getAttribute("datalayer")).getCharacteristicDAO().setCharacteristic(c);
 
                 ((WebshopDataLayer) request.getAttribute("datalayer")).getCategoryDAO().setCategory(cat);
                 action_default(request, response, cat_key);
