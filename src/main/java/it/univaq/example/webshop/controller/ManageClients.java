@@ -6,6 +6,7 @@ import it.univaq.example.webshop.data.model.Notification;
 import it.univaq.example.webshop.data.model.Request;
 import it.univaq.example.webshop.data.model.User;
 import it.univaq.example.webshop.data.model.impl.NotificationTypeEnum;
+import it.univaq.example.webshop.data.model.impl.RequestStateEnum;
 import it.univaq.example.webshop.data.model.impl.UserRoleEnum;
 import it.univaq.framework.data.DataException;
 import it.univaq.framework.result.TemplateResult;
@@ -56,14 +57,22 @@ public class ManageClients extends WebshopBaseController {
             List<User> users = ((WebshopDataLayer) request.getAttribute("datalayer")).getUserDAO().getUsersByGroup(ord.getKey());
             request.setAttribute("users", users);
 
-            Map<Integer,Integer> requests = new HashMap<>();
+            Map<Integer,Integer> requestsTot = new HashMap<>();
+            Map<Integer,Integer> requestsActive = new HashMap<>();
             for(User u : users){
                 int count = 0;
+                int active = 0;
                 List<Request> req = ((WebshopDataLayer) request.getAttribute("datalayer")).getRequestDAO().getRequestsByOrdering(u.getKey());
+                for(Request r : req) {
+                    if(!r.getRequestState().equals(RequestStateEnum.CHIUSO))
+                        active ++;
+                }
                 count += req.size(); 
-                requests.put(u.getKey(), count);
+                requestsTot.put(u.getKey(), count);
+                requestsActive.put(u.getKey(), active);
             }
-            request.setAttribute("requests", requests);
+            request.setAttribute("requestsTot", requestsTot);
+            request.setAttribute("requestsActive", requestsActive);
             res.activate("listClients.html", request, response);
         } catch (DataException ex) {
             handleError("Data access exception: " + ex.getMessage(), request, response);
@@ -85,8 +94,7 @@ public class ManageClients extends WebshopBaseController {
                 //sends really emails, than activate it when there is a real email or it will send accidentally mails to real email's people 
                 if(user.isAccepted()){
                     //sendMail(user.getEmail(), "Administration Mail: You're been verified from our site. Now you can login and buy everything you want! Have a nice day");
-                    sendNotification(request, response, user, "Welcome in Webshop, new client!", NotificationTypeEnum.INFO, "");
-                    //TODO: Inserire link per pagina index dello shop
+                    sendNotification(request, response, user, "Welcome in Webshop, new client!", NotificationTypeEnum.INFO, "index");
                 } else {
                     //sendMail(user.getEmail(), "Administration Mail: We're sorry, you're not longer verified on our site. Write to our mail to get informations about");
                     sendNotification(request, response, user, "We're sorry, you're not allowed anymore to stay in Webshop. Bye!", NotificationTypeEnum.INFO, "");

@@ -157,7 +157,7 @@ public class Profile extends WebshopBaseController {
             int user_key = Integer.parseInt(request.getSession().getAttribute("userid").toString());
             User user = ((WebshopDataLayer)request.getAttribute("datalayer")).getUserDAO().getUser(user_key);
             if(user != null) {                    
-                Boolean modified = false;
+                boolean modified = false;
                 if(SecurityHelpers.checkNumeric(request.getParameter("edit")) == 1) {
                     //modifica credenziali di sicurezza
                     if(request.getParameter("newemail") != null && !request.getParameter("newemail").isEmpty()) {

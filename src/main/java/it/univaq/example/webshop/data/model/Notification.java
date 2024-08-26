@@ -1,7 +1,6 @@
 package it.univaq.example.webshop.data.model;
 
 import java.time.LocalDateTime;
-
 import it.univaq.example.webshop.data.model.impl.NotificationTypeEnum;
 import it.univaq.framework.data.DataItem;
 
@@ -27,7 +26,7 @@ public interface Notification extends DataItem<Integer> {
 
     void setCreationDate(LocalDateTime creationDate);
 
-    Boolean isRead();
+    boolean isRead();
 
     void setRead(boolean read);
 }

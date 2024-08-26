@@ -137,6 +137,10 @@
         <servlet-class>it.univaq.example.webshop.controller.ManageCategoryDetail</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>ListNotifications</servlet-name>
+        <servlet-class>it.univaq.example.webshop.controller.ManageNotifications</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>Index</servlet-name>
         <servlet-class>it.univaq.example.webshop.controller.Index</servlet-class>
     </servlet> 
@@ -199,6 +203,10 @@
     <servlet-mapping>
         <servlet-name>CategoryDetail</servlet-name>
         <url-pattern>/categoryDetail</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ListNotifications</servlet-name>
+        <url-pattern>/myNotifications</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>Index</servlet-name>

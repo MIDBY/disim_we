@@ -8,6 +8,8 @@ import it.univaq.framework.data.DataException;
 import it.univaq.framework.result.TemplateResult;
 import it.univaq.framework.result.TemplateManagerException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -44,13 +46,39 @@ public class ManageCategories extends WebshopBaseController {
                 c.getFatherCategory();
                 c.getImage();
             }
-            request.setAttribute("categories", categories);
-            
-            
+
+            List<Category> sortedCategories = new ArrayList<>();
+            List<Category> topCategories = new ArrayList<>();
+            for(Category c: categories) {
+                if(c.getFatherCategory() == null)
+                    topCategories.add(c);
+            }
+
+            topCategories.sort(Comparator.comparing(Category::getKey));
+            //sortedCategories.addAll(topCategories);
+
+            for(Category category : topCategories) {
+                sortedCategories.add(category);
+                addChilds(category, sortedCategories, categories);
+            }
+            request.setAttribute("categories", sortedCategories);
             
             res.activate("listCategories.html", request, response);
         } catch (DataException ex) {
             handleError("Data access exception: " + ex.getMessage(), request, response);
+        }
+    }
+
+    private static void addChilds(Category father, List<Category> sortedCategories, List<Category> total) {
+        List<Category> childs = new ArrayList<>();
+        for(Category c : total) {
+            if(c.getFatherCategory() != null && c.getFatherCategory().getKey() == father.getKey())
+                childs.add(c);
+        }
+        childs.sort(Comparator.comparing(Category::getKey));
+        for(Category child : childs){
+            sortedCategories.add(child);
+            addChilds(child, sortedCategories, total);
         }
     }
 

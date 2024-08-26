@@ -27,7 +27,6 @@ import it.univaq.example.webshop.data.dao.impl.WebshopDataLayer;
 import it.univaq.example.webshop.data.model.Group;
 import it.univaq.example.webshop.data.model.impl.UserRoleEnum;
 import it.univaq.framework.data.DataException;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;

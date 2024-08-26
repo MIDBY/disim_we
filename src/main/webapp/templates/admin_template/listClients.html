@@ -33,6 +33,7 @@
                                             <th>Name</th>
                                             <th>Address</th>
                                             <th>Requests done</th>   
+                                            <th>Active Requests</th>                                     
                                             <th>Signed up</th>
                                             <th>Status</th>
                                             <th class="sorting_asc_disabled sorting_desc_disabled">Accept Client</th>
@@ -44,7 +45,8 @@
                                             <th style="width:50px;"></th>
                                             <th>Name</th>
                                             <th>Address</th>
-                                            <th>Requests Done</th>                                        
+                                            <th>Requests Done</th>   
+                                            <th>Active Requests</th>                                     
                                             <th>Signed up</th>
                                             <th>Status</th>
                                             <th>Accept Client</th>
@@ -55,9 +57,15 @@
                                         <#if (users?size>0)>      
                                             <#list users as user>
                                                 <#assign requestNum = 0>
-                                                <#list requests as key,val>
+                                                <#list requestsTot as key,val>
                                                     <#if key == user.key>
                                                         <#assign requestNum = val>
+                                                    </#if>
+                                                </#list>
+                                                <#assign requestAct = 0>
+                                                <#list requestsActive as key,val>
+                                                    <#if key == user.key>
+                                                        <#assign requestAct = val>
                                                     </#if>
                                                 </#list>
                                                 <tr>
@@ -76,13 +84,12 @@
                                                             ${addressSplit[2]}, ${addressSplit[3]}<br>
                                                             <small>${addressSplit[4]}</small>
                                                         </td>
-                                                        <td>
-                                                            <strong>${requestNum}</strong>
-                                                        </td>
+                                                        <td><strong>${requestNum}</strong></td>
+                                                        <td><strong>${requestAct}</strong></td>
                                                         <td>${user.subscriptionDate}</td>
                                                         <td><span class="badge <#if !user.accepted>badge-danger<#else>badge-success</#if>"><#if !user.accepted>Not accepted<#else>Accepted</#if></span></td>
-                                                        <td><button type="submit" class="btn btn-primary" name="verify" <#if user.accepted>onclick="convertClientToUser(event,${user.key},'${user.username}','${user.email}')"<#else>onclick="convertUserToClient(event,${user.key},'${user.username}','${user.email}')"</#if>><#if !user.accepted>Accept as client<#else>Refuse as client</#if></button></td>
-                                                        <td><button type="submit" class="btn btn-primary" name="assume" onclick="convertUserToTech(event,'${user.key}','${user.username}')">Assume</button></td>
+                                                        <td><button type="submit" class="btn btn-primary" name="verify" <#if user.accepted>onclick="convertClientToUser(event,${user.key},'${user.username}','${user.email}')"<#else>onclick="convertUserToClient(event,${user.key},'${user.username}','${user.email}')"</#if> <#if (requestAct>0)>disabled</#if>><#if !user.accepted>Accept as client<#else>Refuse as client</#if></button></td>
+                                                        <td><button type="submit" class="btn btn-primary" name="assume" onclick="convertUserToTech(event,'${user.key}','${user.username}')" <#if (requestAct>0) || !user.accepted>disabled</#if>>Assume</button></td>
                                                     </form>
                                                 </tr>
                                             </#list>

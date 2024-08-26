@@ -58,7 +58,7 @@ public class RenderImage extends WebshopBaseController {
             request.setAttribute("contentDisposition", "inline");
             //prendiamo il file dal filesystem, anche se la classe Image supporterebbe anche la lettura dal DB
             //get the image from the filesystem, even if the Image class supports also reading image data from the DB
-            result.setResource(new File(getServletContext().getAttribute("images.directory") + image.getFilename()));
+            result.setResource(new File(getServletContext().getInitParameter("images.directory") + File.separator + image.getFilename()));
             result.activate(request, response);
             //result.activate(image.getImageData(), image.getImageSize(), image.getImageType(), request, response);
         } else {

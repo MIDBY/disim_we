@@ -300,16 +300,9 @@ function removeInput(btn) {
   c.remove();
 }
 
-function addSelect() {
-  var x = document.createElement("select");
-  x.setAttribute("type", "text");
-  x.setAttribute("name", "You Just added a text field ");
-  document.getElementById("parentDiv").appendChild(x);
-
-  for (var i = 0; i < array.length; i++) {
-    var option = document.createElement("option");
-    option.value = array[i];
-    option.text = array[i];
-    selectList.appendChild(option);
-}
+function toggle(source) {
+  checkboxes = document.getElementsByName('check[]');
+  for(var i=0, n=checkboxes.length;i<n;i++) {
+    checkboxes[i].checked = source.checked;
+  }
 }

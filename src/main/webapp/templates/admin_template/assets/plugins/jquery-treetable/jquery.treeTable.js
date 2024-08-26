@@ -214,7 +214,7 @@ $(document).ready(function()  {
     function move(node, destination) {
       
       node.inserAfter(destination);
-      childrenOf(node).reverse().each(function() { move($(this), node[0]); });
+      childrenOf(node).each(function() { move($(this), node[0]); });
       //childrenOf(node).each(function() {move($(this), node[0]);});
     };
     

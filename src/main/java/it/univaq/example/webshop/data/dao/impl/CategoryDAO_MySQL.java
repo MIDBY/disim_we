@@ -29,7 +29,7 @@ public class CategoryDAO_MySQL extends DAO implements CategoryDAO {
             super.init();
             sCategoryByID = connection.prepareStatement("SELECT * FROM categoria WHERE id=?");
             sFatherCategories = connection.prepareStatement("SELECT id FROM categoria WHERE idCategoriaPadre=NULL");
-            sCategories = connection.prepareStatement("SELECT id FROM categoria");
+            sCategories = connection.prepareStatement("SELECT id FROM categoria ORDER BY idCategoriaPadre,id;");
             sCategoriesSonsOf = connection.prepareStatement("SELECT id FROM categoria WHERE idCategoriaPadre=?");
             sMostSoldCategories = connection.prepareStatement("SELECT categoria.id as id, count(*) as times FROM categoria join richiesta on categoria.id = richiesta.idCategoria GROUP BY categoria.id ORDER BY times DESC LIMIT 3");
             sCategoryByImage = connection.prepareStatement("SELECT id FROM categoria WHERE idImmagine=?");

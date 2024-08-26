@@ -34,7 +34,7 @@ public class Login extends WebshopBaseController {
             try {
                 User user = ((WebshopDataLayer) request.getAttribute("datalayer")).getUserDAO().getUserByEmail(email);
                 if(user != null) {                
-                    Boolean correctPassword = SecurityHelpers.checkPasswordHashPBKDF2(password, user.getPassword());
+                    boolean correctPassword = SecurityHelpers.checkPasswordHashPBKDF2(password, user.getPassword());
                     if (user != null && correctPassword) {
                         //utente esiste e password corretta, 
                         //controllo se l'utente è nel gruppo Ordinante ed accettato altrimenti passa 

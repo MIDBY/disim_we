@@ -3,11 +3,15 @@
         <div class="block-header">
             <div class="row">
                 <div class="col-lg-7 col-md-6 col-sm-12">
-                    <h2>Basic Form Elements</h2>
+                    <#if category.key == 0>
+                        <h2>New Category</h2>
+                    <#else>
+                        <h2>Edit Category</h2>
+                    </#if>
                     <ul class="breadcrumb">
                         <li class="breadcrumb-item"><a href="homepage"><i class="zmdi zmdi-home"></i> Aero</a></li>
-                        <li class="breadcrumb-item"><a href="javascript:void(0);">Forms</a></li>
-                        <li class="breadcrumb-item active">Basic Form</li>
+                        <li class="breadcrumb-item"><a href="categories">Categories</a></li>
+                        <li class="breadcrumb-item active">Detail</li>
                     </ul>
                 </div>
                 <div class="col-lg-5 col-md-6 col-sm-12">                
@@ -50,7 +54,7 @@
                                 <#if category.image?has_content>
                                     <div class="col-sm-6">
                                         <div class="form-group">                                   
-                                            <img src="image?imgid=${category.image.key}" alt="${category.image.caption!'Image'}" width="48">
+                                            <img src="image?imgid=${category.image.key}" alt="${category.image.caption!'Image'}">
                                         </div>
                                     </div>
                                 </#if>

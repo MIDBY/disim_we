@@ -12,7 +12,7 @@ public class NotificationImpl extends DataItemImpl<Integer> implements Notificat
     private String link;
     private NotificationTypeEnum type;
     private LocalDateTime creationDate;
-    private Boolean read;
+    private boolean read;
 
     public NotificationImpl() {
         super();
@@ -75,7 +75,7 @@ public class NotificationImpl extends DataItemImpl<Integer> implements Notificat
     }
 
     @Override
-    public Boolean isRead() {
+    public boolean isRead() {
         return read;
     }
 

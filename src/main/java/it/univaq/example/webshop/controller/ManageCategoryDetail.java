@@ -10,7 +10,15 @@ import it.univaq.framework.data.DataException;
 import it.univaq.framework.result.TemplateResult;
 import it.univaq.framework.security.SecurityHelpers;
 import it.univaq.framework.result.TemplateManagerException;
+
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -82,12 +90,25 @@ public class ManageCategoryDetail extends WebshopBaseController {
                                     
                 Part file_to_upload = request.getPart("image");
                 if(file_to_upload.getSubmittedFileName() != ""){
-                    Image image = ((WebshopDataLayer) request.getAttribute("datalayer")).getImageDAO().createImage();
+                    Image image;
+                    if(cat.getImage() != null) 
+                        image = cat.getImage();
+                    else 
+                        image = ((WebshopDataLayer) request.getAttribute("datalayer")).getImageDAO().createImage();
                     image.setFilename(SecurityHelpers.sanitizeFilename(file_to_upload.getSubmittedFileName()));
                     image.setImageType(file_to_upload.getContentType());
                     image.setImageSize(file_to_upload.getSize()); 
-                    image.setCaption(cat.getName() + "image");
+                    image.setCaption(cat.getName() + " image");
                     if (image.getImageSize() > 0 && image.getFilename() != null && !image.getFilename().isBlank()) {
+                        Path target = Paths.get(getServletContext().getInitParameter("images.directory") + File.separator + image.getFilename());
+                        //handle files with the same name in the output directory
+                        int guess = 0;
+                        while (Files.exists(target, LinkOption.NOFOLLOW_LINKS)) {
+                            target = Paths.get(getServletContext().getInitParameter("images.directory") + File.separator + (++guess) + "_" + image.getFilename());
+                        }
+                        try (InputStream temp_upload = file_to_upload.getInputStream()) {
+                            Files.copy(temp_upload, target, StandardCopyOption.REPLACE_EXISTING); //nio utility. Otherwise, use a buffer and copy from inputstream to fileoutputstream
+                        }
                         image.setImageData(file_to_upload.getInputStream());
                     }
                     ((WebshopDataLayer) request.getAttribute("datalayer")).getImageDAO().setImage(image);
@@ -157,7 +178,7 @@ public class ManageCategoryDetail extends WebshopBaseController {
                     ((WebshopDataLayer) request.getAttribute("datalayer")).getCharacteristicDAO().setCharacteristic(c);
 
                 ((WebshopDataLayer) request.getAttribute("datalayer")).getCategoryDAO().setCategory(cat);
-                action_default(request, response, cat_key);
+                response.sendRedirect("categories");
             } else {
                 handleError("Cannot update category", request, response);
             }
