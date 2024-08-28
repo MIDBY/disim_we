@@ -21,9 +21,7 @@ import it.univaq.framework.data.OptimisticLockException;
 public class RequestDAO_MySQL extends DAO implements RequestDAO {
 
     private PreparedStatement sRequestByID, sRequestsByCategory, sRequestsByOrdering, sRequestsByTechnician, sRequestsByRequestState,
-     sRequestsByOrderState, sUnassignedRequests, sRequestsByCreationMonth,
-    //sGetLatestRequestKey, 
-    sRequests, iRequest, uRequest;
+     sRequestsByOrderState, sUnassignedRequests, sRequestsByCreationMonth, sRequests, iRequest, uRequest;
 
     public RequestDAO_MySQL(DataLayer d) {
         super(d);
@@ -41,7 +39,6 @@ public class RequestDAO_MySQL extends DAO implements RequestDAO {
             sRequestsByOrderState = connection.prepareStatement("SELECT id FROM richiesta WHERE statoOrdine=?");
             sUnassignedRequests = connection.prepareStatement("SELECT id FROM richiesta WHERE idTecnico IS NULL");
             sRequestsByCreationMonth = connection.prepareStatement("SELECT id FROM richiesta WHERE MONTH(dataCreazione)=? and YEAR(dataCreazione)=?");
-            //sGetLatestRequestKey = connection.prepareStatement("SELECT id FROM richiesta WHERE 1");
             sRequests = connection.prepareStatement("SELECT id FROM richiesta");
             iRequest = connection.prepareStatement("INSERT INTO richiesta (titolo,descrizione,idCategoria,idOrdinante,idTecnico,statoRichiesta,statoOrdine,dataCreazione,note) VALUES(?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
             uRequest = connection.prepareStatement("UPDATE richiesta SET titolo=?,descrizione=?,idCategoria=?,idOrdinante=?,idTecnico=?,statoRichiesta=?,statoOrdine=?,dataCreazione=?,note=?,versione=? WHERE id=? and versione=?");
@@ -228,18 +225,6 @@ public class RequestDAO_MySQL extends DAO implements RequestDAO {
         }
         return result;
     }
-/*
-        @Override
-    public Request getLatestRequest() throws DataException {
-        try (ResultSet rs = sGetLatestRequestKey.executeQuery()) {
-            if (rs.next()) {
-                return getRequest(rs.getInt("id"));
-            }
-        } catch (SQLException ex) {
-            throw new DataException("Unable to load latest request", ex);
-        }
-        return null;
-    }*/
 
     @Override
     public List<Request> getRequests() throws DataException {

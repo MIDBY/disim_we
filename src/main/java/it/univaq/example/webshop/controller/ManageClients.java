@@ -47,7 +47,7 @@ public class ManageClients extends WebshopBaseController {
         try {
             TemplateResult res = new TemplateResult(getServletContext());
             int user_key = Integer.parseInt(request.getSession().getAttribute("userid").toString());
-            User user = ((WebshopDataLayer)request.getAttribute("datalayer")).getUserDAO().getUser(user_key);
+            User user = ((WebshopDataLayer) request.getAttribute("datalayer")).getUserDAO().getUser(user_key);
             Group group = ((WebshopDataLayer) request.getAttribute("datalayer")).getGroupDAO().getGroupByUser(user_key);
 
             request.setAttribute("username", user.getUsername());
@@ -183,8 +183,9 @@ public class ManageClients extends WebshopBaseController {
             throws ServletException {
 
         request.setAttribute("title", "Clients");
-        request.setAttribute("userid", request.getSession().getAttribute("userid"));
-
+        request.setAttribute("themeMode", request.getSession().getAttribute("themeMode"));
+        request.setAttribute("themeSkin", request.getSession().getAttribute("themeSkin"));
+        
         int user_key;
         try {
             HttpSession s = request.getSession(false);

@@ -13,6 +13,7 @@ public class CategoryImpl extends DataItemImpl<Integer> implements Category {
     private Image image;
     private Category fatherCategory;
     private List<Characteristic> characteristics;
+    private boolean deleted;
 
 
     public CategoryImpl() {
@@ -21,6 +22,7 @@ public class CategoryImpl extends DataItemImpl<Integer> implements Category {
         image = null;
         fatherCategory = null;
         characteristics = null;
+        deleted = false;
     }
 
     @Override
@@ -68,6 +70,13 @@ public class CategoryImpl extends DataItemImpl<Integer> implements Category {
         characteristics.add(characteristic);
     }
 
+    @Override
+    public boolean isDeleted() {
+        return deleted;
+    }
 
-    
+    @Override 
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
 }

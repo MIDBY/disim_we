@@ -28,7 +28,7 @@ public class Index extends WebshopBaseController {
             throws IOException, ServletException, TemplateManagerException {
         try {
             int user_key = Integer.parseInt(request.getSession().getAttribute("userid").toString());
-            User user = ((WebshopDataLayer)request.getAttribute("datalayer")).getUserDAO().getUser(user_key);
+            User user = ((WebshopDataLayer) request.getAttribute("datalayer")).getUserDAO().getUser(user_key);
             if(user != null) {
                 Group group = ((WebshopDataLayer) request.getAttribute("datalayer")).getGroupDAO().getGroupByUser(user_key);
 

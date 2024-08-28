@@ -17,12 +17,6 @@ public interface Group extends DataItem<Integer> {
 
     void addUser(User user);
 
-    List<Service> getServices();
-
-    void setServices(List<Service> services);
-
-    void addService(Service service);
-
 }
 
  

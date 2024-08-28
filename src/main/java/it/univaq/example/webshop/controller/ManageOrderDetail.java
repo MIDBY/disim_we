@@ -49,7 +49,7 @@ public class ManageOrderDetail extends WebshopBaseController {
         try {
             TemplateResult res = new TemplateResult(getServletContext());
             int user_key = Integer.parseInt(request.getSession().getAttribute("userid").toString());
-            User user = ((WebshopDataLayer)request.getAttribute("datalayer")).getUserDAO().getUser(user_key);
+            User user = ((WebshopDataLayer) request.getAttribute("datalayer")).getUserDAO().getUser(user_key);
             Group group = ((WebshopDataLayer) request.getAttribute("datalayer")).getGroupDAO().getGroupByUser(user_key);
 
             request.setAttribute("username", user.getUsername());
@@ -95,14 +95,17 @@ public class ManageOrderDetail extends WebshopBaseController {
                 case "ORDINATO":   
                     percentageProgress = 50;
                     switch (req.getOrderState().toString()) {
-                        case "INATTESA":
+                        case "SPEDITO":
                             percentageProgress = 80;
                             break;
-                        case "APPROVATO":
+                        case "ACCETTATO":
                             percentageProgress = 100;
                             break;
-                        case "RESPINTO":
-                            percentageProgress = 70;
+                        case "RESPINTONONCONFORME":
+                            percentageProgress = 100;
+                            break;
+                        case "RESPINTONONFUNZIONANTE":
+                            percentageProgress = 100;
                             break;
                         default:
                             percentageProgress = 50;
@@ -146,7 +149,7 @@ public class ManageOrderDetail extends WebshopBaseController {
             }
             if (req != null) {                
                 int user_key = Integer.parseInt(request.getSession().getAttribute("userid").toString());
-                User user = ((WebshopDataLayer)request.getAttribute("datalayer")).getUserDAO().getUser(user_key);
+                User user = ((WebshopDataLayer) request.getAttribute("datalayer")).getUserDAO().getUser(user_key);
                 
                 boolean newP = false;
                 Proposal proposal;
@@ -180,7 +183,7 @@ public class ManageOrderDetail extends WebshopBaseController {
                     //TODO: Inserire link per pagina visualizzazione proposta del cliente
                 } else {
                     //sendMail(req.getOrdering().getEmail(), "Info mail: Proposal of your request: '+req.getTitle()+' has been edited, go to check it!");
-                    sendNotification(request, response, req.getOrdering(), "Request: "+req.getTitle()+".\n Our technician has edited proposal, go to check it!", NotificationTypeEnum.NUOVO, ""); 
+                    sendNotification(request, response, req.getOrdering(), "Request: "+req.getTitle()+".\n Our technician has edited proposal, go to check it!", NotificationTypeEnum.MODIFICATO, ""); 
                     //TODO: Inserire link per pagina visualizzazione proposta del cliente
                 }
                 action_default(request, response, req_key);
@@ -266,8 +269,9 @@ public class ManageOrderDetail extends WebshopBaseController {
             throws ServletException {
 
         request.setAttribute("title", "Detail");
-        request.setAttribute("userid", request.getSession().getAttribute("userid"));
-
+        request.setAttribute("themeMode", request.getSession().getAttribute("themeMode"));
+        request.setAttribute("themeSkin", request.getSession().getAttribute("themeSkin"));
+        
         int req_key;
         try {
             HttpSession s = request.getSession(false);

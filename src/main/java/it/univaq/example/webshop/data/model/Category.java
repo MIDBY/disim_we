@@ -22,5 +22,9 @@ public interface Category extends DataItem<Integer> {
     void setCharacteristics(List<Characteristic> characteristics);
 
     void addCharacteristic(Characteristic characteristic);
+
+    boolean isDeleted();
+
+    void setDeleted(boolean deleted);
     
 }

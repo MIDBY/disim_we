@@ -216,13 +216,29 @@ function deleteImage(event, imageId, imageName){
   Swal.fire({
       title: "Are you sure to delete image "+imageName+"?",
       text: "You won't be able to revert this!",
-      icon: "danger",
+      icon: "error",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
     }).then((result) => {
       if (result.isConfirmed) {
           $("#delete"+imageId).submit();
+      }
+    });
+}
+
+function deleteCategory(event, categoryId, categoryName){
+  event.preventDefault();
+  Swal.fire({
+      title: "Are you sure to delete category: "+categoryName+"?",
+      text: "His hildrens will be entrusted to its parent",
+      icon: "error",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+    }).then((result) => {
+      if (result.isConfirmed) {
+          $("#delete"+categoryId).submit();
       }
     });
 }
@@ -306,3 +322,40 @@ function toggle(source) {
     checkboxes[i].checked = source.checked;
   }
 }
+
+function loadTheme() {
+  $.ajax({
+    type: "POST",
+    url: "/disim_we-1.0/themeServlet?loadTheme", 
+    success: function(data) {
+      var theme = data;
+      if (theme === "dark") {
+        $("body").addClass("theme-dark");
+      } else {
+        $("body").removeClass("theme-dark");
+      }
+    }
+  });
+}
+
+function saveTheme(btn){
+  var theme = $(btn).val();
+  $.ajax({
+    type:"POST",
+    url: "/disim_we-1.0/themeServlet?save",
+    data: {theme: theme}
+  });
+}
+
+function saveSkin(btn){
+  var theme = btn;
+  $.ajax({
+    type:"POST",
+    url: "/disim_we-1.0/themeServlet?save",
+    data: {themeSkin: theme}
+  });
+}
+
+$(document).ready(function() {
+  loadTheme();
+});

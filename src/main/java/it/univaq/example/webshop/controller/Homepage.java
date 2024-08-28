@@ -43,7 +43,7 @@ public class Homepage extends WebshopBaseController {
             throws IOException, ServletException, TemplateManagerException {
         try {
             int user_key = Integer.parseInt(request.getSession().getAttribute("userid").toString());
-            User user = ((WebshopDataLayer)request.getAttribute("datalayer")).getUserDAO().getUser(user_key);
+            User user = ((WebshopDataLayer) request.getAttribute("datalayer")).getUserDAO().getUser(user_key);
             if(user != null) {
                 Group group = ((WebshopDataLayer) request.getAttribute("datalayer")).getGroupDAO().getGroupByUser(user_key);
 
@@ -89,7 +89,7 @@ public class Homepage extends WebshopBaseController {
 
                 //riquadro clienti
                 Group groupOrdering = ((WebshopDataLayer) request.getAttribute("datalayer")).getGroupDAO().getGroupByName(UserRoleEnum.ORDINANTE);
-                List<User> clients = ((WebshopDataLayer)request.getAttribute("datalayer")).getUserDAO().getUsersByGroup(groupOrdering.getKey());
+                List<User> clients = ((WebshopDataLayer) request.getAttribute("datalayer")).getUserDAO().getUsersByGroup(groupOrdering.getKey());
                 int clientsTotal = clients.size();
                 int clientsAccepted = 0;
                 for (User u : clients) {
@@ -152,18 +152,18 @@ public class Homepage extends WebshopBaseController {
 
                 //riquadro best technician
                 Group groupTechnician = ((WebshopDataLayer) request.getAttribute("datalayer")).getGroupDAO().getGroupByName(UserRoleEnum.TECNICO);
-                List<User> technicians = ((WebshopDataLayer)request.getAttribute("datalayer")).getUserDAO().getUsersByGroup(groupTechnician.getKey());
+                List<User> technicians = ((WebshopDataLayer) request.getAttribute("datalayer")).getUserDAO().getUsersByGroup(groupTechnician.getKey());
                 User bestT = null;
                 int rTechAccepted = 0;
                 float cTechEarned = 0;
                 for (User t : technicians) {
                     int rAccepted = 0;
                     float cashEarned = 0;
-                    List<Request> rTech = ((WebshopDataLayer)request.getAttribute("datalayer")).getRequestDAO().getRequestsByTechnician(t.getKey());
+                    List<Request> rTech = ((WebshopDataLayer) request.getAttribute("datalayer")).getRequestDAO().getRequestsByTechnician(t.getKey());
                     if(rTech != null){
                         rAccepted = rTech.size();
                         for (Request r : rTech) {
-                            Proposal pTech = ((WebshopDataLayer)request.getAttribute("datalayer")).getProposalDAO().getLastProposalByRequest(r.getKey());
+                            Proposal pTech = ((WebshopDataLayer) request.getAttribute("datalayer")).getProposalDAO().getLastProposalByRequest(r.getKey());
                             if(pTech != null && pTech.getProposalState().equals(ProposalStateEnum.APPROVATO) && r.getOrderState().equals(OrderStateEnum.ACCETTATO)){
                                 cashEarned += pTech.getProductPrice();
                             } else {
@@ -298,8 +298,10 @@ public class Homepage extends WebshopBaseController {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException {
 
-        request.setAttribute("userid", request.getSession().getAttribute("userid"));
         request.setAttribute("title", "Homepage");
+        request.setAttribute("themeMode", request.getSession().getAttribute("themeMode"));
+        request.setAttribute("themeSkin", request.getSession().getAttribute("themeSkin"));
+
         try {
             HttpSession s = request.getSession(false);
             if (s == null) {

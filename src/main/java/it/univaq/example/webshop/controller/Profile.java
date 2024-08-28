@@ -38,7 +38,7 @@ public class Profile extends WebshopBaseController {
             throws IOException, ServletException, TemplateManagerException {
         try {        
             int user_key = Integer.parseInt(request.getSession().getAttribute("userid").toString());
-            User user = ((WebshopDataLayer)request.getAttribute("datalayer")).getUserDAO().getUser(user_key);
+            User user = ((WebshopDataLayer) request.getAttribute("datalayer")).getUserDAO().getUser(user_key);
             if(user != null) {
                 Group group = ((WebshopDataLayer) request.getAttribute("datalayer")).getGroupDAO().getGroupByUser(user_key);
                 String[] address = new String[5];
@@ -78,7 +78,7 @@ public class Profile extends WebshopBaseController {
             throws IOException, ServletException, TemplateManagerException {
         try {
             int user_key = Integer.parseInt(request.getSession().getAttribute("userid").toString());
-            User user = ((WebshopDataLayer)request.getAttribute("datalayer")).getUserDAO().getUser(user_key);
+            User user = ((WebshopDataLayer) request.getAttribute("datalayer")).getUserDAO().getUser(user_key);
             if(user != null) {
                 Group group = ((WebshopDataLayer) request.getAttribute("datalayer")).getGroupDAO().getGroupByUser(user_key);
                 String[] address = new String[5];
@@ -100,13 +100,13 @@ public class Profile extends WebshopBaseController {
 
                     int rTechAccepted = 0;
                     float cTechEarned = 0;
-                    int totRequests = ((WebshopDataLayer)request.getAttribute("datalayer")).getRequestDAO().getRequests().size();
+                    int totRequests = ((WebshopDataLayer) request.getAttribute("datalayer")).getRequestDAO().getRequests().size();
                     float totCash = 0;
-                    List<Request> rTech = ((WebshopDataLayer)request.getAttribute("datalayer")).getRequestDAO().getRequestsByTechnician(user.getKey());
+                    List<Request> rTech = ((WebshopDataLayer) request.getAttribute("datalayer")).getRequestDAO().getRequestsByTechnician(user.getKey());
                     if(rTech != null){
                         rTechAccepted = rTech.size();
                         for (Request r : rTech) {
-                            Proposal pTech = ((WebshopDataLayer)request.getAttribute("datalayer")).getProposalDAO().getLastProposalByRequest(r.getKey());
+                            Proposal pTech = ((WebshopDataLayer) request.getAttribute("datalayer")).getProposalDAO().getLastProposalByRequest(r.getKey());
                             if(pTech != null && pTech.getProposalState().equals(ProposalStateEnum.APPROVATO) && r.getOrderState().equals(OrderStateEnum.ACCETTATO)){
                                 cTechEarned += pTech.getProductPrice();
                             } else {
@@ -114,10 +114,10 @@ public class Profile extends WebshopBaseController {
                             }
                         }
                     }  
-                    rTech = ((WebshopDataLayer)request.getAttribute("datalayer")).getRequestDAO().getRequestsByOrderState(OrderStateEnum.ACCETTATO);
+                    rTech = ((WebshopDataLayer) request.getAttribute("datalayer")).getRequestDAO().getRequestsByOrderState(OrderStateEnum.ACCETTATO);
                     if(rTech != null){
                         for (Request r : rTech) {
-                            Proposal pTech = ((WebshopDataLayer)request.getAttribute("datalayer")).getProposalDAO().getLastProposalByRequest(r.getKey());
+                            Proposal pTech = ((WebshopDataLayer) request.getAttribute("datalayer")).getProposalDAO().getLastProposalByRequest(r.getKey());
                             if(pTech != null && pTech.getProposalState().equals(ProposalStateEnum.APPROVATO)){
                                 totCash += pTech.getProductPrice();
                             } else {
@@ -155,13 +155,13 @@ public class Profile extends WebshopBaseController {
             throws IOException, ServletException, TemplateManagerException {
         try {
             int user_key = Integer.parseInt(request.getSession().getAttribute("userid").toString());
-            User user = ((WebshopDataLayer)request.getAttribute("datalayer")).getUserDAO().getUser(user_key);
+            User user = ((WebshopDataLayer) request.getAttribute("datalayer")).getUserDAO().getUser(user_key);
             if(user != null) {                    
                 boolean modified = false;
                 if(SecurityHelpers.checkNumeric(request.getParameter("edit")) == 1) {
                     //modifica credenziali di sicurezza
                     if(request.getParameter("newemail") != null && !request.getParameter("newemail").isEmpty()) {
-                        User example = ((WebshopDataLayer)request.getAttribute("datalayer")).getUserDAO().getUserByEmail(request.getParameter("newemail"));
+                        User example = ((WebshopDataLayer) request.getAttribute("datalayer")).getUserDAO().getUserByEmail(request.getParameter("newemail"));
                         if(example == null) {
                             user.setEmail(request.getParameter("newemail"));
                             modified = true;
@@ -205,7 +205,7 @@ public class Profile extends WebshopBaseController {
                 }
                 
                 if(modified) {
-                    ((WebshopDataLayer)request.getAttribute("datalayer")).getUserDAO().setUser(user);
+                    ((WebshopDataLayer) request.getAttribute("datalayer")).getUserDAO().setUser(user);
                     if (request.getParameter("referrer") != null) {
                         response.sendRedirect(request.getParameter("referrer"));
                     } else {
@@ -263,8 +263,9 @@ public class Profile extends WebshopBaseController {
             throws ServletException {
 
         request.setAttribute("title", "Profile");
-        request.setAttribute("userid", request.getSession().getAttribute("userid"));
-
+        request.setAttribute("themeMode", request.getSession().getAttribute("themeMode"));
+        request.setAttribute("themeSkin", request.getSession().getAttribute("themeSkin"));
+        
         try {
             HttpSession s = request.getSession(false);
             if (s != null) {

@@ -21,6 +21,7 @@
                     <div class="card">
                         <ul class="nav nav-tabs pl-0 pr-0">
                             <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#open_list">Open Requests</a></li>
+                            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#ship_list">Shipping Orders</a></li>
                             <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#closed_list">Closed Requests</a></li>
                         </ul>
                         <div class="tab-content">
@@ -29,7 +30,6 @@
                                     <table class="table table-striped table-hover dataTable js-exportable c_table theme-color">
                                         <thead>
                                             <tr>                                       
-                                                <th class="sorting_asc_disabled sorting_desc_disabled" style="width:50px;"></th>
                                                 <th>Category</th>
                                                 <th>Title</th>
                                                 <th>Description</th>   
@@ -42,7 +42,6 @@
                                         </thead>
                                         <tfoot>
                                             <tr>                                       
-                                                <th style="width:50px;"></th>
                                                 <th>Category</th>
                                                 <th>Title</th>
                                                 <th>Description</th>   
@@ -57,12 +56,9 @@
                                             <#if (requests?size>0)>      
                                                 <#list requests as request>
                                                     <tr>
-                                                        <td>
-                                                            <img class="rounded avatar" src="image?imgid=${request.category.image.key}" alt="${request.category.image.caption!'Image'}">
-                                                        </td>
                                                         <td>${request.category.name}</td>
                                                         <td>${request.title}</td>
-                                                        <td><textarea cols="32" style="white-space: pre-wrap;" disabled>${request.description}</textarea></td>
+                                                        <td><textarea cols="32" class="not-split-text" disabled>${request.description}</textarea></td>
                                                         <td><span class="badge badge-primary">${request.ordering.username}</span></td>
                                                         <td><#if request.technician??><span class="badge badge-success">${request.technician.username}</span><#else><span class="badge badge-danger">No Technician</span></#if></td>
                                                         <td>${request.requestState}</td>
@@ -75,55 +71,99 @@
                                     </table>
                                 </div>
                             </div>
-                        <div class="tab-pane file_manager" id="closed_list">
-                            <div class="table-responsive">
-                                <table class="table table-striped table-hover dataTable js-exportable c_table theme-color">
-                                    <thead>
-                                        <tr>                                       
-                                            <th class="sorting_asc_disabled sorting_desc_disabled" style="width:50px;"></th>
-                                            <th>Category</th>
-                                            <th>Title</th>
-                                            <th>Description</th>   
-                                            <th>Ordering</th>
-                                            <th>Technician</th>
-                                            <th>Status</th>
-                                            <th>Ordering Status</th>
-                                            <th>Creation Date</th>
-                                        </tr>
-                                    </thead>
-                                    <tfoot>
-                                        <tr>                                       
-                                            <th style="width:50px;"></th>
-                                            <th>Category</th>
-                                            <th>Title</th>
-                                            <th>Description</th>   
-                                            <th>Ordering</th>
-                                            <th>Technician</th>
-                                            <th>Status</th>
-                                            <th>Ordering Status</th>
-                                            <th>Creation Date</th>
-                                        </tr>
-                                    </tfoot>
-                                    <tbody>
-                                        <#if (crequests?size>0)>      
-                                            <#list crequests as crequest>
-                                                <tr>
-                                                    <td>
-                                                        <img class="rounded avatar" src="image?imgid=${crequest.category.image.key}" alt="${crequest.category.image.caption!'Image'}">
-                                                    </td>
-                                                    <td>${crequest.category.name}</td>
-                                                    <td>${crequest.title}</td>
-                                                    <td><textarea cols="32" style="white-space: pre-wrap;" disabled>${crequest.description}</textarea></td>
-                                                    <td><span class="badge badge-primary">${crequest.ordering.username}</span></td>
-                                                    <td><#if crequest.technician??><span class="badge badge-success">${crequest.technician.username}</span><#else><span class="badge badge-danger">No Technician</span></#if></td>
-                                                    <td>${crequest.requestState}</td>
-                                                    <td>${crequest.orderState}</td>
-                                                    <td>${crequest.creationDate.format('dd/MM/yyyy')}</td>
-                                                </tr>
-                                            </#list>
-                                        </#if>
-                                    </tbody>
-                                </table>
+                            <div class="tab-pane" id="ship_list">
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-hover dataTable js-exportable c_table theme-color">
+                                        <thead>
+                                            <tr>                                       
+                                                <th>Category</th>
+                                                <th>Product</th>
+                                                <th>Description</th>   
+                                                <th>Ordering</th>
+                                                <th>Status</th>
+                                                <th>Ordering Status</th>
+                                                <th>Send</th>
+                                            </tr>
+                                        </thead>
+                                        <tfoot>
+                                            <tr>                                       
+                                                <th>Category</th>
+                                                <th>Product</th>
+                                                <th>Description</th>   
+                                                <th>Ordering</th>
+                                                <th>Status</th>
+                                                <th>Ordering Status</th>
+                                                <th>Send</th>
+                                            </tr>
+                                        </tfoot>
+                                        <tbody>
+                                            <#if (shippingRequests?size>0)>      
+                                                <#list shippingRequests as request>
+                                                    <#list request.proposals as proposal>
+                                                        <#if proposal.proposalState?matches("APPROVATO", "i")>
+                                                            <#assign prop = proposal>
+                                                        </#if>
+                                                    </#list>
+                                                    <tr>
+                                                        <td>${request.category.name}</td>
+                                                        <td>${prop.productName}</td>
+                                                        <td><textarea cols="32" class="not-split-text" disabled>${prop.productDescription}</textarea></td>
+                                                        <td><span class="badge badge-primary">${request.ordering.username}</span></td>
+                                                        <td>${request.requestState}</td>
+                                                        <td>${request.orderState}</td>
+                                                        <td><a href="requests?ship=${request.key}" class="btn btn-success waves-effect waves-float btn-sm waves-green">Ship</a></td>
+                                                    </tr>
+                                                </#list>
+                                            </#if>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="closed_list">
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-hover dataTable js-exportable c_table theme-color">
+                                        <thead>
+                                            <tr>                                       
+                                                <th>Category</th>
+                                                <th>Title</th>
+                                                <th>Description</th>   
+                                                <th>Ordering</th>
+                                                <th>Technician</th>
+                                                <th>Status</th>
+                                                <th>Ordering Status</th>
+                                                <th>Creation Date</th>
+                                            </tr>
+                                        </thead>
+                                        <tfoot>
+                                            <tr>                                       
+                                                <th>Category</th>
+                                                <th>Title</th>
+                                                <th>Description</th>   
+                                                <th>Ordering</th>
+                                                <th>Technician</th>
+                                                <th>Status</th>
+                                                <th>Ordering Status</th>
+                                                <th>Creation Date</th>
+                                            </tr>
+                                        </tfoot>
+                                        <tbody>
+                                            <#if (closedRequests?size>0)>      
+                                                <#list closedRequests as request>
+                                                    <tr>
+                                                        <td>${request.category.name}</td>
+                                                        <td>${request.title}</td>
+                                                        <td><textarea cols="32" class="not-split-text" disabled>${request.description}</textarea></td>
+                                                        <td><span class="badge badge-primary">${request.ordering.username}</span></td>
+                                                        <td><#if request.technician??><span class="badge badge-success">${request.technician.username}</span><#else><span class="badge badge-danger">No Technician</span></#if></td>
+                                                        <td>${request.requestState}</td>
+                                                        <td>${request.orderState}</td>
+                                                        <td>${request.creationDate.format('dd/MM/yyyy')}</td>
+                                                    </tr>
+                                                </#list>
+                                            </#if>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>

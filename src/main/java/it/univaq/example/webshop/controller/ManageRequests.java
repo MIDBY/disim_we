@@ -2,14 +2,28 @@ package it.univaq.example.webshop.controller;
 
 import it.univaq.example.webshop.data.dao.impl.WebshopDataLayer;
 import it.univaq.example.webshop.data.model.Group;
+import it.univaq.example.webshop.data.model.Notification;
 import it.univaq.example.webshop.data.model.Request;
 import it.univaq.example.webshop.data.model.User;
+import it.univaq.example.webshop.data.model.impl.NotificationTypeEnum;
+import it.univaq.example.webshop.data.model.impl.OrderStateEnum;
 import it.univaq.example.webshop.data.model.impl.RequestStateEnum;
 import it.univaq.framework.data.DataException;
 import it.univaq.framework.result.TemplateResult;
+import it.univaq.framework.security.SecurityHelpers;
 import it.univaq.framework.result.TemplateManagerException;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Properties;
+
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -32,7 +46,7 @@ public class ManageRequests extends WebshopBaseController {
         try {
             TemplateResult res = new TemplateResult(getServletContext());
             int user_key = Integer.parseInt(request.getSession().getAttribute("userid").toString());
-            User user = ((WebshopDataLayer)request.getAttribute("datalayer")).getUserDAO().getUser(user_key);
+            User user = ((WebshopDataLayer) request.getAttribute("datalayer")).getUserDAO().getUser(user_key);
             Group group = ((WebshopDataLayer) request.getAttribute("datalayer")).getGroupDAO().getGroupByUser(user_key);
 
             request.setAttribute("username", user.getUsername());
@@ -40,7 +54,7 @@ public class ManageRequests extends WebshopBaseController {
             
             List<Request> requests = ((WebshopDataLayer) request.getAttribute("datalayer")).getRequestDAO().getRequests();
             for(Request r : requests) {
-                if(r.getRequestState().equals(RequestStateEnum.CHIUSO)) {
+                if(r.getRequestState().equals(RequestStateEnum.CHIUSO) || r.getRequestState().equals(RequestStateEnum.ANNULLATO)) {
                     requests.remove(r);
                     continue;
                 }
@@ -54,7 +68,17 @@ public class ManageRequests extends WebshopBaseController {
             }
             request.setAttribute("requests", requests);
 
+            List<Request> shippingRequests = ((WebshopDataLayer) request.getAttribute("datalayer")).getRequestDAO().getRequestsByRequestState(RequestStateEnum.ORDINATO);
+            for(Request r : shippingRequests) {
+                r.getCategory();
+                r.getCategory().getImage();
+                r.getOrdering();
+                r.getProposals();
+            }
+            request.setAttribute("shippingRequests", shippingRequests);
+
             List<Request> closedRequests = ((WebshopDataLayer) request.getAttribute("datalayer")).getRequestDAO().getRequestsByRequestState(RequestStateEnum.CHIUSO);
+            closedRequests.addAll(((WebshopDataLayer) request.getAttribute("datalayer")).getRequestDAO().getRequestsByRequestState(RequestStateEnum.ANNULLATO));
             for(Request r : closedRequests) {
                 r.getCategory();
                 r.getCategory().getImage();
@@ -64,11 +88,80 @@ public class ManageRequests extends WebshopBaseController {
                 r.setRequestCharacteristics(r.getRequestCharacteristics());
                 r.setProposals(r.getProposals());
             }
-            request.setAttribute("crequests", closedRequests);
+            request.setAttribute("closedRequests", closedRequests);
             
             res.activate("listRequests.html", request, response);
         } catch (DataException ex) {
             handleError("Data access exception: " + ex.getMessage(), request, response);
+        }
+    }
+
+    private void action_ship(HttpServletRequest request, HttpServletResponse response, int req_key) throws IOException, ServletException, TemplateManagerException {
+        try {
+            Request req = null;
+            if (req_key > 0) {
+                req = ((WebshopDataLayer) request.getAttribute("datalayer")).getRequestDAO().getRequest(req_key);
+            }
+            if (req != null) {
+                req.getOrdering();
+                req.setOrderState(OrderStateEnum.SPEDITO);
+                ((WebshopDataLayer) request.getAttribute("datalayer")).getRequestDAO().setRequest(req);
+                //sends really emails, than activate it when there is a real email or it will send accidentally mails to real email's people 
+                //sendMail(req.getOrdering().getEmail(), "Info mail: Your request: '+req.getTitle()+' has been shipped! Thank you for purchasing on our site.");
+                sendNotification(request, response, req.getOrdering(), "Great news! Your purchase of request "+req.getTitle()+" has been shipped!", NotificationTypeEnum.CHIUSO, "");
+                //TODO: inserire link per conferma ricezione ordine per selezionare ben riuscito o no
+                action_default(request, response);
+            } else {
+                handleError("Cannot send request", request, response);
+            }
+            
+        } catch (DataException ex) {
+            handleError("Data access exception: " + ex.getMessage(), request, response);
+        }
+    }
+
+    private void sendNotification(HttpServletRequest request, HttpServletResponse response, User user, String message, NotificationTypeEnum type, String link) {
+        try {
+            Notification notification = ((WebshopDataLayer) request.getAttribute("datalayer")).getNotificationDAO().createNotification();
+            notification.setRecipient(user);
+            notification.setCreationDate(LocalDateTime.now());
+            notification.setMessage(message);
+            notification.setType(type);
+            notification.setLink(link);
+            ((WebshopDataLayer) request.getAttribute("datalayer")).getNotificationDAO().setNotification(notification);
+        } catch (DataException e) {
+            handleError("Send notification exception: " + e.getMessage(), request, response);
+        }
+    }
+
+    @SuppressWarnings("unused")
+    private void sendMail(String email, String text) {
+        String sender = getServletContext().getInitParameter("emailSender");
+        String securityCode = getServletContext().getInitParameter("securityCode");
+        String to = email;
+        Properties props = new Properties();
+        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.socketFactory.port", "465");
+        props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.port", "465");
+
+        Session session = Session.getDefaultInstance(props, new javax.mail.Authenticator() {
+            protected PasswordAuthentication getPasswordAuthentication(){
+                return new PasswordAuthentication(sender, securityCode);
+            }
+        });
+        //compose message
+        try {
+            MimeMessage message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(email));
+            message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
+            message.setSubject("WebMarket");
+            message.setText(text);
+            Transport.send(message);
+            System.out.println("Message sent successfully");
+        } catch (MessagingException ex) {
+            throw new RuntimeException(ex);
         }
     }
 
@@ -77,12 +170,17 @@ public class ManageRequests extends WebshopBaseController {
             throws ServletException {
 
         request.setAttribute("title", "Requests");
-        request.setAttribute("userid", request.getSession().getAttribute("userid"));
-
+        request.setAttribute("themeMode", request.getSession().getAttribute("themeMode"));
+        request.setAttribute("themeSkin", request.getSession().getAttribute("themeSkin"));
+        
         try {
             HttpSession s = request.getSession(false);
             if (s != null) {
-                action_default(request, response);
+                if(request.getParameter("ship") != null) {
+                    int req_key = SecurityHelpers.checkNumeric(request.getParameter("ship"));
+                    action_ship(request, response, req_key);
+                } else
+                    action_default(request, response);
             } else {
                 action_anonymous(request, response);
             }

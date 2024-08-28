@@ -39,8 +39,8 @@
                                             <thead>
                                                 <tr>             
                                                     <th class="sorting_asc_disabled sorting_desc_disabled" style="width:50px;"><input type="checkbox" onclick="toggle(this)"></th>                          
-                                                    <th>Type</th>
                                                     <th class="sorting_asc_disabled sorting_desc_disabled" style="width:50px;"></th>
+                                                    <th>Type</th>
                                                     <th>Message</th>                                        
                                                     <th>Sent on</th>
                                                     <th class="sorting_asc_disabled sorting_desc_disabled">Link</th>
@@ -50,7 +50,14 @@
                                                 <#if (notifications?size>0)>    
                                                     <#list notifications as notification>
                                                         <tr>
-                                                            <td><input type="checkbox" name="check[]" value="${notification.key}"></td>                          
+                                                            <td><input type="checkbox" name="check[]" value="${notification.key}"></td>    
+                                                            <td>
+                                                                <a href="myNotifications?read=${notification.key}" title="Read" role="button">
+                                                                    <#if !notification.read>
+                                                                        <i class="zmdi zmdi-markunread-mailbox"></i>
+                                                                    </#if>
+                                                                </a>
+                                                            </td>
                                                             <td>
                                                                 <#if notification.type?matches("INFO", "i")>
                                                                     <span class="icon-circle bg-blue waves-effect waves-float btn-sm waves-blue"><i class="zmdi zmdi-account"></i> ${notification.type}</span>
@@ -68,26 +75,9 @@
                                                                     <span class="icon-circle bg-red waves-effect waves-float btn-sm waves-red"><i class="zmdi zmdi-delete"></i> ${notification.type}</span>
                                                                 </#if>
                                                             </td>
-                                                            <td>
-                                                                <a href="myNotifications?read=${notification.key}" title="Read" role="button">
-                                                                    <#if !notification.read>
-                                                                        <i class="zmdi zmdi-eye"></i>
-                                                                        <i class="zmdi zmdi-eye"></i>
-                                                                    <#else>
-                                                                        <i class="zmdi zmdi-minus"></i>
-                                                                        <i class="zmdi zmdi-minus"></i>
-                                                                    </#if>
-                                                                </a>
-                                                            </td>
-                                                            <td>
-                                                                <#if !notification.read>
-                                                                    <strong>${notification.message}</strong>
-                                                                <#else>
-                                                                    ${notification.message}
-                                                                </#if>
-                                                            </td>    
+                                                            <td><textarea cols="32"  class="<#if !notification.read>text-primary</#if> not-split-text" disabled>${notification.message}</textarea></td>    
                                                             <td><i class="zmdi zmdi-time"></i> ${notification.creationDate.format('dd/MM/yyyy HH:mm')}</td>
-                                                            <td><a href="${notification.link}" class="btn btn-default waves-effect waves-float btn-sm waves-green"><i class="zmdi zmdi-attachment-alt"></i></a></td>
+                                                            <td><#if notification.link?has_content><a href="${notification.link}" class="btn btn-default waves-effect waves-float btn-sm waves-green"><i class="zmdi zmdi-attachment-alt"></i></a></#if></td>
                                                         </tr>
                                                     </#list>
                                                 </#if>

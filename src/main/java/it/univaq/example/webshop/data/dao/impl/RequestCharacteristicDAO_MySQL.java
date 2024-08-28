@@ -17,7 +17,7 @@ import it.univaq.framework.data.OptimisticLockException;
 
 public class RequestCharacteristicDAO_MySQL extends DAO implements RequestCharacteristicDAO {
 
-    private PreparedStatement sRequestCharacteristicByID, sRequestCharacteristicsByRequest, iRequestCharacteristic, uRequestCharacteristic, dRequestCharacteristic;
+    private PreparedStatement sRequestCharacteristicByID, sRequestCharacteristicsByRequest, sRequestCharacteristicsByCharacteristic,sRequestCharacteristics, iRequestCharacteristic, uRequestCharacteristic, dRequestCharacteristic;
 
     public RequestCharacteristicDAO_MySQL(DataLayer d) {
         super(d);
@@ -29,6 +29,8 @@ public class RequestCharacteristicDAO_MySQL extends DAO implements RequestCharac
             super.init();
             sRequestCharacteristicByID = connection.prepareStatement("SELECT * FROM richiesta_caratteristica WHERE id=?");
             sRequestCharacteristicsByRequest = connection.prepareStatement("SELECT id FROM richiesta_caratteristica where idRichiesta=?");
+            sRequestCharacteristicsByCharacteristic = connection.prepareStatement("SELECT id FROM richiesta_caratteristica WHERE idCaratteristica=?");
+            sRequestCharacteristics = connection.prepareStatement("SELECT id from richiesta_caratteristica");
             iRequestCharacteristic = connection.prepareStatement("INSERT INTO richiesta_caratteristica (idRichiesta,idCaratteristica,valore) VALUES (?,?,?)", Statement.RETURN_GENERATED_KEYS);
             uRequestCharacteristic = connection.prepareStatement("UPDATE richiesta_caratteristica SET idRichiesta=?,idCaratteristica=?,valore=?,versione=? WHERE id=? and versione=?");
             dRequestCharacteristic = connection.prepareStatement("DELETE FROM richiesta_caratteristica WHERE id=?");
@@ -42,6 +44,8 @@ public class RequestCharacteristicDAO_MySQL extends DAO implements RequestCharac
         try {
             sRequestCharacteristicByID.close();
             sRequestCharacteristicsByRequest.close();
+            sRequestCharacteristicsByCharacteristic.close();
+            sRequestCharacteristics.close();
             iRequestCharacteristic.close();
             uRequestCharacteristic.close();
             dRequestCharacteristic.close();
@@ -108,7 +112,36 @@ public class RequestCharacteristicDAO_MySQL extends DAO implements RequestCharac
         return result;
     }
 
-        @Override
+    @Override
+    public List<RequestCharacteristic> getRequestCharacteristicsByCharacteristic(int char_key) throws DataException {
+        List<RequestCharacteristic> result = new ArrayList<RequestCharacteristic>();
+        try {
+            sRequestCharacteristicsByCharacteristic.setInt(1, char_key);
+            try (ResultSet rs = sRequestCharacteristicsByCharacteristic.executeQuery()) {
+                while (rs.next()) {
+                    result.add(getRequestCharacteristic(rs.getInt("id")));
+                }
+            }
+        } catch (SQLException ex) {
+            throw new DataException("Unable to load request characteristics by characteristic", ex);
+        }
+        return result;
+    }
+
+    @Override
+    public List<RequestCharacteristic> getRequestCharacteristics() throws DataException {
+        List<RequestCharacteristic> result = new ArrayList<RequestCharacteristic>();
+        try (ResultSet rs = sRequestCharacteristics.executeQuery()) {
+            while (rs.next()) {
+                result.add(getRequestCharacteristic(rs.getInt("id")));
+            }
+        } catch (SQLException ex) {
+            throw new DataException("Unable to load request characteristics", ex);
+        }
+        return result;
+    }
+
+    @Override
     public void setRequestCharacteristic(RequestCharacteristic requestCharacteristic) throws DataException {
         try {
             if (requestCharacteristic.getKey() != null && requestCharacteristic.getKey() > 0) { //update

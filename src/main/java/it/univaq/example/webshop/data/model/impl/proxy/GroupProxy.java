@@ -3,10 +3,7 @@ package it.univaq.example.webshop.data.model.impl.proxy;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import it.univaq.example.webshop.data.dao.ServiceDAO;
 import it.univaq.example.webshop.data.dao.UserDAO;
-import it.univaq.example.webshop.data.model.Service;
 import it.univaq.example.webshop.data.model.User;
 import it.univaq.example.webshop.data.model.impl.GroupImpl;
 import it.univaq.example.webshop.data.model.impl.UserRoleEnum;
@@ -61,30 +58,6 @@ public class GroupProxy extends GroupImpl implements DataItemProxy  {
     @Override
     public void addUser(User user) {
         super.addUser(user);
-        this.modified = true;
-    }
-
-    @Override
-    public List<Service> getServices() {
-        if (super.getServices() == null) {
-            try {
-                super.setServices(((ServiceDAO) dataLayer.getDAO(Service.class)).getServicesByGroup(this.getKey()));
-            } catch (DataException ex) {
-                Logger.getLogger(GroupProxy.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-        return super.getServices();
-    }
-
-    @Override
-    public void setServices(List<Service> services) {
-        super.setServices(services);
-        this.modified = true;
-    }
-
-    @Override
-    public void addService(Service service) {
-        super.addService(service);
         this.modified = true;
     }
 

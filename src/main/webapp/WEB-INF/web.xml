@@ -55,7 +55,7 @@
     <context-param>
         <param-name>security.protect.patterns</param-name>
         <!-- qui configuriamo i pattern delle URL da proteggere -->
-        <param-value>/compose,/write</param-value>        
+        <param-value></param-value>        
     </context-param>
     <context-param>
         <param-name>data.source</param-name>
@@ -123,7 +123,7 @@
         <servlet-class>it.univaq.example.webshop.controller.RenderImage</servlet-class>
         <multipart-config>
             <max-file-size>20848820</max-file-size>
-            <!-- max size of accepted uploadd (DEF: unlimited!) -->
+            <!-- max size of accepted upload (DEF: unlimited!) -->
             <max-request-size>418018841</max-request-size>
             <!-- max size of multipart requests (may contain more files or data) (DEF: ulimited!) -->
         </multipart-config>
@@ -139,6 +139,10 @@
     <servlet>
         <servlet-name>ListNotifications</servlet-name>
         <servlet-class>it.univaq.example.webshop.controller.ManageNotifications</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ThemeServlet</servlet-name>
+        <servlet-class>it.univaq.example.webshop.controller.ThemeServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>Index</servlet-name>
@@ -184,7 +188,7 @@
         <servlet-name>ListOrders</servlet-name>
         <url-pattern>/orders</url-pattern>
     </servlet-mapping>
-        <servlet-mapping>
+    <servlet-mapping>
         <servlet-name>OrderDetail</servlet-name>
         <url-pattern>/orderDetail</url-pattern>
     </servlet-mapping>
@@ -207,6 +211,10 @@
     <servlet-mapping>
         <servlet-name>ListNotifications</servlet-name>
         <url-pattern>/myNotifications</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ThemeServlet</servlet-name>
+        <url-pattern>/themeServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>Index</servlet-name>

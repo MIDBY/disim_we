@@ -41,11 +41,11 @@ public class Login extends WebshopBaseController {
                         Group group = ((WebshopDataLayer) request.getAttribute("datalayer")).getGroupDAO().getGroupByUser(user.getKey());
                         if(group.getName().equals(UserRoleEnum.ORDINANTE)) {
                             if(user.isAccepted()) {         
-                                SecurityHelpers.createSession(request, email, user.getKey());                   
+                                SecurityHelpers.createSession(request, email, user.getKey());   
+                                request.getSession().setAttribute("userid", user.getKey());                
                                 if (request.getParameter("referrer") != null) {
                                     response.sendRedirect(request.getParameter("referrer"));
                                 } else {       
-                                    //TODO: cambiare index con la prima pagina dello store
                                     response.sendRedirect("index");
                                 }
                             } else {
@@ -57,6 +57,9 @@ public class Login extends WebshopBaseController {
                         } else {
                             //utente Amministratore o tecnino, reindirizzato al backend
                             SecurityHelpers.createSession(request, email, user.getKey());
+                            request.getSession().setAttribute("userid", user.getKey());
+                            request.getSession().setAttribute("themeMode", "light");
+                            request.getSession().setAttribute("themeSkin", "blush");
                             if (request.getParameter("referrer") != null) {
                                 response.sendRedirect(request.getParameter("referrer"));
                             } else {                            
@@ -79,10 +82,10 @@ public class Login extends WebshopBaseController {
             } catch (NoSuchAlgorithmException | InvalidKeySpecException | DataException ex) {
                 Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
             }
-        }
+        } else
         // se la validazione fallisce...
         // if the validation fails...
-        handleError("Login failed", request, response);
+            handleError("Login failed", request, response);
     }
 
     /**

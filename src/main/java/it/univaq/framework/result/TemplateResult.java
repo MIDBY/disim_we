@@ -229,7 +229,7 @@ public class TemplateResult {
         // ensure we have a data model, initialized with some default data
         int user_key = 0;
         Map<String, Object> localdatamodel = new HashMap<>();
-        if(request.getAttribute("userid") != null) {
+        if(request.getSession().getAttribute("userid") != null) {
             try {
                 user_key = Integer.parseInt(request.getSession().getAttribute("userid").toString());
                 Group group = ((WebshopDataLayer) request.getAttribute("datalayer")).getGroupDAO().getGroupByUser(user_key);

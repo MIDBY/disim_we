@@ -2,16 +2,18 @@ package it.univaq.example.webshop.controller;
 
 import it.univaq.example.webshop.data.dao.impl.WebshopDataLayer;
 import it.univaq.example.webshop.data.model.Category;
+import it.univaq.example.webshop.data.model.Characteristic;
 import it.univaq.example.webshop.data.model.Group;
+import it.univaq.example.webshop.data.model.RequestCharacteristic;
 import it.univaq.example.webshop.data.model.User;
 import it.univaq.framework.data.DataException;
 import it.univaq.framework.result.TemplateResult;
+import it.univaq.framework.security.SecurityHelpers;
 import it.univaq.framework.result.TemplateManagerException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -40,7 +42,7 @@ public class ManageCategories extends WebshopBaseController {
             request.setAttribute("username", user.getUsername());
             request.setAttribute("group", group.getName());   
             
-            List<Category> categories = ((WebshopDataLayer) request.getAttribute("datalayer")).getCategoryDAO().getCategories();
+            List<Category> categories = ((WebshopDataLayer) request.getAttribute("datalayer")).getCategoryDAO().getCategoriesByDeleted(false);
             for(Category c : categories) {
                 c.getCharacteristics();
                 c.getFatherCategory();
@@ -55,7 +57,6 @@ public class ManageCategories extends WebshopBaseController {
             }
 
             topCategories.sort(Comparator.comparing(Category::getKey));
-            //sortedCategories.addAll(topCategories);
 
             for(Category category : topCategories) {
                 sortedCategories.add(category);
@@ -68,6 +69,59 @@ public class ManageCategories extends WebshopBaseController {
             handleError("Data access exception: " + ex.getMessage(), request, response);
         }
     }
+
+    private void action_delete(HttpServletRequest request, HttpServletResponse response, int cat_key) throws IOException, ServletException, TemplateManagerException {
+        try {
+            Category category = null;
+            if(cat_key > 0)
+                category = ((WebshopDataLayer) request.getAttribute("datalayer")).getCategoryDAO().getCategory(cat_key);
+
+            if(category != null) {
+                int orders = ((WebshopDataLayer) request.getAttribute("datalayer")).getRequestDAO().getRequestsByCategory(cat_key).size();
+                List<Category> sons = ((WebshopDataLayer) request.getAttribute("datalayer")).getCategoryDAO().getCategoriesSonsOf(cat_key);
+                if(orders > 0) {
+                    for(Category c : sons) {
+                        if(category.getFatherCategory() != null) {
+                            c.setFatherCategory(category.getFatherCategory());
+                        } else {
+                            c.setFatherCategory(null);
+                        }
+                        ((WebshopDataLayer) request.getAttribute("datalayer")).getCategoryDAO().setCategory(c);
+                    }
+                            
+                    category.setDeleted(true);
+                    ((WebshopDataLayer) request.getAttribute("datalayer")).getCategoryDAO().setCategory(category);;
+
+                } else {
+                    for(Characteristic c : category.getCharacteristics()) {
+                        List<RequestCharacteristic> chars = ((WebshopDataLayer) request.getAttribute("datalayer")).getRequestCharacteristicDAO().getRequestCharacteristicsByCharacteristic(c.getKey());
+                        if(chars != null && chars.size() > 0){
+                            for(RequestCharacteristic rc : chars) {
+                                ((WebshopDataLayer) request.getAttribute("datalayer")).getRequestCharacteristicDAO().deleteRequestCharacteristic(rc);
+                            }
+                        }
+                        //((WebshopDataLayer) request.getAttribute("datalayer")).getCharacteristicDAO().deleteCharacteristic(c);                        
+                    }
+                    for(Category c : sons) {
+                        if(category.getFatherCategory() != null) {
+                            c.setFatherCategory(category.getFatherCategory());
+                        } else {
+                            c.setFatherCategory(null);
+                        }
+                        ((WebshopDataLayer) request.getAttribute("datalayer")).getCategoryDAO().setCategory(c);
+                    }
+                    ((WebshopDataLayer) request.getAttribute("datalayer")).getImageDAO().deleteImage(category.getImage());
+                    ((WebshopDataLayer) request.getAttribute("datalayer")).getCategoryDAO().deleteCategory(category);
+                }
+                action_default(request, response);
+            } else {
+                action_default(request, response);
+            }
+        } catch (DataException ex) {
+            handleError("Data access exception: " + ex.getMessage(), request, response);
+        }
+    }
+
 
     private static void addChilds(Category father, List<Category> sortedCategories, List<Category> total) {
         List<Category> childs = new ArrayList<>();
@@ -87,14 +141,17 @@ public class ManageCategories extends WebshopBaseController {
             throws ServletException {
 
         request.setAttribute("title", "Categories");
-        request.setAttribute("userid", request.getSession().getAttribute("userid"));
-
+        request.setAttribute("themeMode", request.getSession().getAttribute("themeMode"));
+        request.setAttribute("themeSkin", request.getSession().getAttribute("themeSkin"));
+        
         try {
             HttpSession s = request.getSession(false);
             if (s != null) {
-                //if(request.getAttribute("edit") != null)
-
-                action_default(request, response);
+                if(request.getParameter("del") != null) {
+                    int cat_key = SecurityHelpers.checkNumeric(request.getParameter("del"));
+                    action_delete(request, response, cat_key);
+                } else
+                    action_default(request, response);
             } else {
                 action_anonymous(request, response);
             }

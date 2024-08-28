@@ -13,6 +13,8 @@ public interface CategoryDAO {
 
     List<Category> getCategories() throws DataException;
 
+    List<Category> getCategoriesByDeleted(boolean deleted) throws DataException;
+
     List<Category> getFatherCategories() throws DataException;
 
     List<Category> getCategoriesSonsOf(int category_key) throws DataException;

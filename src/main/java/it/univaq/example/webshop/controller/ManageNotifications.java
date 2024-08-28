@@ -34,7 +34,7 @@ public class ManageNotifications extends WebshopBaseController {
         try {
             TemplateResult res = new TemplateResult(getServletContext());
             int user_key = Integer.parseInt(request.getSession().getAttribute("userid").toString());
-            User user = ((WebshopDataLayer)request.getAttribute("datalayer")).getUserDAO().getUser(user_key);
+            User user = ((WebshopDataLayer) request.getAttribute("datalayer")).getUserDAO().getUser(user_key);
             Group group = ((WebshopDataLayer) request.getAttribute("datalayer")).getGroupDAO().getGroupByUser(user_key);
 
             request.setAttribute("username", user.getUsername());
@@ -113,8 +113,9 @@ public class ManageNotifications extends WebshopBaseController {
             throws ServletException {
 
         request.setAttribute("title", "Notifications");
-        request.setAttribute("userid", request.getSession().getAttribute("userid"));
-
+        request.setAttribute("themeMode", request.getSession().getAttribute("themeMode"));
+        request.setAttribute("themeSkin", request.getSession().getAttribute("themeSkin"));
+        
         try {
             HttpSession s = request.getSession(false);
             if (s != null) {

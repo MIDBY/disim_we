@@ -35,7 +35,7 @@ public class ManageFiles extends WebshopBaseController {
         try {
             TemplateResult res = new TemplateResult(getServletContext());
             int user_key = Integer.parseInt(request.getSession().getAttribute("userid").toString());
-            User user = ((WebshopDataLayer)request.getAttribute("datalayer")).getUserDAO().getUser(user_key);
+            User user = ((WebshopDataLayer) request.getAttribute("datalayer")).getUserDAO().getUser(user_key);
             Group group = ((WebshopDataLayer) request.getAttribute("datalayer")).getGroupDAO().getGroupByUser(user_key);
 
             request.setAttribute("username", user.getUsername());
@@ -63,7 +63,7 @@ public class ManageFiles extends WebshopBaseController {
 
     private void action_delete(HttpServletRequest request, HttpServletResponse response, int image_id) throws IOException, ServletException, TemplateManagerException {
         try {
-            Image image = ((WebshopDataLayer)request.getAttribute("datalayer")).getImageDAO().getImage(image_id);
+            Image image = ((WebshopDataLayer) request.getAttribute("datalayer")).getImageDAO().getImage(image_id);
             if(image != null)
                 ((WebshopDataLayer) request.getAttribute("datalayer")).getImageDAO().deleteImage(image);
             
@@ -102,8 +102,9 @@ public class ManageFiles extends WebshopBaseController {
             throws ServletException {
 
         request.setAttribute("title", "Files");
-        request.setAttribute("userid", request.getSession().getAttribute("userid"));
-        
+        request.setAttribute("themeMode", request.getSession().getAttribute("themeMode"));
+        request.setAttribute("themeSkin", request.getSession().getAttribute("themeSkin"));
+                
         int image_id;
         try {
             HttpSession s = request.getSession(false);

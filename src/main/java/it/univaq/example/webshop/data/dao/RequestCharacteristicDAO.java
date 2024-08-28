@@ -10,7 +10,11 @@ public interface RequestCharacteristicDAO {
 
     RequestCharacteristic getRequestCharacteristic(int requestCharacteristic_key) throws DataException;
 
+    List<RequestCharacteristic> getRequestCharacteristics() throws DataException;
+
     List<RequestCharacteristic> getRequestCharacteristicsByRequest(int request_key) throws DataException;
+
+    List<RequestCharacteristic> getRequestCharacteristicsByCharacteristic(int char_key) throws DataException;
 
     void setRequestCharacteristic(RequestCharacteristic requestCharacteristic) throws DataException;
 

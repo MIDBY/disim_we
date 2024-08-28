@@ -5,6 +5,7 @@ import it.univaq.example.webshop.data.model.Category;
 import it.univaq.example.webshop.data.model.Characteristic;
 import it.univaq.example.webshop.data.model.Group;
 import it.univaq.example.webshop.data.model.Image;
+import it.univaq.example.webshop.data.model.RequestCharacteristic;
 import it.univaq.example.webshop.data.model.User;
 import it.univaq.framework.data.DataException;
 import it.univaq.framework.result.TemplateResult;
@@ -65,7 +66,8 @@ public class ManageCategoryDetail extends WebshopBaseController {
             }
             request.setAttribute("category", category);
 
-            List<Category> categories = ((WebshopDataLayer) request.getAttribute("datalayer")).getCategoryDAO().getCategories();
+            List<Category> categories = ((WebshopDataLayer) request.getAttribute("datalayer")).getCategoryDAO().getCategoriesByDeleted(false);
+            categories.remove(category);
             request.setAttribute("categories", categories);
             
             res.activate("categoryDetail.html", request, response);
@@ -77,9 +79,9 @@ public class ManageCategoryDetail extends WebshopBaseController {
     private void action_update(HttpServletRequest request, HttpServletResponse response, int cat_key) throws IOException, ServletException, TemplateManagerException {
         try {
             Category cat = null;
-            if(cat_key > 0)
+            if(cat_key > 0) {
                 cat = ((WebshopDataLayer) request.getAttribute("datalayer")).getCategoryDAO().getCategory(cat_key);
-            else
+            } else
                 cat = ((WebshopDataLayer) request.getAttribute("datalayer")).getCategoryDAO().createCategory();
 
             if (cat != null) {               
@@ -115,8 +117,15 @@ public class ManageCategoryDetail extends WebshopBaseController {
                     cat.setImage(image);
                 }
 
-                List<Characteristic> characteristics = cat.getCharacteristics();
-
+                /* Logica:
+                    prendo e formatto le caratteristiche inserite
+                    se la categoria è nuova, non ha caratteristiche, allora aggiungo tutte le nuove caratteristiche e salvo
+                    se la categoria esiste, può avere caratteristiche, controllo se:
+                    1 - la caratteristica inserita è uguale (stesso nome e stessa key), non la aggiungo
+                    2 - la caratteristica inserita ha nome diverso da quella esistente. Controllo se quella esistente è usata in qualche richiesta. Se si la elimino dalla tabella richiesta_caratteristica. Creo nuova char
+                    3 - la caratteristica inserita non ha una chiave (key = null or 0), controllo se nelle vecchie ci sia una con lo stesso nome. Se si gli passo la chiave
+                    4 - la categoria ha caratteristiche non inserite: le elimino tutte
+                 */
                 String[] characteristicKeyA = request.getParameterValues("characteristicKey[]");
                 String[] characteristicNameA = request.getParameterValues("characteristicName[]");
                 String[] characteristicValueA = request.getParameterValues("characteristicValue[]");
@@ -128,6 +137,7 @@ public class ManageCategoryDetail extends WebshopBaseController {
                         c.setKey(Integer.parseInt(characteristicKeyA[i]));
                     else
                         c.setKey(0);
+                    c.setCategory(cat);
                     c.setName(characteristicNameA[i]);
                     c.setDefaultValues(characteristicValueA[i]);
                     insert.add(c);
@@ -147,37 +157,56 @@ public class ManageCategoryDetail extends WebshopBaseController {
                     s.setDefaultValues(value);
                 }
 
-                //ritrovo le vecchie caratteristiche se sono da aggiornare
-                if(!characteristics.isEmpty()) {
-                    for(Characteristic c : characteristics) {
-                        Iterator<Characteristic> iterator = insert.iterator();
+                if(cat_key > 0) { 
+                    List<Characteristic> oldChars = new ArrayList<>();
+                    List<RequestCharacteristic> usedChars = ((WebshopDataLayer) request.getAttribute("datalayer")).getRequestCharacteristicDAO().getRequestCharacteristics();
+
+                    try {
+                        oldChars = cat.getCharacteristics();
+                    } catch (NullPointerException e) { /*Recupero dei dati manuali (LEGACY), non faccio nulla*/ } 
+
+                    for(Characteristic i : insert) {
+                        Iterator<Characteristic> iterator = oldChars.iterator();
                         while (iterator.hasNext()) {
-                            Characteristic i = iterator.next();
+                            Characteristic c = iterator.next();
                             if(i.getKey() == c.getKey()) {
-                                c.setCategory(cat);
-                                c.setName(i.getName());
-                                c.setDefaultValues(i.getDefaultValues());
-                                iterator.remove(); // safely remove the element
+                                if(i.getName().equalsIgnoreCase(c.getName())) {
+                                    //stesso nome e stessa chiave, vecchia char riusata
+                                    i.setVersion(c.getVersion());
+                                    iterator.remove();
+                                } else {
+                                    i.setKey(0);
+                                    //stessa chiave ma nome diverso. E' stata usata? Si: elimino la caratteristica dalla tabella richiesta_caratteristica (elimino la vecchia caratteristica lasciandola li)
+                                    for(RequestCharacteristic u : usedChars)
+                                        if(i.getKey() == u.getCharacteristic().getKey()) 
+                                            ((WebshopDataLayer) request.getAttribute("datalayer")).getRequestCharacteristicDAO().deleteRequestCharacteristic(u);
+                                }
+                            } else {
+                                if(i.getKey() == 0) {
+                                    //può essere una esistente con stesso nome
+                                    if(i.getName().equalsIgnoreCase(c.getName())) {
+                                        i.setKey(c.getKey());
+                                        i.setVersion(c.getVersion());
+                                        iterator.remove();
+                                    }
+                                }
                             }
                         }
                     }
-                }
 
-                //se sono state inviate altre caratteristiche, le inserisco
-                if(insert.size()>0) {
-                    for(Characteristic c : insert) {
-                        Characteristic element = ((WebshopDataLayer) request.getAttribute("datalayer")).getCharacteristicDAO().createCharacteristic();
-                        element.setCategory(cat);
-                        element.setName(c.getName());
-                        element.setDefaultValues(c.getDefaultValues());
-                        characteristics.add(element);
+                    for(Characteristic c : oldChars) {
+                        ((WebshopDataLayer) request.getAttribute("datalayer")).getCharacteristicDAO().deleteCharacteristic(c);
                     }
                 }
-                
-                for(Characteristic c : characteristics)
-                    ((WebshopDataLayer) request.getAttribute("datalayer")).getCharacteristicDAO().setCharacteristic(c);
 
                 ((WebshopDataLayer) request.getAttribute("datalayer")).getCategoryDAO().setCategory(cat);
+
+
+                for(Characteristic c : insert) {
+                    c.setCategory(cat);
+                    ((WebshopDataLayer) request.getAttribute("datalayer")).getCharacteristicDAO().setCharacteristic(c);
+                }
+
                 response.sendRedirect("categories");
             } else {
                 handleError("Cannot update category", request, response);
@@ -193,8 +222,9 @@ public class ManageCategoryDetail extends WebshopBaseController {
             throws ServletException {
 
         request.setAttribute("title", "Detail");
-        request.setAttribute("userid", request.getSession().getAttribute("userid"));
-
+        request.setAttribute("themeMode", request.getSession().getAttribute("themeMode"));
+        request.setAttribute("themeSkin", request.getSession().getAttribute("themeSkin"));
+        
         int cat_key;
         try {
             HttpSession s = request.getSession(false);

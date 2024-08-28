@@ -33,16 +33,18 @@
                                 </thead>
                                 <tbody>
                                     <#list categories as category>
-                                        <tr id="node-${category.key}" <#if category.fatherCategory?has_content && category.fatherCategory.key gt 0>class="child-of-node-${category.fatherCategory.key}"</#if>>
-                                            <td></td>
-                                            <td><img src="image?imgid=${category.image.key}" alt="${category.image.caption!'Image'}" width="48"></td>
-                                            <td><h5>${category.name}</h5></td>
-                                            <td><span class="text-muted"><#list category.characteristics as char>${char.name}: ${char.defaultValues?replace(",",", ")}<#sep><br></#list></span></td>
-                                            <td>
-                                                <a href="categoryDetail?catid=${category.key}" class="btn btn-warning waves-effect waves-float btn-sm waves-green"><i class="zmdi zmdi-edit"></i></a>
-                                                <a href="javascript:void(0);" class="btn btn-danger waves-effect waves-float btn-sm waves-red"><i class="zmdi zmdi-delete"></i></a>
-                                            </td>
-                                        </tr>
+                                        <form id="delete${category.key}" method="post" action="categories?del=${category.key}">
+                                            <tr id="node-${category.key}" <#if category.fatherCategory?has_content && category.fatherCategory.key gt 0>class="child-of-node-${category.fatherCategory.key}"</#if>>
+                                                <td></td>
+                                                <td><img src="image?imgid=${category.image.key}" alt="${category.image.caption!'Image'}" width="48"></td>
+                                                <td><h5>${category.name}</h5></td>
+                                                <td><span class="text-muted"><#list category.characteristics as char>${char.name}: ${char.defaultValues?replace(",",", ")}<#sep><br></#list></span></td>
+                                                <td>
+                                                    <a href="categoryDetail?catid=${category.key}" class="btn btn-warning waves-effect waves-float btn-sm waves-green"><i class="zmdi zmdi-edit"></i></a>
+                                                    <button onclick="deleteCategory(event, '${category.key}', '${category.name}')" class="btn btn-danger waves-effect waves-float btn-sm waves-red"><i class="zmdi zmdi-delete"></i></a>
+                                                </td>
+                                            </tr>
+                                        </form>
                                     </#list>
                                 </tbody>
                             </table>

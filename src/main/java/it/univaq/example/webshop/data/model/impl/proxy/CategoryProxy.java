@@ -109,6 +109,12 @@ public class CategoryProxy extends CategoryImpl implements DataItemProxy {
         this.modified = true;
     }
 
+    @Override
+    public void setDeleted(boolean deleted) {
+        super.setDeleted(deleted);
+        this.modified = true;
+    }
+
     //METODI DEL PROXY
     //PROXY-ONLY METHODS
     @Override

@@ -48,7 +48,7 @@
                                                 <td><strong>${request.key}</strong></td>
                                                 <td>${request.category.name}</td>
                                                 <td>${request.title}</td>
-                                                <td><textarea cols="32" style="white-space: pre-wrap;" disabled>${request.description}</textarea></td>
+                                                <td><textarea cols="32" class="not-split-text" disabled>${request.description}</textarea></td>
                                                 <td>${request.creationDate.format('dd/MM/yyyy')}</td>
                                                 <#if (request.proposals?size>0)>
                                                     <td>${prop.productName}</td>

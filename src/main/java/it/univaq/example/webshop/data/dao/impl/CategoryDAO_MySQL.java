@@ -17,7 +17,7 @@ import it.univaq.framework.data.OptimisticLockException;
 
 public class CategoryDAO_MySQL extends DAO implements CategoryDAO {
 
-    private PreparedStatement sCategoryByID, sCategories, sFatherCategories, sCategoriesSonsOf, sMostSoldCategories, sCategoryByImage, iCategory, uCategory, dCategory;
+    private PreparedStatement sCategoryByID, sCategories, sCategoriesByDeleted, sFatherCategories, sCategoriesSonsOf, sMostSoldCategories, sCategoryByImage, iCategory, uCategory, dCategory;
 
     public CategoryDAO_MySQL(DataLayer d) {
         super(d);
@@ -30,11 +30,12 @@ public class CategoryDAO_MySQL extends DAO implements CategoryDAO {
             sCategoryByID = connection.prepareStatement("SELECT * FROM categoria WHERE id=?");
             sFatherCategories = connection.prepareStatement("SELECT id FROM categoria WHERE idCategoriaPadre=NULL");
             sCategories = connection.prepareStatement("SELECT id FROM categoria ORDER BY idCategoriaPadre,id;");
+            sCategoriesByDeleted = connection.prepareStatement("SELECT id FROM categoria WHERE eliminato=?");
             sCategoriesSonsOf = connection.prepareStatement("SELECT id FROM categoria WHERE idCategoriaPadre=?");
             sMostSoldCategories = connection.prepareStatement("SELECT categoria.id as id, count(*) as times FROM categoria join richiesta on categoria.id = richiesta.idCategoria GROUP BY categoria.id ORDER BY times DESC LIMIT 3");
             sCategoryByImage = connection.prepareStatement("SELECT id FROM categoria WHERE idImmagine=?");
             iCategory = connection.prepareStatement("INSERT INTO categoria (nome,idCategoriaPadre,idImmagine) VALUES(?,?,?)", Statement.RETURN_GENERATED_KEYS);
-            uCategory = connection.prepareStatement("UPDATE categoria SET nome=?,idCategoriaPadre=?,idImmagine=?,versione=? WHERE id=? and versione=?");
+            uCategory = connection.prepareStatement("UPDATE categoria SET nome=?,idCategoriaPadre=?,idImmagine=?,eliminato=?,versione=? WHERE id=? and versione=?");
             dCategory = connection.prepareStatement("DELETE FROM categoria WHERE id=?");
 
         } catch (SQLException ex) {
@@ -51,6 +52,7 @@ public class CategoryDAO_MySQL extends DAO implements CategoryDAO {
             sCategoryByID.close();
             sFatherCategories.close();
             sCategories.close();
+            sCategoriesByDeleted.close();
             sCategoriesSonsOf.close();
             sMostSoldCategories.close();
             sCategoryByImage.close();
@@ -77,6 +79,7 @@ public class CategoryDAO_MySQL extends DAO implements CategoryDAO {
             a.setName(rs.getString("nome"));
             a.setFatherCategoryKey(rs.getInt("idCategoriaPadre"));
             a.setImageKey(rs.getInt("idImmagine"));
+            a.setDeleted(rs.getBoolean("eliminato"));
             a.setVersion(rs.getLong("versione"));
         } catch (SQLException ex) {
             throw new DataException("Unable to create category object form ResultSet", ex);
@@ -129,6 +132,22 @@ public class CategoryDAO_MySQL extends DAO implements CategoryDAO {
             }
         } catch (SQLException ex) {
             throw new DataException("Unable to load categories", ex);
+        }
+        return result;
+    }
+
+    @Override
+    public List<Category> getCategoriesByDeleted(boolean deleted) throws DataException {
+        List<Category> result = new ArrayList<Category>();
+        try{
+            sCategoriesByDeleted.setBoolean(1, deleted);
+            try (ResultSet rs = sCategoriesByDeleted.executeQuery()) {
+                while (rs.next()) {
+                    result.add((Category) getCategory(rs.getInt("id")));
+                }
+            }
+        } catch (SQLException ex) {
+            throw new DataException("Unable to load categories by deleted", ex);
         }
         return result;
     }
@@ -196,12 +215,14 @@ public class CategoryDAO_MySQL extends DAO implements CategoryDAO {
                 } else {
                     uCategory.setNull(3, java.sql.Types.INTEGER);
                 }       
+                uCategory.setBoolean(4, category.isDeleted());
+
                 long current_version = category.getVersion();
                 long next_version = current_version + 1;
 
-                uCategory.setLong(4, next_version);
-                uCategory.setInt(5, category.getKey());
-                uCategory.setLong(6, current_version);
+                uCategory.setLong(5, next_version);
+                uCategory.setInt(6, category.getKey());
+                uCategory.setLong(7, current_version);
 
                 if (uCategory.executeUpdate() == 0) {
                     throw new OptimisticLockException(category);
@@ -249,7 +270,7 @@ public class CategoryDAO_MySQL extends DAO implements CategoryDAO {
                     dataLayer.getCache().delete(Category.class, category);
                 }
             }
-        } catch (SQLException | OptimisticLockException ex) {
+        } catch (SQLException ex) {
             throw new DataException("Unable to delete category", ex);
         }
     }
