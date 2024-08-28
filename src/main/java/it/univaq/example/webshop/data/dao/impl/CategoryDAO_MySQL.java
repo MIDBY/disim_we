@@ -264,11 +264,8 @@ public class CategoryDAO_MySQL extends DAO implements CategoryDAO {
         try {
             if (category.getKey() != null && category.getKey() > 0) { //delete
                 dCategory.setInt(1, category.getKey());
-                if (dCategory.executeUpdate() == 0) {
-                    throw new OptimisticLockException(category);
-                } else {
-                    dataLayer.getCache().delete(Category.class, category);
-                }
+                dCategory.executeUpdate();
+                dataLayer.getCache().delete(Category.class, category);
             }
         } catch (SQLException ex) {
             throw new DataException("Unable to delete category", ex);

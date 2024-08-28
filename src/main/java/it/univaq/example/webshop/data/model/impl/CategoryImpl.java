@@ -56,6 +56,11 @@ public class CategoryImpl extends DataItemImpl<Integer> implements Category {
     }
 
     @Override
+    public void setFatherCategoryNull() {
+        fatherCategory = null;
+    }
+
+    @Override
     public List<Characteristic> getCharacteristics() {
         return characteristics;
     }

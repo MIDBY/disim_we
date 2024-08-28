@@ -86,6 +86,13 @@ public class CategoryProxy extends CategoryImpl implements DataItemProxy {
     }
 
     @Override
+    public void setFatherCategoryNull() {
+        super.setFatherCategoryNull();
+        this.fatherCategory_key = 0;
+        this.modified = true;
+    }
+
+    @Override
     public List<Characteristic> getCharacteristics() {
         if (super.getCharacteristics() == null) {
             try {

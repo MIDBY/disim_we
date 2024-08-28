@@ -17,6 +17,8 @@ public interface Category extends DataItem<Integer> {
 
     void setFatherCategory(Category fathCategory);
 
+    void setFatherCategoryNull();
+
     List<Characteristic> getCharacteristics();
 
     void setCharacteristics(List<Characteristic> characteristics);

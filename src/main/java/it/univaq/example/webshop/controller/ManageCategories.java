@@ -87,31 +87,36 @@ public class ManageCategories extends WebshopBaseController {
                             c.setFatherCategory(null);
                         }
                         ((WebshopDataLayer) request.getAttribute("datalayer")).getCategoryDAO().setCategory(c);
-                    }
-                            
+                    }       
                     category.setDeleted(true);
                     ((WebshopDataLayer) request.getAttribute("datalayer")).getCategoryDAO().setCategory(category);;
 
                 } else {
+                    boolean saveCategory = false;
                     for(Characteristic c : category.getCharacteristics()) {
                         List<RequestCharacteristic> chars = ((WebshopDataLayer) request.getAttribute("datalayer")).getRequestCharacteristicDAO().getRequestCharacteristicsByCharacteristic(c.getKey());
                         if(chars != null && chars.size() > 0){
-                            for(RequestCharacteristic rc : chars) {
-                                ((WebshopDataLayer) request.getAttribute("datalayer")).getRequestCharacteristicDAO().deleteRequestCharacteristic(rc);
-                            }
+                            saveCategory = true;
                         }
-                        //((WebshopDataLayer) request.getAttribute("datalayer")).getCharacteristicDAO().deleteCharacteristic(c);                        
                     }
+
                     for(Category c : sons) {
                         if(category.getFatherCategory() != null) {
                             c.setFatherCategory(category.getFatherCategory());
                         } else {
-                            c.setFatherCategory(null);
+                            c.setFatherCategoryNull();
                         }
                         ((WebshopDataLayer) request.getAttribute("datalayer")).getCategoryDAO().setCategory(c);
                     }
-                    ((WebshopDataLayer) request.getAttribute("datalayer")).getImageDAO().deleteImage(category.getImage());
-                    ((WebshopDataLayer) request.getAttribute("datalayer")).getCategoryDAO().deleteCategory(category);
+                    
+                    if(saveCategory) {
+                        category.setDeleted(true);
+                        ((WebshopDataLayer) request.getAttribute("datalayer")).getCategoryDAO().setCategory(category);
+                    } else  {
+                        ((WebshopDataLayer) request.getAttribute("datalayer")).getImageDAO().deleteImage(category.getImage());
+                        ((WebshopDataLayer) request.getAttribute("datalayer")).getCategoryDAO().deleteCategory(category);
+                    }
+                    
                 }
                 action_default(request, response);
             } else {
