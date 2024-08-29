@@ -164,7 +164,8 @@ public class ManageOrderDetail extends WebshopBaseController {
                 proposal.setProductName(request.getParameter("productName"));
                 proposal.setProducerName(request.getParameter("producerName"));
                 proposal.setProductDescription(request.getParameter("productDescription"));
-                proposal.setProductPrice(Float.parseFloat(request.getParameter("productPrice")));
+                String price = request.getParameter("productPrice").replace(".", ",");
+                proposal.setProductPrice(Float.parseFloat(price));
                 String url = request.getParameter("url");
                 if(!(url.contains("http") || url.contains("https")))
                     url = "https://" + url;

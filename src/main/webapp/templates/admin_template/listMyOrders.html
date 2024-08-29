@@ -19,57 +19,176 @@
         <div class="container-fluid">
             <div class="row clearfix">
                 <div class="col-md-12 col-sm-12 col-xs-12">
-                    <div class="card project_list">
-                        <div class="table-responsive">
-                            <table class="table table-hover c_table">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Category</th>
-                                        <th>Title</th>
-                                        <th>Description</th>
-                                        <th>Created on</th>
-                                        <th>Proposal</th>
-                                        <th>Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <#if (requests?size>0)>      
-                                        <#list requests as request>
-                                            <#if (request.proposals?size>0)>
-                                                <#assign prop = request.proposals[0]>
-                                                <#list request.proposals as p>
-                                                    <#if prop.key lt p.key>
-                                                        <#assign prop = p>
+                    <div class="card">
+                        <ul class="nav nav-tabs pl-0 pr-0">
+                            <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#open_list">Open Requests</a></li>
+                            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#ship_list">Shipping Orders</a></li>
+                            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#closed_list">Closed Requests</a></li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="open_list">
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-hover dataTable js-exportable c_table">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Category</th>
+                                                <th>Title</th>
+                                                <th>Description</th>
+                                                <th>Created on</th>
+                                                <th>Proposal</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tfoot>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Category</th>
+                                                <th>Title</th>
+                                                <th>Description</th>
+                                                <th>Created on</th>
+                                                <th>Proposal</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </tfoot>
+                                        <tbody>
+                                            <#if (requests?size>0)>      
+                                                <#list requests as request>
+                                                    <#if (request.proposals?size>0)>
+                                                        <#assign prop = request.proposals[0]>
+                                                        <#list request.proposals as p>
+                                                            <#if prop.key lt p.key>
+                                                                <#assign prop = p>
+                                                            </#if>
+                                                        </#list>
                                                     </#if>
+                                                    <tr onclick="location.href='orderDetail?order=${request.key}'">
+                                                        <td><strong>${request.key}</strong></td>
+                                                        <td>${request.category.name}</td>
+                                                        <td>${request.title}</td>
+                                                        <td><textarea cols="32" class="not-split-text" disabled>${request.description}</textarea></td>
+                                                        <td>${request.creationDate.format('dd/MM/yyyy')}</td>
+                                                        <#if (request.proposals?size>0)>
+                                                            <td>${prop.productName}</td>
+                                                            <#if (prop.proposalState == 'INATTESA')>
+                                                                <td><span class="replybutton badge mr-3 badge-warning">IN ATTESA</span></td>
+                                                            <#else>
+                                                                <#if (prop.proposalState == 'APPROVATO')>
+                                                                    <td><span class="replybutton badge mr-3 badge-success">${prop.proposalState}</span></td>
+                                                                <#else>
+                                                                    <td><span class="replybutton badge mr-3 badge-danger">${prop.proposalState}</span></td>
+                                                                </#if>
+                                                            </#if>
+                                                        <#else>
+                                                            <td>Click to create proposal</td>
+                                                            <td><span class="badge badge-danger">NEW</span></td>
+                                                        </#if>
+                                                    </tr>
                                                 </#list>
                                             </#if>
-                                            <tr onclick="location.href='orderDetail?order=${request.key}'">
-                                                <td><strong>${request.key}</strong></td>
-                                                <td>${request.category.name}</td>
-                                                <td>${request.title}</td>
-                                                <td><textarea cols="32" class="not-split-text" disabled>${request.description}</textarea></td>
-                                                <td>${request.creationDate.format('dd/MM/yyyy')}</td>
-                                                <#if (request.proposals?size>0)>
-                                                    <td>${prop.productName}</td>
-                                                    <#if (prop.proposalState == 'INATTESA')>
-                                                        <td><span class="replybutton badge mr-3 badge-warning">IN ATTESA</span></td>
-                                                    <#else>
-                                                        <#if (prop.proposalState == 'APPROVATO')>
-                                                            <td><span class="replybutton badge mr-3 badge-success">${prop.proposalState}</span></td>
-                                                        <#else>
-                                                            <td><span class="replybutton badge mr-3 badge-danger">${prop.proposalState}</span></td>
-                                                        </#if>
-                                                    </#if>
-                                                <#else>
-                                                    <td>Click to create proposal</td>
-                                                    <td><span class="badge badge-danger">NEW</span></td>
-                                                </#if>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="ship_list">
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-hover dataTable js-exportable c_table">
+                                        <thead>
+                                            <tr>    
+                                                <th>#</th>                                   
+                                                <th>Category</th>
+                                                <th>Product</th>
+                                                <th>Description</th>   
+                                                <th>Ordering</th>
+                                                <th>Status</th>
+                                                <th>Ordering Status</th>
+                                                <th>Send</th>
                                             </tr>
-                                        </#list>
-                                    </#if>
-                                </tbody>
-                            </table>
+                                        </thead>
+                                        <tfoot>
+                                            <tr>   
+                                                <th>#</th>                                    
+                                                <th>Category</th>
+                                                <th>Product</th>
+                                                <th>Description</th>   
+                                                <th>Ordering</th>
+                                                <th>Status</th>
+                                                <th>Ordering Status</th>
+                                                <th>Send</th>
+                                            </tr>
+                                        </tfoot>
+                                        <tbody>
+                                            <#if (shippingRequests?size>0)>      
+                                                <#list shippingRequests as request>
+                                                    <#list request.proposals as proposal>
+                                                        <#if proposal.proposalState?matches("APPROVATO", "i")>
+                                                            <#assign prop = proposal>
+                                                        </#if>
+                                                    </#list>
+                                                    <tr>
+                                                        <form id="ship${request.key}" method="post" action="orders?myOrders&ship=${request.key}">
+                                                            <td><strong>${request.key}</strong></td>
+                                                            <td>${request.category.name}</td>
+                                                            <td>${prop.productName}</td>
+                                                            <td><textarea cols="32" class="not-split-text" disabled>${prop.productDescription}</textarea></td>
+                                                            <td><span class="badge badge-primary">${request.ordering.username}</span></td>
+                                                            <td>${request.requestState}</td>
+                                                            <td>${request.orderState}</td>
+                                                            <td><button type="submit" class="btn btn-success" name="ship" <#if request.orderState?matches("","i") || request.orderState?matches("EMPTY","i")>onclick="shipOrder(event,${request.key},'${prop.productName}')"<#else>disabled</#if>><#if request.orderState?matches("","i") || request.orderState?matches("EMPTY","i")>Ship<#else>Shipped</#if></button></td>
+                                                        </form>
+                                                    </tr>
+                                                </#list>
+                                            </#if>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="closed_list">
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-hover dataTable js-exportable c_table">
+                                        <thead>
+                                            <tr>        
+                                                <th>#</th>                               
+                                                <th>Category</th>
+                                                <th>Title</th>
+                                                <th>Description</th>   
+                                                <th>Ordering</th>
+                                                <th>Status</th>
+                                                <th>Ordering Status</th>
+                                                <th>Creation Date</th>
+                                            </tr>
+                                        </thead>
+                                        <tfoot>
+                                            <tr>          
+                                                <th>#</th>                             
+                                                <th>Category</th>
+                                                <th>Title</th>
+                                                <th>Description</th>   
+                                                <th>Ordering</th>
+                                                <th>Status</th>
+                                                <th>Ordering Status</th>
+                                                <th>Creation Date</th>
+                                            </tr>
+                                        </tfoot>
+                                        <tbody>
+                                            <#if (closedRequests?size>0)>      
+                                                <#list closedRequests as request>
+                                                    <tr>
+                                                        <td><strong>${request.key}</strong></td>
+                                                        <td>${request.category.name}</td>
+                                                        <td>${request.title}</td>
+                                                        <td><textarea cols="32" class="not-split-text" disabled>${request.description}</textarea></td>
+                                                        <td><span class="badge badge-primary">${request.ordering.username}</span></td>
+                                                        <td>${request.requestState}</td>
+                                                        <td>${request.orderState}</td>
+                                                        <td>${request.creationDate.format('dd/MM/yyyy')}</td>
+                                                    </tr>
+                                                </#list>
+                                            </#if>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

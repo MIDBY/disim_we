@@ -7,6 +7,7 @@ import it.univaq.example.webshop.data.model.Request;
 import it.univaq.example.webshop.data.model.RequestCharacteristic;
 import it.univaq.example.webshop.data.model.User;
 import it.univaq.example.webshop.data.model.impl.NotificationTypeEnum;
+import it.univaq.example.webshop.data.model.impl.OrderStateEnum;
 import it.univaq.example.webshop.data.model.impl.RequestStateEnum;
 import it.univaq.framework.data.DataException;
 import it.univaq.framework.result.TemplateResult;
@@ -14,6 +15,7 @@ import it.univaq.framework.security.SecurityHelpers;
 import it.univaq.framework.result.TemplateManagerException;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -110,16 +112,50 @@ public class ManageOrders extends WebshopBaseController {
             request.setAttribute("group", group.getName());            
             
             List<Request> requests = ((WebshopDataLayer) request.getAttribute("datalayer")).getRequestDAO().getRequestsByTechnician(user_key);
+            List<Request> shippingRequests = new ArrayList<>();
+            List<Request> closedRequests = new ArrayList<>();
             for(Request r : requests) {
                 r.getCategory();
                 r.getOrdering();
                 r.getTechnician();
-                r.getRequestCharacteristics();
                 r.getProposals();
+                if(r.getRequestState().equals(RequestStateEnum.ORDINATO))
+                    shippingRequests.add(r);
+                if(r.getRequestState().equals(RequestStateEnum.CHIUSO) || r.getRequestState().equals(RequestStateEnum.ANNULLATO))
+                    closedRequests.add(r);
             }
+            requests.removeAll(shippingRequests);
+            requests.removeAll(closedRequests);
+
             request.setAttribute("requests", requests);
+            request.setAttribute("shippingRequests", shippingRequests);
+            request.setAttribute("closedRequests", closedRequests);
 
             res.activate("listMyOrders.html", request, response);
+        } catch (DataException ex) {
+            handleError("Data access exception: " + ex.getMessage(), request, response);
+        }
+    }
+
+    private void action_ship(HttpServletRequest request, HttpServletResponse response, int req_key) throws IOException, ServletException, TemplateManagerException {
+        try {
+            Request req = null;
+            if (req_key > 0) {
+                req = ((WebshopDataLayer) request.getAttribute("datalayer")).getRequestDAO().getRequest(req_key);
+            }
+            if (req != null) {
+                req.getOrdering();
+                req.setOrderState(OrderStateEnum.SPEDITO);
+                ((WebshopDataLayer) request.getAttribute("datalayer")).getRequestDAO().setRequest(req);
+                //sends really emails, than activate it when there is a real email or it will send accidentally mails to real email's people 
+                //sendMail(req.getOrdering().getEmail(), "Info mail: Your request: '+req.getTitle()+' has been shipped! Thank you for purchasing on our site.");
+                sendNotification(request, response, req.getOrdering(), "Great news! Your purchase of request "+req.getTitle()+" has been shipped!", NotificationTypeEnum.CHIUSO, "");
+                //TODO: inserire link per conferma ricezione ordine per selezionare ben riuscito o no
+                action_myOrders(request, response);
+            } else {
+                handleError("Cannot send request", request, response);
+            }
+            
         } catch (DataException ex) {
             handleError("Data access exception: " + ex.getMessage(), request, response);
         }
@@ -183,7 +219,11 @@ public class ManageOrders extends WebshopBaseController {
             HttpSession s = request.getSession(false);
             if (s != null) {
                 if (request.getParameter("myOrders") != null) {
-                    action_myOrders(request, response);
+                    if(request.getParameter("ship") != null) {
+                        req_key = SecurityHelpers.checkNumeric(request.getParameter("ship"));
+                        action_ship(request, response, req_key);
+                    }else
+                        action_myOrders(request, response);
                 } else {
                     if(request.getParameter("order") != null) {
                         req_key = SecurityHelpers.checkNumeric(request.getParameter("order"));

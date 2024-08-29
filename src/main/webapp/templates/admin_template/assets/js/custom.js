@@ -184,7 +184,30 @@ function acceptRequest(event, reqId, reqTitle, reqChars){
     });
 }
 
-function editProposal(event, propId){
+function shipOrder(event, reqId, productName){
+  event.preventDefault();
+  Swal.fire({
+      title: "Are you ready to ship order of "+productName+"?",
+      text: "Client will be informed about order shipped",
+      icon: "success",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, ship it!"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire({
+          title: "Shipped!",
+          text: "Order is been labeled as shipped.",
+          icon: "success"
+        }).then(() => {
+          $("#ship"+reqId).submit();
+        });
+      }
+    });
+}
+
+function editProposal(event){
   event.preventDefault();
   Swal.fire({
       title: "Are you sure to edit this proposal?",
