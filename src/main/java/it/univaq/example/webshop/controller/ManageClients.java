@@ -91,12 +91,14 @@ public class ManageClients extends WebshopBaseController {
                 else
                     user.setAccepted(false);
                 ((WebshopDataLayer) request.getAttribute("datalayer")).getUserDAO().setUser(user);
-                //sends really emails, than activate it when there is a real email or it will send accidentally mails to real email's people 
+                boolean send = Boolean.parseBoolean(getServletContext().getInitParameter("sendEmail"));
                 if(user.isAccepted()){
-                    //sendMail(user.getEmail(), "Administration Mail: You're been verified from our site. Now you can login and buy everything you want! Have a nice day");
+                    if(send)
+                        sendMail(user.getEmail(), "Administration Mail: \nYou're been verified from our site.\nNow you can login and buy everything you want! Have a nice day");
                     sendNotification(request, response, user, "Welcome in Webshop, new client!", NotificationTypeEnum.INFO, "index");
                 } else {
-                    //sendMail(user.getEmail(), "Administration Mail: We're sorry, you're not longer verified on our site. Write to our mail to get informations about");
+                    if(send)
+                        sendMail(user.getEmail(), "Administration Mail: \nWe're sorry, you're not longer verified on our site.\n Write on our mail to get informations about");
                     sendNotification(request, response, user, "We're sorry, you're not allowed anymore to stay in Webshop. Bye!", NotificationTypeEnum.INFO, "");
                 }
 
@@ -118,8 +120,9 @@ public class ManageClients extends WebshopBaseController {
             }
             if (user != null) {
                 ((WebshopDataLayer) request.getAttribute("datalayer")).getUserDAO().changeUserGroup(user_key, UserRoleEnum.TECNICO);
-                //sends really emails, than activate it when there is a real email or it will send accidentally mails to real email's people 
-                //sendMail(user.getEmail(), "Administration Mail: Congratulations! You're been assumed in our site as technician. From now you can work with os! Have a nice day");
+                boolean send = Boolean.parseBoolean(getServletContext().getInitParameter("sendEmail"));
+                if(send)
+                    sendMail(user.getEmail(), "Administration Mail: \nCongratulations!\nYou're been assumed in our site as technician. From now you can work with os! Have a nice day");
                 sendNotification(request, response, user, "Welcome in Webshop, new technician!", NotificationTypeEnum.INFO, "profile");
 
                 action_default(request, response);
@@ -146,7 +149,6 @@ public class ManageClients extends WebshopBaseController {
         }
     }
 
-    @SuppressWarnings("unused")
     private void sendMail(String email, String text) {
         String sender = getServletContext().getInitParameter("emailSender");
         String securityCode = getServletContext().getInitParameter("securityCode");

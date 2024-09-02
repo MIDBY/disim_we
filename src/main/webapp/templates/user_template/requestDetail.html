@@ -1,0 +1,146 @@
+<#if request??>
+    <#assign category = request.category>
+</#if>
+<div class="section">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <div class="section-title">
+                    <h3 class="title">Richiesta di Acquisto</h3>
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="index"><i class="fa fa-home"></i> WebShop</a></li>
+                        <li class="breadcrumb-item active">Richiesta di Acquisto</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="col-lg-12 col-sm-12">
+                    <form id="purchaseRequestForm" method="post" action="requestDetail">
+                        <div class="form-group alert alert-info">
+                            <div>
+                                <label for="requestState">Stato richiesta: </label>
+                                <input type="text" id="requestState" value="<#if request??>${request.requestState}<#else>Nuovo</#if>" disabled>
+                            </div>
+                            <div>
+                                <label for="orderState">Stato ordine: </label>
+                                <input type="text" id="orderState" value="<#if request??>${request.orderState}<#else></#if>" disabled>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-sm-12">
+                            <label for="title">Titolo: </label>
+                            <input type="text" id="titolo" value="<#if request??>${request.title}<#else>${title}</#if>" disabled>
+                            <input type="hidden" name="id" value="<#if request??>${request.key}</#if>">
+                        </div>
+
+                        <div class="form-group">
+                            <div class="form-group col-sm-6">
+                                <label for="category">Categoria: </label>
+                                <input type="text" id="category" value="${familyTree}" disabled>
+                                <input type="hidden" name="category" value="${category.key}">
+                            </div>
+                            <div class="form-group col-sm-6">
+                                <label for="image">Immagine: </label>
+                                <img id="image" src="image?imgid=${category.image.key}" alt="${category.image.caption!'Image'}" width="50px">
+                            </div>
+                        </div>
+
+                        <div class="form-group col-sm-12">
+                            <label for="description">Descrizione richiesta:</label>
+                            <textarea id="description" name="description" class="input" rows="4" spellcheck="false" class="not-split-text" <#if readonly??>disabled</#if>><#if request??>${request.description}</#if></textarea>
+                        </div>
+
+                        <div class="form-group col-sm-12">
+                            <label for="section-data">Characteristics</label>
+                            <div id="section-data" class="section-data">
+                                <#list totalChars as characteristic>
+                                    <div class="col-sm-6 mb-2">
+                                        <div class="col-sm-4">
+                                            <label for="characteristic${characteristic.key}">${characteristic.name}: </label>
+                                        </div>
+                                        <div class="col-sm-8">
+                                            <select id="characteristic${characteristic.key}" name="characteristic${characteristic.key}" class="input-select" autocomplete="off" <#if readonly??>disabled<#else>required</#if>>
+                                                <#assign values = characteristic.defaultValues?split(",")>
+                                                <#list values as value>
+                                                    <option value="${value}"
+                                                        <#if request??>
+                                                            <#list request.requestCharacteristics as reqChar>
+                                                                <#if reqChar.characteristic.key == characteristic.key && value?matches(reqChar.value, "i")>selected</#if>
+                                                            </#list>
+                                                        </#if>
+                                                     >${value}</option>
+                                                </#list>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </#list>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-sm-12">
+                            <label for="notes">Note aggiuntive (opzionale):</label>
+                            <textarea spellcheck="false" id="notes" name="notes" class="input" rows="4" class="not-split-text" <#if readonly??>disabled</#if>><#if request??>${request.notes}</#if></textarea>
+                        </div>
+
+                        <div class="form-group col-sm-12">
+                            <#if readonly??>
+                                <div class="alert alert-success not-split-text"><p>La tua richiesta è stata trattata, in caso di necessità di modifiche alla richiesta è possibile scrivere nella motivazione della proposta i necessari cambiamenti da esaminare.</p></div>
+                            <#else>
+                                <button type="submit" name="save" class="primary-btn">Invia Richiesta</button>
+                            </#if>
+                        </div>
+                    </form>
+                    <#if (request?? && request.proposals?size>0)>
+                        <div class="container">
+                            <ul class="comment-reply list-unstyled">
+                                <#list request.proposals?sort_by("key")?reverse as p>
+                                    <#assign editable = false>
+                                    <#if p.motivation?has_content>
+                                        <li>
+                                            <div class="icon-box mr-3"><img class="img-fluid img-thumbnail" src="templates/admin_template/assets/images/xs/client.png" alt="Awesome Client"></div>
+                                            <div class="text-box">
+                                                <h5>${request.ordering.username}</h5>
+                                                <p>${p.motivation}</p>
+                                            </div>
+                                        </li>
+                                        <hr>
+                                    <#else>
+                                        <#assign editable = true>
+                                    </#if>                                        
+                                        <li>
+                                            <form id="edit${p.key}" method="post" action="requestDetail?editP=${p.key}"><input type="hidden" id="proposalState${p.key}" name="proposalState"><input type="hidden" id="proposalMotivation${p.key}" name="proposalMotivation"></form>
+                                            <div class="icon-box mr-3"><img class="img-fluid img-thumbnail" src="templates/admin_template/assets/images/xs/developer.png" alt="Awesome Tech"></div>
+                                            <div class="text-box">
+                                                <h5>${p.technician.username}</h5>
+                                                <span class="comment-date mr-3">${p.creationDate.format('dd/MM/yyyy HH:mm')}</span>
+                                                <span class="comment-date">version: ${p.version}</span>
+                                                <#if editable><a href="#" onclick="editProposal(event, '${p.key}')" class="replybutton"><i class="fa fa-edit"></i> Edit</a></#if>
+                                                <#if (p.proposalState == 'INATTESA')>
+                                                    <span class="replybutton badge mr-3 badge-warning">IN ATTESA</span>
+                                                <#else>
+                                                    <#if (p.proposalState == 'APPROVATO')>
+                                                        <span class="replybutton badge mr-3 badge-success">${p.proposalState}</span>
+                                                    <#else>
+                                                        <span class="replybutton badge mr-3 badge-danger">${p.proposalState}</span>
+                                                    </#if>
+                                                </#if>
+                                                <p><Strong>Product: </Strong> ${p.productName}</p>
+                                                <p><Strong>Producer: </Strong> ${p.producerName}</p>
+                                                <p><Strong>Description: </Strong> ${p.productDescription}</p>
+                                                <p><Strong>Price: </Strong> ${p.productPrice} €</p>
+                                                <p><Strong>Url: </Strong> ${p.url}</p>
+                                                <p><Strong>Notes: </Strong> ${p.notes}</p>
+                                            </div>
+                                        </li>
+                                    <#sep>
+                                    <hr>
+                                </#list>
+                            </ul>                            
+                        </div>                               
+                    </#if>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

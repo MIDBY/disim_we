@@ -129,6 +129,7 @@ public class Homepage extends WebshopBaseController {
                     data1[j] = ((WebshopDataLayer) request.getAttribute("datalayer")).getRequestDAO().getRequestsByCreationMonth(i).size();
                     j++;
                 }
+                j--;
                 data1[j] = reqLastMonthValue; j++;
                 data1[j] = reqThisMonthValue;
                 request.setAttribute("chartData1", data1);

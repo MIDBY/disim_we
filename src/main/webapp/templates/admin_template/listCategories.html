@@ -5,7 +5,7 @@
                 <div class="col-lg-7 col-md-6 col-sm-12">
                     <h2>Categories List</h2>
                     <ul class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="homepage"><i class="zmdi zmdi-home"></i> Aero</a></li>
+                        <li class="breadcrumb-item"><a href="homepage"><i class="zmdi zmdi-home"></i> WebShop</a></li>
                         <li class="breadcrumb-item active">Categories</li>
                     </ul>
                     <button class="btn btn-primary btn-icon mobile_menu" type="button"><i class="zmdi zmdi-sort-amount-desc"></i></button>
@@ -25,7 +25,7 @@
                                 <thead>
                                     <tr>     
                                         <th class="sorting_asc sorting_asc_disabled sorting_desc_disabled "></th>
-                                        <th class="sorting_asc_disabled sorting_desc_disabled">Image</th>
+                                        <th class="sorting_asc_disabled sorting_desc_disabled" width="50px">Image</th>
                                         <th>Product Name</th>
                                         <th>Characteristics</th>
                                         <th class="sorting_asc_disabled sorting_desc_disabled">Action</th>
@@ -36,7 +36,7 @@
                                         <form id="delete${category.key}" method="post" action="categories?del=${category.key}">
                                             <tr id="node-${category.key}" <#if category.fatherCategory?has_content && category.fatherCategory.key gt 0>class="child-of-node-${category.fatherCategory.key}"</#if>>
                                                 <td></td>
-                                                <td><img src="image?imgid=${category.image.key}" alt="${category.image.caption!'Image'}" width="48"></td>
+                                                <td><img src="image?imgid=${category.image.key}" alt="${category.image.caption!'Image'}"></td>
                                                 <td><h5>${category.name}</h5></td>
                                                 <td><span class="text-muted"><#list category.characteristics as char>${char.name}: ${char.defaultValues?replace(",",", ")}<#sep><br></#list></span></td>
                                                 <td>

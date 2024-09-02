@@ -1,17 +1,13 @@
 		<nav id="navigation">
 			<!-- container -->
-			<div class="container">
+			<div class="container-fluid">
 				<!-- responsive-nav -->
 				<div id="responsive-nav">
 					<!-- NAV -->
 					<ul class="main-nav nav navbar-nav">
-						<li class="active"><a href="#">Home</a></li>
-						<li><a href="#">Hot Deals</a></li>
-						<li><a href="#">Categories</a></li>
-						<li><a href="#">Laptops</a></li>
-						<li><a href="#">Smartphones</a></li>
-						<li><a href="#">Cameras</a></li>
-						<li><a href="#">Accessories</a></li>
+						<li <#if title?matches("index", "i")>class="active"</#if>><a href="index">Home</a></li>
+						<li <#if title?matches("profile", "i")>class="active"</#if>><a href="myProfile">Profilo</a></li>
+						<li <#if title?matches("new request", "i")>class="active"</#if>><a href="requestDetail">Nuova richiesta</a></li>
 					</ul>
 					<!-- /NAV -->
 				</div>

@@ -24,7 +24,7 @@ public class DummyModelFiller implements DataModelFiller {
                 }
                 request.setAttribute("notifications", list);
             }
-        } catch (DataException ex) {
+        } catch (DataException | NullPointerException ex) {
             Logger.getLogger(DummyModelFiller.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

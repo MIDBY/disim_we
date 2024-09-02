@@ -156,12 +156,14 @@ function errorTechLocked(event){
 function acceptRequest(event, reqId, reqTitle, reqChars){
   event.preventDefault();
   var text = '<strong>Title: </string>'+reqTitle+'<br>';
-  for(const i of reqChars.split(',')) {
-    text += "<strong>"
-    const j = i.split(":");
-    text += j[0] + ": </strong>" + j[1]
-    if(i != reqChars.split(',')[reqChars.split(',').length - 1])
-      text +="<br>"
+  if(reqChars != "") {
+    for(const i of reqChars.split(',')) {
+      text += "<strong>"
+      const j = i.split(":");
+      text += j[0] + ": </strong>" + j[1]
+      if(i != reqChars.split(',')[reqChars.split(',').length - 1])
+        text +="<br>"
+    }
   }
   Swal.fire({
       title: "Are you sure to take request #"+reqId+":",

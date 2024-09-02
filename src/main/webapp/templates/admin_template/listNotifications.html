@@ -5,7 +5,7 @@
                 <div class="col-lg-7 col-md-6 col-sm-12">
                     <h2>Notification list</h2>
                     <ul class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="homepage"><i class="zmdi zmdi-home"></i> Aero</a></li>
+                        <li class="breadcrumb-item"><a href="homepage"><i class="zmdi zmdi-home"></i> WebShop</a></li>
                         <li class="breadcrumb-item active">Notifications</li>
                     </ul>
                     <button class="btn btn-primary btn-icon mobile_menu" type="button"><i class="zmdi zmdi-sort-amount-desc"></i></button>
@@ -25,10 +25,10 @@
                         </div>
                         <div class="body">
                             <div class="inbox">
-                                <form method="post" action="myNotifications">  
+                                <form method="post" action="notifications">  
                                     <div class="i_action d-flex justify-content-between align-items-center">
                                         <div class="btn-group">
-                                            <a href="myNotifications" class="btn btn-outline-secondary btn-sm" title="Refresh"><i class="zmdi zmdi-refresh"></i></a>
+                                            <a href="notifications" class="btn btn-outline-secondary btn-sm" title="Refresh"><i class="zmdi zmdi-refresh"></i></a>
                                             <button type="submit" name="readAll" class="btn btn-outline-secondary btn-sm" title="Read All"><i class="zmdi zmdi-eye"></i></button>
                                             <button type="submit" name="unreadAll" class="btn btn-outline-secondary btn-sm" title="Unread All"><i class="zmdi zmdi-eye-off"></i></button>
                                             <button type="submit" name="delete" class="btn btn-outline-secondary btn-sm" title="Delete"><i class="zmdi zmdi-delete"></i></button>
@@ -38,12 +38,12 @@
                                         <table class="table table-striped table-hover dataTable js-exportable c_table theme-color">
                                             <thead>
                                                 <tr>             
-                                                    <th class="sorting_asc_disabled sorting_desc_disabled" style="width:50px;"><input type="checkbox" onclick="toggle(this)"></th>                          
-                                                    <th class="sorting_asc_disabled sorting_desc_disabled" style="width:50px;"></th>
+                                                    <th class="sorting_asc_disabled sorting_desc_disabled" width="10px"><input type="checkbox" onclick="toggle(this)"></th>                          
+                                                    <th class="sorting_asc_disabled sorting_desc_disabled" width="10px"></th>
                                                     <th>Type</th>
                                                     <th>Message</th>                                        
                                                     <th>Sent on</th>
-                                                    <th class="sorting_asc_disabled sorting_desc_disabled">Link</th>
+                                                    <th class="sorting_asc_disabled sorting_desc_disabled" width="10px">Link</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -52,7 +52,7 @@
                                                         <tr>
                                                             <td><input type="checkbox" name="check[]" value="${notification.key}"></td>    
                                                             <td>
-                                                                <a href="myNotifications?read=${notification.key}" title="Read" role="button">
+                                                                <a href="notifications?read=${notification.key}" title="Read" role="button">
                                                                     <#if !notification.read>
                                                                         <i class="zmdi zmdi-markunread-mailbox"></i>
                                                                     </#if>
@@ -75,7 +75,7 @@
                                                                     <span class="icon-circle bg-red waves-effect waves-float btn-sm waves-red"><i class="zmdi zmdi-delete"></i> ${notification.type}</span>
                                                                 </#if>
                                                             </td>
-                                                            <td><textarea cols="32"  class="<#if !notification.read>text-primary</#if> not-split-text" disabled>${notification.message}</textarea></td>    
+                                                            <td><textarea spellcheck="false" cols="32"  class="<#if !notification.read>text-primary</#if> not-split-text" disabled>${notification.message}</textarea></td>    
                                                             <td><i class="zmdi zmdi-time"></i> ${notification.creationDate.format('dd/MM/yyyy HH:mm')}</td>
                                                             <td><#if notification.link?has_content><a href="${notification.link}" class="btn btn-default waves-effect waves-float btn-sm waves-green"><i class="zmdi zmdi-attachment-alt"></i></a></#if></td>
                                                         </tr>

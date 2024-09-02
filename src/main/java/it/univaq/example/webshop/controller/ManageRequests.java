@@ -9,6 +9,7 @@ import it.univaq.framework.data.DataException;
 import it.univaq.framework.result.TemplateResult;
 import it.univaq.framework.result.TemplateManagerException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -39,10 +40,10 @@ public class ManageRequests extends WebshopBaseController {
             request.setAttribute("group", group.getName());           
             
             List<Request> requests = ((WebshopDataLayer) request.getAttribute("datalayer")).getRequestDAO().getRequests();
+            List<Request> closedRequests = new ArrayList<>();
             for(Request r : requests) {
                 if(r.getRequestState().equals(RequestStateEnum.CHIUSO) || r.getRequestState().equals(RequestStateEnum.ANNULLATO)) {
-                    requests.remove(r);
-                    continue;
+                    closedRequests.add(r);
                 }
                 r.getCategory();
                 r.getCategory().getImage();
@@ -52,19 +53,8 @@ public class ManageRequests extends WebshopBaseController {
                 r.getRequestCharacteristics();
                 r.getProposals();
             }
+            requests.removeAll(closedRequests);
             request.setAttribute("requests", requests);
-
-            List<Request> closedRequests = ((WebshopDataLayer) request.getAttribute("datalayer")).getRequestDAO().getRequestsByRequestState(RequestStateEnum.CHIUSO);
-            closedRequests.addAll(((WebshopDataLayer) request.getAttribute("datalayer")).getRequestDAO().getRequestsByRequestState(RequestStateEnum.ANNULLATO));
-            for(Request r : closedRequests) {
-                r.getCategory();
-                r.getCategory().getImage();
-                r.getOrdering();
-                if(r.getTechnician() != null)
-                    r.setTechnician(r.getTechnician());
-                r.setRequestCharacteristics(r.getRequestCharacteristics());
-                r.setProposals(r.getProposals());
-            }
             request.setAttribute("closedRequests", closedRequests);
             
             res.activate("listRequests.html", request, response);

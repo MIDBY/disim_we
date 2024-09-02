@@ -42,7 +42,8 @@ public class Login extends WebshopBaseController {
                         if(group.getName().equals(UserRoleEnum.ORDINANTE)) {
                             if(user.isAccepted()) {         
                                 SecurityHelpers.createSession(request, email, user.getKey());   
-                                request.getSession().setAttribute("userid", user.getKey());                
+                                request.getSession().setAttribute("userid", user.getKey());         
+                                request.getSession().setAttribute("template", 2);         
                                 if (request.getParameter("referrer") != null) {
                                     response.sendRedirect(request.getParameter("referrer"));
                                 } else {       
@@ -60,6 +61,7 @@ public class Login extends WebshopBaseController {
                             request.getSession().setAttribute("userid", user.getKey());
                             request.getSession().setAttribute("themeMode", "light");
                             request.getSession().setAttribute("themeSkin", "blush");
+                            request.getSession().setAttribute("template", 1);  
                             if (request.getParameter("referrer") != null) {
                                 response.sendRedirect(request.getParameter("referrer"));
                             } else {                            

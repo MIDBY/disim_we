@@ -23,10 +23,6 @@ import freemarker.template.Template;
 import freemarker.template.TemplateDateModel;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
-import it.univaq.example.webshop.data.dao.impl.WebshopDataLayer;
-import it.univaq.example.webshop.data.model.Group;
-import it.univaq.example.webshop.data.model.impl.UserRoleEnum;
-import it.univaq.framework.data.DataException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -227,23 +223,23 @@ public class TemplateResult {
         // assicuriamoci di avere sempre un data model da passare al template, che
         // contenga anche tutti i default
         // ensure we have a data model, initialized with some default data
-        int user_key = 0;
+        int temp_key = 0;
         Map<String, Object> localdatamodel = new HashMap<>();
-        if(request.getSession().getAttribute("userid") != null) {
+        if(request.getSession().getAttribute("template") != null) {
             try {
-                user_key = Integer.parseInt(request.getSession().getAttribute("userid").toString());
-                Group group = ((WebshopDataLayer) request.getAttribute("datalayer")).getGroupDAO().getGroupByUser(user_key);
-                if(group.getName().equals(UserRoleEnum.ORDINANTE))
+                temp_key = Integer.parseInt(request.getSession().getAttribute("template").toString());
+                if(temp_key > 1)
                     localdatamodel = getDefaultDataModel2(request);
                 else 
                     localdatamodel = getDefaultDataModel(request);
-
-            } catch (DataException e) {
+            } catch (NullPointerException e) {
                 e.printStackTrace();
             }
-            
         } else
-            localdatamodel = getDefaultDataModel(request);
+            if(request.getAttribute("template") != null)
+                localdatamodel = getDefaultDataModel2(request);
+            else
+                localdatamodel = getDefaultDataModel(request);
         // nota: in questo modo il data model utente può eventualmente sovrascrivere i
         // dati precaricati da getDefaultDataModel
         // ad esempio per disattivare l'outline template basta porre a null la
@@ -259,8 +255,8 @@ public class TemplateResult {
         try {   
             //TDODO: nel caso di necessità per il front-end di usare un template base (vedi outline.ftl.html) su cui caricare le varie pagine,
             //      è possibile inserire qui sotto l'implementazione che in caso di accesso cliente porta al caricamento dell'outline per il front-end
-            if (tplname.contains("login.html") || tplname.contains("register.html") || tplname.contains("forgot_password.html")
-                || tplname.contains("enter_otp.html") || tplname.contains("new_password.html"))
+            if (tplname.contains("login.html") || tplname.contains("register.html") || tplname.contains("forgotPassword.html")
+                || tplname.contains("enterOtp.html") || tplname.contains("newPassword.html"))
                 t = cfg.getTemplate(tplname);
             else {
                 if (outline_name == null || outline_name.isEmpty()) {

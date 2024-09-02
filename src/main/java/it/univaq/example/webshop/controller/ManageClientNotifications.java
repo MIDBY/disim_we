@@ -1,7 +1,6 @@
 package it.univaq.example.webshop.controller;
 
 import it.univaq.example.webshop.data.dao.impl.WebshopDataLayer;
-import it.univaq.example.webshop.data.model.Group;
 import it.univaq.example.webshop.data.model.Notification;
 import it.univaq.example.webshop.data.model.User;
 import it.univaq.framework.data.DataException;
@@ -11,23 +10,23 @@ import it.univaq.framework.result.TemplateManagerException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-public class ManageNotifications extends WebshopBaseController {
+public class ManageClientNotifications extends WebshopBaseController {
 
     private void action_anonymous(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException, TemplateManagerException {
         TemplateResult res = new TemplateResult(getServletContext());
         String completeRequestURL = request.getRequestURL()
                 + (request.getQueryString() != null ? "?" + request.getQueryString() : "");
-        request.setAttribute("username", "Hacker");
-        request.setAttribute("group", "Stranger");
+        request.setAttribute("template", 2);
+        request.setAttribute("email", "Hacker");
+        request.setAttribute("address", "Stranger");
         request.setAttribute("completeRequestURL", "login?referrer=" + completeRequestURL);
-        res.activate("homepage.ftl.html", request, response);
+        res.activate("index.html", request, response);
     }
 
     private void action_default(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException, TemplateManagerException {
@@ -35,14 +34,13 @@ public class ManageNotifications extends WebshopBaseController {
             TemplateResult res = new TemplateResult(getServletContext());
             int user_key = Integer.parseInt(request.getSession().getAttribute("userid").toString());
             User user = ((WebshopDataLayer) request.getAttribute("datalayer")).getUserDAO().getUser(user_key);
-            Group group = ((WebshopDataLayer) request.getAttribute("datalayer")).getGroupDAO().getGroupByUser(user_key);
 
-            request.setAttribute("username", user.getUsername());
-            request.setAttribute("group", group.getName());        
+            request.setAttribute("email", user.getEmail());
+            request.setAttribute("address", user.getAddress());        
 
             request.setAttribute("notifications", ((WebshopDataLayer) request.getAttribute("datalayer")).getNotificationDAO().getNotificationsByUser(user_key));
             
-            res.activate("listNotifications.html", request, response);
+            res.activate("clientNotifications.html", request, response);
         } catch (DataException ex) {
             handleError("Data access exception: " + ex.getMessage(), request, response);
         }
@@ -115,8 +113,6 @@ public class ManageNotifications extends WebshopBaseController {
             throws ServletException {
 
         request.setAttribute("title", "Notifications");
-        request.setAttribute("themeMode", request.getSession().getAttribute("themeMode"));
-        request.setAttribute("themeSkin", request.getSession().getAttribute("themeSkin"));
         
         try {
             HttpSession s = request.getSession(false);
@@ -149,7 +145,7 @@ public class ManageNotifications extends WebshopBaseController {
      */
     @Override
     public String getServletInfo() {
-        return "Manage Notifications servlet";
+        return "Manage client Notifications servlet";
     }// </editor-fold>
   
 

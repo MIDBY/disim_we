@@ -87,9 +87,10 @@ public class ManageStaff extends WebshopBaseController {
                     user.setAccepted(false);
                     ((WebshopDataLayer) request.getAttribute("datalayer")).getUserDAO().setUser(user);
                 }
-                //sends really emails, than activate it when there is a real email or it will send accidentally mails to real email's people 
-                //sendMail(user.getEmail(), "Administration Mail: You're been fired from our site. Have a nice day");
-                sendNotification(request, response, user, "We're sorry, you're not allowed anymore to stay in Webshop. Bye!", NotificationTypeEnum.INFO, "");
+                boolean send = Boolean.parseBoolean(getServletContext().getInitParameter("sendEmail"));
+                if(send) 
+                    sendMail(user.getEmail(), "Administration Mail: \nYou're been fired from our site. \nHave a nice day");
+                sendNotification(request, response, user, "We're sorry, \nyou're not allowed anymore to stay in Webshop. Bye!", NotificationTypeEnum.INFO, "");
                 action_default(request, response);
             } else {
                 handleError("Cannot update user", request, response);
@@ -114,7 +115,6 @@ public class ManageStaff extends WebshopBaseController {
         }
     }
 
-    @SuppressWarnings("unused")
     private void sendMail(String email, String text) {
         String sender = getServletContext().getInitParameter("emailSender");
         String securityCode = getServletContext().getInitParameter("securityCode");

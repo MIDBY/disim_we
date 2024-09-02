@@ -5,7 +5,7 @@
                 <div class="col-lg-7 col-md-6 col-sm-12">
                     <h2>Order list</h2>
                     <ul class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="homepage"><i class="zmdi zmdi-home"></i> Aero</a></li>
+                        <li class="breadcrumb-item"><a href="homepage"><i class="zmdi zmdi-home"></i> WebShop</a></li>
                         <li class="breadcrumb-item active">Orders</li>
                     </ul>
                     <button class="btn btn-primary btn-icon mobile_menu" type="button"><i class="zmdi zmdi-sort-amount-desc"></i></button>
@@ -35,11 +35,11 @@
                                     <#if (requests?size>0)>      
                                         <#list requests as request>
                                             <form id="take${request.key}" method="post" action="orders?order=${request.key}">
-                                                <tr onclick="acceptRequest(event,'${request.key}','${request.title}','<#list reqChars as key,val>${key}:${val}<#sep>,</#list>')">
+                                                <tr onclick="acceptRequest(event,'${request.key}','${request.title}','<#list request.requestCharacteristics as reqc>${reqc.characteristic.name}:${reqc.value}<#sep>,</#list>')">
                                                     <td><strong>${request.key}</strong></td>
                                                     <td>${request.category.name}</td>
                                                     <td>${request.title}</td>
-                                                    <td><textarea cols="32" class="not-split-text" disabled>${request.description}</textarea></td>
+                                                    <td><textarea spellcheck="false" cols="32" class="not-split-text" disabled>${request.description}</textarea></td>
                                                     <td><span class="badge badge-primary">${request.ordering.username}</span></td>
                                                     <td>${request.creationDate.format('dd/MM/yyyy')}</td>
                                                 </tr>

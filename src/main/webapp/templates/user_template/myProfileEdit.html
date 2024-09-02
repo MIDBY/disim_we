@@ -1,0 +1,349 @@
+﻿<div class="section">
+    <div class="container-fluid">
+        <div class="block-header">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    <h2 class="title">My Profile</h2>
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="index"><i class="fa fa-home"></i> WebShop</a></li>
+                        <li class="breadcrumb-item"><a href="myProfile">Profile</a></li>
+                        <li class="breadcrumb-item active">Edit</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="row clearfix">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="body">
+                            <form id="editform" method="post" action="myProfile?edit=1" autocomplete="off">
+                                <div class="billing-details">
+                                    <div class="section-title">
+                                        <h3 class="title">Security settings</h3>
+                                    </div>
+                                    <div class="col-lg-8 col-md-12">
+                                        <div class="form-group">
+                                            <input type="email" name="newemail" id="newemail" class="input" placeholder="New Email" pattern=".+@*\.com" autocomplete="username">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-md-12">
+                                        <div class="form-group">
+                                            <input type="password" name="currentpassword" id="password" onchange="requiredField('password', 'password2')" class="input" placeholder="Current Password">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-md-12">
+                                        <div class="form-group">
+                                            <input type="password" name="newpassword" id="password2" onchange="requiredField('password', 'password2')" class="input" placeholder="New Password">
+                                        </div>
+                                    </div>
+                                    <#if errorEmail>
+                                        <span class="text-danger col-12 mb-3">Email just in use, try another one</span>
+                                    </#if>   
+                                    <#if errorOldPassword>
+                                        <span class="text-danger col-12 mb-3">Current Password not match, retry</span>
+                                    </#if>     
+                                    <#if errorNewPassword>
+                                        <span class="text-danger col-12 mb-3">New Password equals to current password, change it</span>
+                                    </#if> 
+                                    <span class="col-md-12 mb-3">If changed this settings, you'll be sent in login page to confirm new credentials</span>
+                                    <div class="col-md-12">
+                                        <input type="submit" class="btn l-green" value="Save Changes" name="credentials" >
+                                    </div>                                
+                                </div>  
+                            </form>                               
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="body">
+                            <form id="editform2" method="post" action="myProfile?edit=2" autocomplete="off">
+                                <div class="billing-details">
+                                    <div class="section-title">
+                                        <h3 class="title">Account settings</h3>
+                                    </div>
+                                    <div class="col-lg-8 col-md-8">
+                                        <div class="form-group">
+                                            <input type="text" name="u" class="input" placeholder="Username" value="${username}" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6">
+                                        <div class="form-group">
+                                            <input type="text" name="a" class="input" placeholder="Address" value="${addr}" required>
+                                        </div>
+                                    </div>       
+                                    <div class="col-lg-6 col-md-6">
+                                        <div class="form-group">
+                                            <input type="number" name="n" class="input" placeholder="Number" value="${numberVal}" required>
+                                        </div>
+                                    </div>                               
+                                    <div class="col-lg-6 col-md-6">
+                                        <div class="form-group">
+                                            <input type="text" name="c" class="input" placeholder="City" value="${city}" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6">
+                                        <div class="form-group">
+                                            <input type="text" name="k" class="input" placeholder="CAP" value="${cap}" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6">
+                                        <div class="form-group">
+                                            <select name="t" class="input show-tick ms select2" required>
+                                                <option selected disabled value>Nationality</option>
+                                                <option value="Afghanistan(AF)" <#if country == "Afghanistan(AF)"> selected</#if> >Afghanistan</option>
+                                                <option value="Åland Islands(AX)" <#if country == "Åland Islands(AX)"> selected</#if> >Åland Islands</option>
+                                                <option value="Albania(AL)" <#if country == "Albania(AL)"> selected</#if> >Albania</option>
+                                                <option value="Algeria(DZ)" <#if country == "Algeria(DZ)"> selected</#if> >Algeria</option>
+                                                <option value="American Samoa(AS)" <#if country == "American Samoa(AS)"> selected</#if> >American Samoa</option>
+                                                <option value="Andorra(AD)" <#if country == "Andorra(AD)"> selected</#if> >Andorra</option>
+                                                <option value="Angola(AO)" <#if country == "Angola(AO)"> selected</#if> >Angola</option>
+                                                <option value="Anguilla(AI)" <#if country == "Anguilla(AI)"> selected</#if> >Anguilla</option>
+                                                <option value="Antarctica(AQ)" <#if country == "Antarctica(AQ)"> selected</#if> >Antarctica</option>
+                                                <option value="Antigua and Barbuda(AG)" <#if country == "Antigua and Barbuda(AG)"> selected</#if> >Antigua and Barbuda</option>
+                                                <option value="Argentina(AR)" <#if country == "Argentina(AR)"> selected</#if> >Argentina</option>
+                                                <option value="Armenia(AM)" <#if country == "Armenia(AM)"> selected</#if> >Armenia</option>
+                                                <option value="Aruba(AW)" <#if country == "Aruba(AW)"> selected</#if> >Aruba</option>
+                                                <option value="Australia(AU)" <#if country == "Australia(AU)"> selected</#if> >Australia</option>
+                                                <option value="Austria(AT)" <#if country == "Austria(AT)"> selected</#if> >Austria</option>
+                                                <option value="Azerbaijan(AZ)" <#if country == "Azerbaijan(AZ)"> selected</#if> >Azerbaijan</option>
+                                                <option value="Bahamas(BS)" <#if country == "Bahamas(BS)"> selected</#if> >Bahamas</option>
+                                                <option value="Bahrain(BH)" <#if country == "Bahrain(BH)"> selected</#if> >Bahrain</option>
+                                                <option value="Bangladesh(BD)" <#if country == "Bangladesh(BD)"> selected</#if> >Bangladesh</option>
+                                                <option value="Barbados(BB)" <#if country == "Barbados(BB)"> selected</#if> >Barbados</option>
+                                                <option value="Belarus(BY)" <#if country == "Belarus(BY)"> selected</#if> >Belarus</option>
+                                                <option value="Belgium(BE)" <#if country == "Belgium(BE)"> selected</#if> >Belgium</option>
+                                                <option value="Belize(BZ)" <#if country == "Belize(BZ)"> selected</#if> >Belize</option>
+                                                <option value="Benin(BJ)" <#if country == "Benin(BJ)"> selected</#if> >Benin</option>
+                                                <option value="Bermuda(BM)" <#if country == "Bermuda(BM)"> selected</#if> >Bermuda</option>
+                                                <option value="Bhutan(BT)" <#if country == "Bhutan(BT)"> selected</#if> >Bhutan</option>
+                                                <option value="Bolivia(BO)" <#if country == "Bolivia(BO)"> selected</#if> >Bolivia</option>
+                                                <option value="Bosnia and Herzegovina(BA)" <#if country == "Bosnia and Herzegovina(BA)"> selected</#if> >Bosnia and Herzegovina</option>
+                                                <option value="Botswana(BW)" <#if country == "Botswana(BW)"> selected</#if> >Botswana</option>
+                                                <option value="Bouvet Island(BV)" <#if country == "Bouvet Island(BV)"> selected</#if> >Bouvet Island</option>
+                                                <option value="Brazil(BR)" <#if country == "Brazil(BR)"> selected</#if> >Brazil</option>
+                                                <option value="British Indian Ocean Territory(IO)" <#if country == "British Indian Ocean Territory(IO)"> selected</#if> >British Indian Ocean Territory</option>
+                                                <option value="Brunei Darussalam(BN)" <#if country == "Brunei Darussalam(BN)"> selected</#if> >Brunei Darussalam</option>
+                                                <option value="Bulgaria(BG)" <#if country == "Bulgaria(BG)"> selected</#if> >Bulgaria</option>
+                                                <option value="Burkina Faso(BF)" <#if country == "Burkina Faso(BF)"> selected</#if> >Burkina Faso</option>
+                                                <option value="Burundi(BI)" <#if country == "Burundi(BI)"> selected</#if> >Burundi</option>
+                                                <option value="Cambodia(KH)" <#if country == "Cambodia(KH)"> selected</#if> >Cambodia</option>
+                                                <option value="Cameroon(CM)" <#if country == "Cameroon(CM)"> selected</#if> >Cameroon</option>
+                                                <option value="Canada(CA)" <#if country == "Canada(CA)"> selected</#if> >Canada</option>
+                                                <option value="Cape Verde(CV)" <#if country == "Cape Verde(CV)"> selected</#if> >Cape Verde</option>
+                                                <option value="Cayman Islands(KY)" <#if country == "Cayman Islands(KY)"> selected</#if> >Cayman Islands</option>
+                                                <option value="Central African Republic(CF)" <#if country == "Central African Republic(CF)"> selected</#if> >Central African Republic</option>
+                                                <option value="Chad(TD)" <#if country == "Chad(TD)"> selected</#if> >Chad</option>
+                                                <option value="Chile(CL)" <#if country == "Chile(CL)"> selected</#if> >Chile</option>
+                                                <option value="China(CN)" <#if country == "China(CN)"> selected</#if> >China</option>
+                                                <option value="Christmas Island(CX)" <#if country == "Christmas Island(CX)"> selected</#if> >Christmas Island</option>
+                                                <option value="Cocos (Keeling) Islands(CC)" <#if country == "Cocos (Keeling) Islands(CC)"> selected</#if> >Cocos (Keeling) Islands</option>
+                                                <option value="Colombia(CO)" <#if country == "Colombia(CO)"> selected</#if> >Colombia</option>
+                                                <option value="Comoros(KM)" <#if country == "Comoros(KM)"> selected</#if> >Comoros</option>
+                                                <option value="Congo(CG)" <#if country == "Congo(CG)"> selected</#if> >Congo</option>
+                                                <option value="Democratic Republic of the Congo(CD)" <#if country == "Democratic Republic of the Congo(CD)"> selected</#if> >Democratic Republic of the Congo</option>
+                                                <option value="Cook Islands(CK)" <#if country == "Cook Islands(CK)"> selected</#if> >Cook Islands</option>
+                                                <option value="Costa Rica(CR)" <#if country == "Costa Rica(CR)"> selected</#if> >Costa Rica</option>
+                                                <option value="Cote D'ivoire(CI)" <#if country == "Cote D'ivoire(CI)"> selected</#if> >Cote D'ivoire</option>
+                                                <option value="Croatia(HR)" <#if country == "Croatia(HR)"> selected</#if> >Croatia</option>
+                                                <option value="Cuba(CU)" <#if country == "Cuba(CU)"> selected</#if> >Cuba</option>
+                                                <option value="Cyprus(CY)" <#if country == "Cyprus(CY)"> selected</#if> >Cyprus</option>
+                                                <option value="Czech Republic(CZ)" <#if country == "Czech Republic(CZ)"> selected</#if> >Czech Republic</option>
+                                                <option value="Denmark(DK)" <#if country == "Denmark(DK)"> selected</#if> >Denmark</option>
+                                                <option value="Djibouti(DJ)" <#if country == "Djibouti(DJ)"> selected</#if> >Djibouti</option>
+                                                <option value="Dominica(DM)" <#if country == "Dominica(DM)"> selected</#if> >Dominica</option>
+                                                <option value="Dominican Republic(DO)" <#if country == "Dominican Republic(DO)"> selected</#if> >Dominican Republic</option>
+                                                <option value="Ecuador(EC)" <#if country == "Ecuador(EC)"> selected</#if> >Ecuador</option>
+                                                <option value="Egypt(EG)" <#if country == "Egypt(EG)"> selected</#if> >Egypt</option>
+                                                <option value="El Salvador(SV)" <#if country == "El Salvador(SV)"> selected</#if> >El Salvador</option>
+                                                <option value="Equatorial Guinea(GQ)" <#if country == "Equatorial Guinea(GQ)"> selected</#if> >Equatorial Guinea</option>
+                                                <option value="Eritrea(ER)" <#if country == "Eritrea(ER)"> selected</#if> >Eritrea</option>
+                                                <option value="Estonia(EE)" <#if country == "Estonia(EE)"> selected</#if> >Estonia</option>
+                                                <option value="Ethiopia(ET)" <#if country == "Ethiopia(ET)"> selected</#if> >Ethiopia</option>
+                                                <option value="Falkland Islands (Malvinas)(FK)" <#if country == "Falkland Islands (Malvinas)(FK)"> selected</#if> >Falkland Islands (Malvinas)</option>
+                                                <option value="Faroe Islands(FO)" <#if country == "Faroe Islands(FO)"> selected</#if> >Faroe Islands</option>
+                                                <option value="Fiji(FJ)" <#if country == "Fiji(FJ)"> selected</#if> >Fiji</option>
+                                                <option value="Finland(FI)" <#if country == "Finland(FI)"> selected</#if> >Finland</option>
+                                                <option value="France(FR)" <#if country == "France(FR)"> selected</#if> >France</option>
+                                                <option value="French Guiana(GF)" <#if country == "French Guiana(GF)"> selected</#if> >French Guiana</option>
+                                                <option value="French Polynesia(PF)" <#if country == "French Polynesia(PF)"> selected</#if> >French Polynesia</option>
+                                                <option value="French Southern Territories(TF)" <#if country == "French Southern Territories(TF)"> selected</#if> >French Southern Territories</option>
+                                                <option value="Gabon(GA)" <#if country == "Gabon(GA)"> selected</#if> >Gabon</option>
+                                                <option value="Gambia(GM)" <#if country == "Gambia(GM)"> selected</#if> >Gambia</option>
+                                                <option value="Georgia(GE)" <#if country == "Georgia(GE)"> selected</#if> >Georgia</option>
+                                                <option value="Germany(DE)" <#if country == "Germany(DE)"> selected</#if> >Germany</option>
+                                                <option value="Ghana(GH)" <#if country == "Ghana(GH)"> selected</#if> >Ghana</option>
+                                                <option value="Gibraltar(GI)" <#if country == "Gibraltar(GI)"> selected</#if> >Gibraltar</option>
+                                                <option value="Greece(GR)" <#if country == "Greece(GR)"> selected</#if> >Greece</option>
+                                                <option value="Greenland(GL)" <#if country == "Greenland(GL)"> selected</#if> >Greenland</option>
+                                                <option value="Grenada(GD)" <#if country == "Grenada(GD)"> selected</#if> >Grenada</option>
+                                                <option value="Guadeloupe(GP)" <#if country == "Guadeloupe(GP)"> selected</#if> >Guadeloupe</option>
+                                                <option value="Guam(GU)" <#if country == "Guam(GU)"> selected</#if> >Guam</option>
+                                                <option value="Guatemala(GT)" <#if country == "Guatemala(GT)"> selected</#if> >Guatemala</option>
+                                                <option value="Guernsey(GG)" <#if country == "Guernsey(GG)"> selected</#if> >Guernsey</option>
+                                                <option value="Guinea(GN)" <#if country == "Guinea(GN)"> selected</#if> >Guinea</option>
+                                                <option value="Guinea-bissau(GW)" <#if country == "Guinea-bissau(GW)"> selected</#if> >Guinea-bissau</option>
+                                                <option value="Guyana(GY)" <#if country == "Guyana(GY)"> selected</#if> >Guyana</option>
+                                                <option value="Haiti(HT)" <#if country == "Haiti(HT)"> selected</#if> >Haiti</option>
+                                                <option value="Heard Island and Mcdonald Islands(HM)" <#if country == "Heard Island and Mcdonald Islands(HM)"> selected</#if> >Heard Island and Mcdonald Islands</option>
+                                                <option value="Vatican City State(VA)" <#if country == "Vatican City State(VA)"> selected</#if> >Vatican City State</option>
+                                                <option value="Honduras(HN)" <#if country == "Honduras(HN)"> selected</#if> >Honduras</option>
+                                                <option value="Hong Kong(HK)" <#if country == "Hong Kong(HK)"> selected</#if> >Hong Kong</option>
+                                                <option value="Hungary(HU)" <#if country == "Hungary(HU)"> selected</#if> >Hungary</option>
+                                                <option value="Iceland(IS)" <#if country == "Iceland(IS)"> selected</#if> >Iceland</option>
+                                                <option value="India(IN)" <#if country == "India(IN)"> selected</#if> >India</option>
+                                                <option value="Indonesia(ID)" <#if country == "Indonesia(ID)"> selected</#if> >Indonesia</option>
+                                                <option value="Iran(IR)" <#if country == "Iran(IR)"> selected</#if> >Iran</option>
+                                                <option value="Iraq(IQ)" <#if country == "Iraq(IQ)"> selected</#if> >Iraq</option>
+                                                <option value="Ireland(IE)" <#if country == "Ireland(IE)"> selected</#if> >Ireland</option>
+                                                <option value="Isle of Man(IM)" <#if country == "Isle of Man(IM)"> selected</#if> >Isle of Man</option>
+                                                <option value="Israel(IL)" <#if country == "Israel(IL)"> selected</#if> >Israel</option>
+                                                <option value="Italy(IT)" <#if country == "Italy(IT)"> selected</#if> >Italy</option>
+                                                <option value="Jamaica(JM)" <#if country == "Jamaica(JM)"> selected</#if> >Jamaica</option>
+                                                <option value="Japan(JP)" <#if country == "Japan(JP)"> selected</#if> >Japan</option>
+                                                <option value="Jersey(JE)" <#if country == "Jersey(JE)"> selected</#if> >Jersey</option>
+                                                <option value="Jordan(JO)" <#if country == "Jordan(JO)"> selected</#if> >Jordan</option>
+                                                <option value="Kazakhstan(KZ)" <#if country == "Kazakhstan(KZ)"> selected</#if> >Kazakhstan</option>
+                                                <option value="Kenya(KE)" <#if country == "Kenya(KE)"> selected</#if> >Kenya</option>
+                                                <option value="Kiribati(KI)" <#if country == "Kiribati(KI)"> selected</#if> >Kiribati</option>
+                                                <option value="Nord Korea(KP)" <#if country == "Nord Korea(KP)"> selected</#if> >Nord Korea</option>
+                                                <option value="Sud Korea(KR)" <#if country == "Sud Korea(KR)"> selected</#if> >Sud Korea</option>
+                                                <option value="Kuwait(KW)" <#if country == "Kuwait(KW)"> selected</#if> >Kuwait</option>
+                                                <option value="Kyrgyzstan(KG)" <#if country == "Kyrgyzstan(KG)"> selected</#if> >Kyrgyzstan</option>
+                                                <option value="Lao People's Democratic Republic(LA)" <#if country == "Lao People's Democratic Republic(LA)"> selected</#if> >Lao People's Democratic Republic</option>
+                                                <option value="Latvia(LV)" <#if country == "Latvia(LV)"> selected</#if> >Latvia</option>
+                                                <option value="Lebanon(LB)" <#if country == "Lebanon(LB)"> selected</#if> >Lebanon</option>
+                                                <option value="Lesotho(LS)" <#if country == "Lesotho(LS)"> selected</#if> >Lesotho</option>
+                                                <option value="Liberia(LR)" <#if country == "Liberia(LR)"> selected</#if> >Liberia</option>
+                                                <option value="Libyan Arab Jamahiriya(LY)" <#if country == "Libyan Arab Jamahiriya(LY)"> selected</#if> >Libyan Arab Jamahiriya</option>
+                                                <option value="Liechtenstein(LI)" <#if country == "Liechtenstein(LI)"> selected</#if> >Liechtenstein</option>
+                                                <option value="Lithuania(LT)" <#if country == "Lithuania(LT)"> selected</#if> >Lithuania</option>
+                                                <option value="Luxembourg(LU)" <#if country == "Luxembourg(LU)"> selected</#if> >Luxembourg</option>
+                                                <option value="Macao(MO)" <#if country == "Macao(MO)"> selected</#if> >Macao</option>
+                                                <option value="Nord Macedonia(MK)" <#if country == "Nord Macedonia(MK)"> selected</#if> >Nord Macedonia</option>
+                                                <option value="Madagascar(MG)" <#if country == "Madagascar(MG)"> selected</#if> >Madagascar</option>
+                                                <option value="Malawi(MW)" <#if country == "Malawi(MW)"> selected</#if> >Malawi</option>
+                                                <option value="Malaysia(MY)" <#if country == "Malaysia(MY)"> selected</#if> >Malaysia</option>
+                                                <option value="Maldives(MV)" <#if country == "Maldives(MV)"> selected</#if> >Maldives</option>
+                                                <option value="Mali(ML)" <#if country == "Mali(ML)"> selected</#if> >Mali</option>
+                                                <option value="Malta(MT)" <#if country == "Malta(MT)"> selected</#if> >Malta</option>
+                                                <option value="Marshall Islands(MH)" <#if country == "Marshall Islands(MH)"> selected</#if> >Marshall Islands</option>
+                                                <option value="Martinique(MQ)" <#if country == "Martinique(MQ)"> selected</#if> >Martinique</option>
+                                                <option value="Mauritania(MR)" <#if country == "Mauritania(MR)"> selected</#if> >Mauritania</option>
+                                                <option value="Mauritius(MU)" <#if country == "Mauritius(MU)"> selected</#if> >Mauritius</option>
+                                                <option value="Mayotte(YT)" <#if country == "Mayotte(YT)"> selected</#if> >Mayotte</option>
+                                                <option value="Mexico(MX)" <#if country == "Mexico(MX)"> selected</#if> >Mexico</option>
+                                                <option value="Federated States of Micronesia(FM)" <#if country == "Federated States of Micronesia(FM)"> selected</#if> >Federated States of Micronesia</option>
+                                                <option value="Republic of Moldova(MD)" <#if country == "Republic of Moldova(MD)"> selected</#if> >Republic of Moldova</option>
+                                                <option value="Monaco(MC)" <#if country == "Monaco(MC)"> selected</#if> >Monaco</option>
+                                                <option value="Mongolia(MN)" <#if country == "Mongolia(MN)"> selected</#if> >Mongolia</option>
+                                                <option value="Montenegro(ME)" <#if country == "Montenegro(ME)"> selected</#if> >Montenegro</option>
+                                                <option value="Montserrat(MS)" <#if country == "Montserrat(MS)"> selected</#if> >Montserrat</option>
+                                                <option value="Morocco(MA)" <#if country == "Morocco(MA)"> selected</#if> >Morocco</option>
+                                                <option value="Mozambique(MZ)" <#if country == "Mozambique(MZ)"> selected</#if> >Mozambique</option>
+                                                <option value="Myanmar(MM)" <#if country == "Myanmar(MM)"> selected</#if> >Myanmar</option>
+                                                <option value="Namibia(NA)" <#if country == "Namibia(NA)"> selected</#if> >Namibia</option>
+                                                <option value="Nauru(NR)" <#if country == "Nauru(NR)"> selected</#if> >Nauru</option>
+                                                <option value="Nepal(NP)" <#if country == "Nepal(NP)"> selected</#if> >Nepal</option>
+                                                <option value="Netherlands(NL)" <#if country == "Netherlands(NL)"> selected</#if> >Netherlands</option>
+                                                <option value="Netherlands Antilles(AN)" <#if country == "Netherlands Antilles(AN)"> selected</#if> >Netherlands Antilles</option>
+                                                <option value="New Caledonia(NC)" <#if country == "New Caledonia(NC)"> selected</#if> >New Caledonia</option>
+                                                <option value="New Zealand(NZ)" <#if country == "New Zealand(NZ)"> selected</#if> >New Zealand</option>
+                                                <option value="Nicaragua(NI)" <#if country == "Nicaragua(NI)"> selected</#if> >Nicaragua</option>
+                                                <option value="Niger(NE)" <#if country == "Niger(NE)"> selected</#if> >Niger</option>
+                                                <option value="Nigeria(NG)" <#if country == "Nigeria(NG)"> selected</#if> >Nigeria</option>
+                                                <option value="Niue(NU)" <#if country == "Niue(NU)"> selected</#if> >Niue</option>
+                                                <option value="Norfolk Island(NF)" <#if country == "Norfolk Island(NF)"> selected</#if> >Norfolk Island</option>
+                                                <option value="Northern Mariana Islands(MP)" <#if country == "Northern Mariana Islands(MP)"> selected</#if> >Northern Mariana Islands</option>
+                                                <option value="Norway(NO)" <#if country == "Norway(NO)"> selected</#if> >Norway</option>
+                                                <option value="Oman(OM)" <#if country == "Oman(OM)"> selected</#if> >Oman</option>
+                                                <option value="Pakistan(PK)" <#if country == "Pakistan(PK)"> selected</#if> >Pakistan</option>
+                                                <option value="Palau(PW)" <#if country == "Palau(PW)"> selected</#if> >Palau</option>
+                                                <option value="Palestine(PS)" <#if country == "Palestine(PS)"> selected</#if> >Palestine</option>
+                                                <option value="Panama(PA)" <#if country == "Panama(PA)"> selected</#if> >Panama</option>
+                                                <option value="Papua New Guinea(PG)" <#if country == "Papua New Guinea(PG)"> selected</#if> >Papua New Guinea</option>
+                                                <option value="Paraguay(PY)" <#if country == "Paraguay(PY)"> selected</#if> >Paraguay</option>
+                                                <option value="Peru(PE)" <#if country == "Peru(PE)"> selected</#if> >Peru</option>
+                                                <option value="Philippines(PH)" <#if country == "Philippines(PH)"> selected</#if> >Philippines</option>
+                                                <option value="Pitcairn(PN)" <#if country == "Pitcairn(PN)"> selected</#if> >Pitcairn</option>
+                                                <option value="Poland(PL)" <#if country == "Poland(PL)"> selected</#if> >Poland</option>
+                                                <option value="Portugal(PT)" <#if country == "Portugal(PT)"> selected</#if> >Portugal</option>
+                                                <option value="Puerto Rico(PR)" <#if country == "Puerto Rico(PR)"> selected</#if> >Puerto Rico</option>
+                                                <option value="Qatar(QA)" <#if country == "Qatar(QA)"> selected</#if> >Qatar</option>
+                                                <option value="Reunion(RE)" <#if country == "Reunion(RE)"> selected</#if> >Reunion</option>
+                                                <option value="Romania(RO)" <#if country == "Romania(RO)"> selected</#if> >Romania</option>
+                                                <option value="Russian Federation(RU)" <#if country == "Russian Federation(RU)"> selected</#if> >Russian Federation</option>
+                                                <option value="Rwanda(RW)" <#if country == "Rwanda(RW)"> selected</#if> >Rwanda</option>
+                                                <option value="Saint Helena(SH)" <#if country == "Saint Helena(SH)"> selected</#if> >Saint Helena</option>
+                                                <option value="Saint Kitts and Nevis(KN)" <#if country == "Saint Kitts and Nevis(KN)"> selected</#if> >Saint Kitts and Nevis</option>
+                                                <option value="Saint Lucia(LC)" <#if country == "Saint Lucia(LC)"> selected</#if> >Saint Lucia</option>
+                                                <option value="Saint Pierre and Miquelon(PM)" <#if country == "Saint Pierre and Miquelon(PM)"> selected</#if> >Saint Pierre and Miquelon</option>
+                                                <option value="Saint Vincent and The Grenadines(VC)" <#if country == "Saint Vincent and The Grenadines(VC)"> selected</#if> >Saint Vincent and The Grenadines</option>
+                                                <option value="Samoa(WS)" <#if country == "Samoa(WS)"> selected</#if> >Samoa</option>
+                                                <option value="San Marino(SM)" <#if country == "San Marino(SM)"> selected</#if> >San Marino</option>
+                                                <option value="Sao Tome and Principe(ST)" <#if country == "Sao Tome and Principe(ST)"> selected</#if> >Sao Tome and Principe</option>
+                                                <option value="Saudi Arabia(SA)" <#if country == "Saudi Arabia(SA)"> selected</#if> >Saudi Arabia</option>
+                                                <option value="Senegal(SN)" <#if country == "Senegal(SN)"> selected</#if> >Senegal</option>
+                                                <option value="Serbia(RS)" <#if country == "Serbia(RS)"> selected</#if> >Serbia</option>
+                                                <option value="Seychelles(SC)" <#if country == "Seychelles(SC)"> selected</#if> >Seychelles</option>
+                                                <option value="Sierra Leone(SL)" <#if country == "Sierra Leone(SL)"> selected</#if> >Sierra Leone</option>
+                                                <option value="Singapore(SG)" <#if country == "Singapore(SG)"> selected</#if> >Singapore</option>
+                                                <option value="Slovakia(SK)" <#if country == "Slovakia(SK)"> selected</#if> >Slovakia</option>
+                                                <option value="Slovenia(SI)" <#if country == "Slovenia(SI)"> selected</#if> >Slovenia</option>
+                                                <option value="Solomon Islands(SB)" <#if country == "Solomon Islands(SB)"> selected</#if> >Solomon Islands</option>
+                                                <option value="Somalia(SO)" <#if country == "Somalia(SO)"> selected</#if> >Somalia</option>
+                                                <option value="South Africa(ZA)" <#if country == "South Africa(ZA)"> selected</#if> >South Africa</option>
+                                                <option value="South Georgia and The South Sandwich Islands(GS)" <#if country == "South Georgia and The South Sandwich Islands(GS)"> selected</#if> >South Georgia and The South Sandwich Islands</option>
+                                                <option value="Spain(ES)" <#if country == "Spain(ES)"> selected</#if> >Spain</option>
+                                                <option value="Sri Lanka(LK)" <#if country == "Sri Lanka(LK)"> selected</#if> >Sri Lanka</option>
+                                                <option value="Sudan(SD)" <#if country == "Sudan(SD)"> selected</#if> >Sudan</option>
+                                                <option value="Suriname(SR)" <#if country == "Suriname(SR)"> selected</#if> >Suriname</option>
+                                                <option value="Svalbard and Jan Mayen(SJ)" <#if country == "Svalbard and Jan Mayen(SJ)"> selected</#if> >Svalbard and Jan Mayen</option>
+                                                <option value="Sweden(SE)" <#if country == "Sweden(SE)"> selected</#if> >Sweden</option>
+                                                <option value="Switzerland(CH)" <#if country == "Switzerland(CH)"> selected</#if> >Switzerland</option>
+                                                <option value="Syrian Arab Republic(SY)" <#if country == "Syrian Arab Republic(SY)"> selected</#if> >Syrian Arab Republic</option>
+                                                <option value="Taiwan(TW)" <#if country == "Taiwan(TW)"> selected</#if> >Taiwan</option>
+                                                <option value="Tajikistan(TJ)" <#if country == "Tajikistan(TJ)"> selected</#if> >Tajikistan</option>
+                                                <option value="Tanzania(TZ)" <#if country == "Tanzania(TZ)"> selected</#if> >Tanzania</option>
+                                                <option value="Thailand(TH)" <#if country == "Thailand(TH)"> selected</#if> >Thailand</option>
+                                                <option value="Timor-leste(TL)" <#if country == "Timor-leste(TL)"> selected</#if> >Timor-leste</option>
+                                                <option value="Togo(TG)" <#if country == "Togo(TG)"> selected</#if> >Togo</option>
+                                                <option value="Tokelau(TK)" <#if country == "Tokelau(TK)"> selected</#if> >Tokelau</option>
+                                                <option value="Tonga(TO)" <#if country == "Tonga(TO)"> selected</#if> >Tonga</option>
+                                                <option value="Trinidad and Tobago(TT)" <#if country == "Trinidad and Tobago(TT)"> selected</#if> >Trinidad and Tobago</option>
+                                                <option value="Tunisia(TN)" <#if country == "Tunisia(TN)"> selected</#if> >Tunisia</option>
+                                                <option value="Turkey(TR)" <#if country == "Turkey(TR)"> selected</#if> >Turkey</option>
+                                                <option value="Turkmenistan(TM)" <#if country == "Turkmenistan(TM)"> selected</#if> >Turkmenistan</option>
+                                                <option value="Turks and Caicos Islands(TC)" <#if country == "Turks and Caicos Islands(TC)"> selected</#if> >Turks and Caicos Islands</option>
+                                                <option value="Tuvalu(TV)" <#if country == "Tuvalu(TV)"> selected</#if> >Tuvalu</option>
+                                                <option value="Uganda(UG)" <#if country == "Uganda(UG)"> selected</#if> >Uganda</option>
+                                                <option value="Ukraine(UA)" <#if country == "Ukraine(UA)"> selected</#if> >Ukraine</option>
+                                                <option value="United Arab Emirates(AE)" <#if country == "United Arab Emirates(AE)"> selected</#if> >United Arab Emirates</option>
+                                                <option value="United Kingdom(GB)" <#if country == "United Kingdom(GB)"> selected</#if> >United Kingdom</option>
+                                                <option value="United States(US)" <#if country == "United States(US)"> selected</#if> >United States</option>
+                                                <option value="Uruguay(UY)" <#if country == "Uruguay(UY)"> selected</#if> >Uruguay</option>
+                                                <option value="Uzbekistan(UZ)" <#if country == "Uzbekistan(UZ)"> selected</#if> >Uzbekistan</option>
+                                                <option value="Vanuatu(VU)" <#if country == "Vanuatu(VU)"> selected</#if> >Vanuatu</option>
+                                                <option value="Venezuela(VE)" <#if country == "Venezuela(VE)"> selected</#if> >Venezuela</option>
+                                                <option value="Vietnam(VN)" <#if country == "Vietnam(VN)"> selected</#if> >Vietnam</option>
+                                                <option value="British Virgin Islands(VG)" <#if country == "British Virgin Islands(VG)"> selected</#if> >British Virgin Islands</option>
+                                                <option value="U.S. Virgin Islands(VI)" <#if country == "U.S. Virgin Islands(VI)"> selected</#if> >U.S. Virgin Islands</option>
+                                                <option value="Wallis and Futuna(WF)" <#if country == "Wallis and Futuna(WF)"> selected</#if> >Wallis and Futuna</option>
+                                                <option value="Western Sahara(EH)" <#if country == "Western Sahara(EH)"> selected</#if> >Western Sahara</option>
+                                                <option value="Yemen(YE)" <#if country == "Yemen(YE)"> selected</#if> >Yemen</option>
+                                                <option value="Zambia(ZM)" <#if country == "Zambia(ZM)"> selected</#if> >Zambia</option>
+                                                <option value="Zimbabwe(ZW)" <#if country == "Zimbabwe(ZW)"> selected</#if> >Zimbabwe</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <input class="btn l-green" value="Save Changes" name="others" type="submit"/>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

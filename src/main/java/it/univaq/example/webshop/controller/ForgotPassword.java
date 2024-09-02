@@ -34,7 +34,7 @@ public class ForgotPassword extends WebshopBaseController {
         request.setAttribute("title", "Password Recovery");
         if(request.getAttribute("errorEmail") == null )
             request.setAttribute("errorEmail", "");
-        result.activate("forgot_password.html", request, response);
+        result.activate("forgotPassword.html", request, response);
     }
 
     private void action_passwordRecover(HttpServletRequest request, HttpServletResponse response) throws IOException,TemplateManagerException {
@@ -81,7 +81,7 @@ public class ForgotPassword extends WebshopBaseController {
                     request.setAttribute("referrer", request.getParameter("referrer"));
                     request.setAttribute("title", "Password recovery");
                     request.setAttribute("errorOtp", false);
-                    result.activate("enter_otp.html", request, response);
+                    result.activate("enterOtp.html", request, response);
 
                 } else {
                     //email non esiste
@@ -105,12 +105,12 @@ public class ForgotPassword extends WebshopBaseController {
             request.setAttribute("title", "Password Recovery");
             request.setAttribute("errorPassword", false);
             request.setAttribute("errorEqual", false);
-            result.activate("new_password.html", request, response);
+            result.activate("newPassword.html", request, response);
         } else {
             request.setAttribute("referrer", request.getParameter("referrer"));
             request.setAttribute("title", "Password recovery");
             request.setAttribute("errorOtp", true);
-            result.activate("enter_otp.html", request, response);
+            result.activate("enterOtp.html", request, response);
         }
         handleError("Validation otp failed", request, response);
     }
@@ -138,7 +138,7 @@ public class ForgotPassword extends WebshopBaseController {
                     request.setAttribute("title", "Password Recovery");
                     request.setAttribute("errorPassword", false);
                     request.setAttribute("errorEqual", true);
-                    result.activate("new_password.html", request, response);
+                    result.activate("newPassword.html", request, response);
                 }
                 
             } catch (NoSuchAlgorithmException | InvalidKeySpecException | DataException ex) {
@@ -149,7 +149,7 @@ public class ForgotPassword extends WebshopBaseController {
             request.setAttribute("title", "Password Recovery");
             request.setAttribute("errorPassword", true);
             request.setAttribute("errorEqual", false);
-            result.activate("new_password.html", request, response);
+            result.activate("newPassword.html", request, response);
         }
         // se la validazione fallisce...
         // if the validation fails...

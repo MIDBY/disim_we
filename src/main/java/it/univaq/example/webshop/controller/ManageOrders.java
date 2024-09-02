@@ -16,9 +16,7 @@ import it.univaq.framework.result.TemplateManagerException;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -56,17 +54,15 @@ public class ManageOrders extends WebshopBaseController {
             request.setAttribute("group", group.getName());            
             
             List<Request> requests = ((WebshopDataLayer) request.getAttribute("datalayer")).getRequestDAO().getUnassignedRequests();
-            Map<String, String> chars = new HashMap<>();
             for(Request r : requests) {
                 r.getCategory();
                 r.getOrdering();
                 r.getRequestCharacteristics();
                 for(RequestCharacteristic reqc : r.getRequestCharacteristics()) {
-                    chars.put(reqc.getCharacteristic().getName(), reqc.getValue());
+                    reqc.getCharacteristic();
                 }
             }
             request.setAttribute("requests", requests);
-            request.setAttribute("reqChars", chars);
 
             res.activate("listOrders.html", request, response);
         } catch (DataException ex) {
@@ -88,9 +84,10 @@ public class ManageOrders extends WebshopBaseController {
                 req.setTechnician(user);
                 req.setRequestState(RequestStateEnum.PRESOINCARICO);
                 ((WebshopDataLayer) request.getAttribute("datalayer")).getRequestDAO().setRequest(req);
-                //sends really emails, than activate it when there is a real email or it will send accidentally mails to real email's people 
-                //sendMail(req.getOrdering().getEmail(), "Info mail: Your request: '+req.getTitle()+' has been taken in charge by one of our operators. You will soon receive a proposal from our operator.");
-                sendNotification(request, response, req.getOrdering(), "Great news! Your request "+req.getTitle()+" has been taken in charge by one of our operators!", NotificationTypeEnum.INFO, "");
+                boolean send = Boolean.parseBoolean(getServletContext().getInitParameter("sendEmail"));
+                if(send) 
+                    sendMail(req.getOrdering().getEmail(), "Info mail: \nYour request: "+req.getTitle()+"\n has been taken in charge by one of our operators. \nYou will soon receive a proposal from our operator.");
+                sendNotification(request, response, req.getOrdering(), "Great news! Your request "+req.getTitle()+" has been taken in charge by one of our operators!", NotificationTypeEnum.INFO, "index");
                 response.sendRedirect("orders?myOrders");
             } else {
                 handleError("Cannot update request", request, response);
@@ -147,10 +144,10 @@ public class ManageOrders extends WebshopBaseController {
                 req.getOrdering();
                 req.setOrderState(OrderStateEnum.SPEDITO);
                 ((WebshopDataLayer) request.getAttribute("datalayer")).getRequestDAO().setRequest(req);
-                //sends really emails, than activate it when there is a real email or it will send accidentally mails to real email's people 
-                //sendMail(req.getOrdering().getEmail(), "Info mail: Your request: '+req.getTitle()+' has been shipped! Thank you for purchasing on our site.");
-                sendNotification(request, response, req.getOrdering(), "Great news! Your purchase of request "+req.getTitle()+" has been shipped!", NotificationTypeEnum.CHIUSO, "");
-                //TODO: inserire link per conferma ricezione ordine per selezionare ben riuscito o no
+                boolean send = Boolean.parseBoolean(getServletContext().getInitParameter("sendEmail"));
+                if(send) 
+                    sendMail(req.getOrdering().getEmail(), "Info mail: \nYour request: '+req.getTitle()+' has been shipped! \nThank you for purchasing on our site.");
+                sendNotification(request, response, req.getOrdering(), "Great news! Your purchase of request "+req.getTitle()+" has been shipped!", NotificationTypeEnum.CHIUSO, "index");
                 action_myOrders(request, response);
             } else {
                 handleError("Cannot send request", request, response);
@@ -175,7 +172,6 @@ public class ManageOrders extends WebshopBaseController {
         }
     }
 
-    @SuppressWarnings("unused")
     private void sendMail(String email, String text) {
         String sender = getServletContext().getInitParameter("emailSender");
         String securityCode = getServletContext().getInitParameter("securityCode");

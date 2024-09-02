@@ -301,9 +301,9 @@ public class RequestDAO_MySQL extends DAO implements RequestDAO {
                 } else {
                     iRequest.setNull(5, java.sql.Types.INTEGER);
                 }   
-                iRequest.setObject(6, request.getCreationDate());
-                iRequest.setString(7, request.getRequestState().toString());
-                iRequest.setString(8, request.getOrderState().toString());
+                iRequest.setString(6, request.getRequestState().toString());
+                iRequest.setString(7, request.getOrderState().name());
+                iRequest.setObject(8, request.getCreationDate());
                 iRequest.setString(9, request.getNotes());
                 if (iRequest.executeUpdate() == 1) {
                     try (ResultSet keys = iRequest.getGeneratedKeys()) {

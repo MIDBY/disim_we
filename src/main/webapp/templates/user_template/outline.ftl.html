@@ -6,7 +6,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		 <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
-		<title>Electro - HTML Ecommerce Template</title>
+		<title>${title}</title>
 
 		<!-- Google font -->
 		<link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
@@ -26,6 +26,10 @@
 
 		<!-- Custom stlylesheet -->
 		<link type="text/css" rel="stylesheet" href="templates/user_template/css/style.css"/>
+
+		<link rel="stylesheet" href="templates/admin_template/assets/plugins/jquery-treetable/jquery.treeTable.css" />
+		<link rel="stylesheet" href="templates/admin_template/assets/plugins/jquery-datatable/dataTables.bootstrap4.min.css">
+
     </head>
 	<body>
 		<!-- HEADER -->
@@ -36,9 +40,6 @@
 
 		<!-- SECTION -->
 		<#include content_tpl>
-		
-		<!-- FOOTER -->
-		<#include "outline_footer.ftl.html">
 
 		<!-- jQuery Plugins -->
 		<script src="templates/user_template/js/jquery.min.js"></script>
@@ -47,6 +48,16 @@
 		<script src="templates/user_template/js/nouislider.min.js"></script>
 		<script src="templates/user_template/js/jquery.zoom.min.js"></script>
 		<script src="templates/user_template/js/main.js"></script>
-
+		<script src="templates/admin_template/assets/plugins/jquery-treetable/jquery.treeTable.js"></script>
+		<script src="templates/admin_template/assets/bundles/datatablescripts.bundle.js"></script>
+		<script src="templates/admin_template/assets/plugins/jquery-datatable/buttons/dataTables.buttons.min.js"></script>
+		<script src="templates/admin_template/assets/plugins/jquery-datatable/buttons/buttons.bootstrap4.min.js"></script>
+		<script src="templates/admin_template/assets/plugins/jquery-datatable/buttons/buttons.colVis.min.js"></script>
+		<script src="templates/admin_template/assets/plugins/jquery-datatable/buttons/buttons.flash.min.js"></script>
+		<script src="templates/admin_template/assets/plugins/jquery-datatable/buttons/buttons.html5.min.js"></script>
+		<script src="templates/admin_template/assets/plugins/jquery-datatable/buttons/buttons.print.min.js"></script>
+		<script src="templates/admin_template/assets/js/pages/tables/jquery-datatable.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+		<script src="templates/user_template/js/custom.js"></script>
 	</body>
 </html>

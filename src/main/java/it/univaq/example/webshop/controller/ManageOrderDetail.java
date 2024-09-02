@@ -164,8 +164,7 @@ public class ManageOrderDetail extends WebshopBaseController {
                 proposal.setProductName(request.getParameter("productName"));
                 proposal.setProducerName(request.getParameter("producerName"));
                 proposal.setProductDescription(request.getParameter("productDescription"));
-                String price = request.getParameter("productPrice").replace(".", ",");
-                proposal.setProductPrice(Float.parseFloat(price));
+                proposal.setProductPrice(Float.parseFloat(request.getParameter("productPrice")));
                 String url = request.getParameter("url");
                 if(!(url.contains("http") || url.contains("https")))
                     url = "https://" + url;
@@ -177,15 +176,15 @@ public class ManageOrderDetail extends WebshopBaseController {
                 }
                 ((WebshopDataLayer) request.getAttribute("datalayer")).getProposalDAO().setProposal(proposal);
 
-                //sends really emails, than activate it when there is a real email or it will send accidentally mails to real email's people 
+                boolean send = Boolean.parseBoolean(getServletContext().getInitParameter("sendEmail"));
                 if(newP) {
-                    //sendMail(req.getOrdering().getEmail(), "Info mail: Your request: '+req.getTitle()+' has received a new proposal, go to check it!");
-                    sendNotification(request, response, req.getOrdering(), "Request: "+req.getTitle()+".\n Our technician has sent a new proposal to you, go to check it!", NotificationTypeEnum.NUOVO, ""); 
-                    //TODO: Inserire link per pagina visualizzazione proposta del cliente
+                    if(send)                
+                        sendMail(req.getOrdering().getEmail(), "Info mail: \nYour request: "+req.getTitle()+" has received a new proposal, go to check it!");
+                    sendNotification(request, response, req.getOrdering(), "Request: "+req.getTitle()+".\n Our technician has sent a new proposal to you, go to check it!", NotificationTypeEnum.NUOVO, "requestDetail?reqid=" + req.getKey()); 
                 } else {
-                    //sendMail(req.getOrdering().getEmail(), "Info mail: Proposal of your request: '+req.getTitle()+' has been edited, go to check it!");
-                    sendNotification(request, response, req.getOrdering(), "Request: "+req.getTitle()+".\n Our technician has edited proposal, go to check it!", NotificationTypeEnum.MODIFICATO, ""); 
-                    //TODO: Inserire link per pagina visualizzazione proposta del cliente
+                    if(send)                
+                        sendMail(req.getOrdering().getEmail(), "Info mail: \nProposal of your request: '+req.getTitle()+' has been edited, go to check it!");
+                    sendNotification(request, response, req.getOrdering(), "Request: "+req.getTitle()+".\n Our technician has edited proposal, go to check it!", NotificationTypeEnum.MODIFICATO, "requestDetail?reqid=" + req.getKey()); 
                 }
                 action_default(request, response, req_key);
             } else {
@@ -211,8 +210,7 @@ public class ManageOrderDetail extends WebshopBaseController {
         }
     }
 
-    @SuppressWarnings("unused")
-    private void sendCreatedMail(String email, String text) {
+    private void sendMail(String email, String text) {
         String sender = getServletContext().getInitParameter("emailSender");
         String securityCode = getServletContext().getInitParameter("securityCode");
         String to = email;

@@ -5,7 +5,7 @@
                 <div class="col-lg-7 col-md-6 col-sm-12">
                     <h2>My Profile</h2>
                     <ul class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="homepage"><i class="zmdi zmdi-home"></i> Aero</a></li>
+                        <li class="breadcrumb-item"><a href="homepage"><i class="zmdi zmdi-home"></i> WebShop</a></li>
                         <li class="breadcrumb-item active">Profile</li>
                     </ul>
                     <button class="btn btn-primary btn-icon mobile_menu" type="button"><i class="zmdi zmdi-sort-amount-desc"></i></button>
@@ -23,9 +23,9 @@
                         <div class="body">
                             <a href="profile">
                                 <#if group?matches("AMMINISTRATORE", "i")>
-                                    <img src="templates/admin_template/assets/images/xs/boss.png" class="rounded-circle shadow " alt="profile-image">
+                                    <img src="templates/admin_template/assets/images/xs/boss.png" class="rounded-circle shadow max-width-30" alt="profile-image">
                                 <#else>
-                                    <img src="templates/admin_template/assets/images/xs/developer.png" class="rounded-circle shadow " alt="profile-image">
+                                    <img src="templates/admin_template/assets/images/xs/developer.png" class="rounded-circle shadow max-width-30" alt="profile-image">
                                 </#if>
                             </a>
                             <h4 class="m-t-10">${username}</h4>                            
@@ -71,7 +71,6 @@
                                     </li>
                                 </ul>
                             </#if>
-                            <span>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</span>
                         </div>
                     </div>                    
                 </div>

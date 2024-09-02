@@ -5,7 +5,7 @@
                 <div class="col-lg-7 col-md-6 col-sm-12">
                     <h2>Request list</h2>
                     <ul class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="homepage"><i class="zmdi zmdi-home"></i> Aero</a></li>
+                        <li class="breadcrumb-item"><a href="homepage"><i class="zmdi zmdi-home"></i> WebShop</a></li>
                         <li class="breadcrumb-item active">Requests</li>
                     </ul>
                     <button class="btn btn-primary btn-icon mobile_menu" type="button"><i class="zmdi zmdi-sort-amount-desc"></i></button>
@@ -21,7 +21,7 @@
                     <div class="card">
                         <ul class="nav nav-tabs pl-0 pr-0">
                             <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#open_list">Open Requests</a></li>
-                            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#closed_list">Closed Requests</a></li>
+                            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#close_list">Closed Requests</a></li>
                         </ul>
                         <div class="tab-content">
                             <div class="tab-pane active" id="open_list">
@@ -57,7 +57,7 @@
                                                     <tr>
                                                         <td>${request.category.name}</td>
                                                         <td>${request.title}</td>
-                                                        <td><textarea cols="32" class="not-split-text" disabled>${request.description}</textarea></td>
+                                                        <td><textarea spellcheck="false" cols="32" class="not-split-text" disabled>${request.description}</textarea></td>
                                                         <td><span class="badge badge-primary">${request.ordering.username}</span></td>
                                                         <td><#if request.technician??><span class="badge badge-success">${request.technician.username}</span><#else><span class="badge badge-danger">No Technician</span></#if></td>
                                                         <td>${request.requestState}</td>
@@ -70,7 +70,7 @@
                                     </table>
                                 </div>
                             </div>
-                            <div class="tab-pane" id="closed_list">
+                            <div class="tab-pane" id="close_list">
                                 <div class="table-responsive">
                                     <table class="table table-striped table-hover dataTable js-exportable c_table theme-color">
                                         <thead>
@@ -103,7 +103,7 @@
                                                     <tr>
                                                         <td>${request.category.name}</td>
                                                         <td>${request.title}</td>
-                                                        <td><textarea cols="32" class="not-split-text" disabled>${request.description}</textarea></td>
+                                                        <td><textarea spellcheck="false" cols="32" class="not-split-text" disabled>${request.description}</textarea></td>
                                                         <td><span class="badge badge-primary">${request.ordering.username}</span></td>
                                                         <td><#if request.technician??><span class="badge badge-success">${request.technician.username}</span><#else><span class="badge badge-danger">No Technician</span></#if></td>
                                                         <td>${request.requestState}</td>

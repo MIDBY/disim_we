@@ -5,33 +5,31 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Arrays;
 import java.util.List;
-
 import javax.servlet.*;
 import javax.servlet.http.*;
 import it.univaq.example.webshop.data.dao.impl.WebshopDataLayer;
-import it.univaq.example.webshop.data.model.Group;
 import it.univaq.example.webshop.data.model.Proposal;
 import it.univaq.example.webshop.data.model.Request;
 import it.univaq.example.webshop.data.model.User;
 import it.univaq.example.webshop.data.model.impl.OrderStateEnum;
 import it.univaq.example.webshop.data.model.impl.ProposalStateEnum;
-import it.univaq.example.webshop.data.model.impl.UserRoleEnum;
 import it.univaq.framework.data.DataException;
 import it.univaq.framework.result.TemplateManagerException;
 import it.univaq.framework.result.TemplateResult;
 import it.univaq.framework.security.SecurityHelpers;
 
-public class Profile extends WebshopBaseController {
+public class ClientProfile extends WebshopBaseController {
 
     private void action_anonymous(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException, TemplateManagerException {
         TemplateResult res = new TemplateResult(getServletContext());
         String completeRequestURL = request.getRequestURL()
                 + (request.getQueryString() != null ? "?" + request.getQueryString() : "");
-        request.setAttribute("username", "Hacker");
-        request.setAttribute("group", "Stranger");
+        request.setAttribute("template", 2);
+        request.setAttribute("email", "Hacker");
+        request.setAttribute("address", "Stranger");
         request.setAttribute("completeRequestURL", "login?referrer=" + completeRequestURL);
-        res.activate("homepage.ftl.html", request, response);
+        res.activate("index.html", request, response);
     }
 
     private void action_showEdit(HttpServletRequest request, HttpServletResponse response)
@@ -40,15 +38,14 @@ public class Profile extends WebshopBaseController {
             int user_key = Integer.parseInt(request.getSession().getAttribute("userid").toString());
             User user = ((WebshopDataLayer) request.getAttribute("datalayer")).getUserDAO().getUser(user_key);
             if(user != null) {
-                Group group = ((WebshopDataLayer) request.getAttribute("datalayer")).getGroupDAO().getGroupByUser(user_key);
                 String[] address = new String[5];
                 Arrays.fill(address, "");
                 if(!user.getAddress().isEmpty()) address = user.getAddress().split(", ");
                 
                 TemplateResult res = new TemplateResult(getServletContext());
                 request.setAttribute("username", user.getUsername());
-                request.setAttribute("group", group.getName());
-                request.setAttribute("address", address[0]);
+                request.setAttribute("address", user.getAddress());
+                request.setAttribute("addr", address[0]);
                 request.setAttribute("numberVal", address[1]);
                 request.setAttribute("city", address[2]);
                 request.setAttribute("cap", address[3]);
@@ -65,9 +62,9 @@ public class Profile extends WebshopBaseController {
                 if(request.getAttribute("errorNewPassword") == null)
                     request.setAttribute("errorNewPassword", false);
             
-                res.activate("profileEdit.html", request, response);
+                res.activate("myProfileEdit.html", request, response);
             } else {
-                    action_anonymous(request, response);
+                action_anonymous(request, response);
             }        
         } catch (DataException ex) {
             handleError("Data access exception: " + ex.getMessage(), request, response);
@@ -80,70 +77,41 @@ public class Profile extends WebshopBaseController {
             int user_key = Integer.parseInt(request.getSession().getAttribute("userid").toString());
             User user = ((WebshopDataLayer) request.getAttribute("datalayer")).getUserDAO().getUser(user_key);
             if(user != null) {
-                Group group = ((WebshopDataLayer) request.getAttribute("datalayer")).getGroupDAO().getGroupByUser(user_key);
                 String[] address = new String[5];
                 Arrays.fill(address, "");
                 if(!user.getAddress().isEmpty()) address = user.getAddress().split(", ");
 
                 TemplateResult res = new TemplateResult(getServletContext());
                 request.setAttribute("username", user.getUsername());
-                request.setAttribute("group", group.getName());
-                request.setAttribute("addressTotal", user.getAddress());
+                request.setAttribute("address", user.getAddress());
                 request.setAttribute("email", user.getEmail());
                 request.setAttribute("subscription", user.getSubscriptionDate());
-                request.setAttribute("address", address[0] + ", " + address[1]);
+                request.setAttribute("addr", address[0] + ", " + address[1]);
                 request.setAttribute("city", address[2] + ", " + address[3]);
                 request.setAttribute("country", address[4]);
-                if(group.getName().equals(UserRoleEnum.TECNICO)){
-                    request.setAttribute("techUser", true);
 
-                    int rTechAccepted = 0;
-                    float cTechEarned = 0;
-                    int totRequests = ((WebshopDataLayer) request.getAttribute("datalayer")).getRequestDAO().getRequests().size();
-                    float totCash = 0;
-                    List<Request> rTech = ((WebshopDataLayer) request.getAttribute("datalayer")).getRequestDAO().getRequestsByTechnician(user.getKey());
-                    if(rTech != null){
-                        rTechAccepted = rTech.size();
-                        for (Request r : rTech) {
-                            Proposal pTech = ((WebshopDataLayer) request.getAttribute("datalayer")).getProposalDAO().getLastProposalByRequest(r.getKey());
-                            if(pTech != null && pTech.getProposalState().equals(ProposalStateEnum.APPROVATO) && r.getOrderState().equals(OrderStateEnum.ACCETTATO)){
-                                cTechEarned += pTech.getProductPrice();
-                            } else {
-                                continue;
-                            }
+                int rMade = 0;
+                float cSpent = 0;
+                List<Request> rClient = ((WebshopDataLayer) request.getAttribute("datalayer")).getRequestDAO().getRequestsByOrdering(user.getKey());
+                if(rClient != null){
+                    rMade = rClient.size();
+                    for (Request r : rClient) {
+                        Proposal pClient = ((WebshopDataLayer) request.getAttribute("datalayer")).getProposalDAO().getLastProposalByRequest(r.getKey());
+                        if(pClient != null && pClient.getProposalState().equals(ProposalStateEnum.APPROVATO) && r.getOrderState().equals(OrderStateEnum.ACCETTATO)){
+                            cSpent += pClient.getProductPrice();
+                        } else {
+                            continue;
                         }
-                    }  
-                    rTech = ((WebshopDataLayer) request.getAttribute("datalayer")).getRequestDAO().getRequestsByOrderState(OrderStateEnum.ACCETTATO);
-                    if(rTech != null){
-                        for (Request r : rTech) {
-                            Proposal pTech = ((WebshopDataLayer) request.getAttribute("datalayer")).getProposalDAO().getLastProposalByRequest(r.getKey());
-                            if(pTech != null && pTech.getProposalState().equals(ProposalStateEnum.APPROVATO)){
-                                totCash += pTech.getProductPrice();
-                            } else {
-                                continue;
-                            }
-                        }
-                    }          
-                    int percentageRequests = calculatePercentage(rTechAccepted, totRequests);                    
-                    int percentageCash = calculatePercentage((int)cTechEarned, (int)totCash);
+                    }
+                }         
 
-                    request.setAttribute("rTechAccepted", rTechAccepted);
-                    request.setAttribute("totalRequests", totRequests);
-                    request.setAttribute("cTechEarned", cTechEarned);
-                    request.setAttribute("totalCash", totCash);
-                    request.setAttribute("percentageRequests", percentageRequests);
-                    request.setAttribute("percentageRequestsCSS", "style=width:" + percentageRequests + "%;");
-                    request.setAttribute("percentageCash", percentageCash);
-                    request.setAttribute("percentageCashCSS", "style=width:" + percentageCash + "%;");
-                } else {
-                    request.setAttribute("techUser", false);
-                }
-                res.activate("profile.html", request, response);
+                request.setAttribute("rMade", rMade);
+                request.setAttribute("cSpent", cSpent);
+
+                res.activate("myProfile.html", request, response);
             } else {
                 action_anonymous(request, response);
             }
-
-            
         } catch (DataException ex) {
          handleError("Data access exception: " + ex.getMessage(), request, response);
         }
@@ -209,43 +177,18 @@ public class Profile extends WebshopBaseController {
                     } else {
                         if(SecurityHelpers.checkNumeric(request.getParameter("edit")) == 1) {
                             request.getSession().setAttribute("status", "credentialsSuccess");
-
                             response.sendRedirect("login");
-
                         } else {
-                            //request.getSession().setAttribute("status", "registrationSuccess");
-                            response.sendRedirect("profile");
+                            response.sendRedirect("myProfile");
                         }                    
                     }
-                }
+                } else
+                    response.sendRedirect("myProfile");
             } else {
                 action_anonymous(request, response);
             }
         } catch (DataException | NoSuchAlgorithmException | InvalidKeySpecException ex) {
          handleError("Data access exception: " + ex.getMessage(), request, response);
-        }
-    }
-
-    private int calculatePercentage(int valueNow, int valueLast) {
-        if(valueNow != 0) {
-            if(valueLast != 0){
-                float support = (float) valueNow / valueLast;
-                if(support > 1) {
-                    support= (support-1)*100;
-                    return (int)support;
-                } else {
-                    support*=100;
-                    return (int)support;
-                }
-            } else {
-                return valueNow * 100;
-            }
-        } else {
-            if(valueLast != 0) {
-                return -valueLast * 100;
-            } else {
-                return 0;
-            }
         }
     }
 
@@ -261,8 +204,6 @@ public class Profile extends WebshopBaseController {
             throws ServletException {
 
         request.setAttribute("title", "Profile");
-        request.setAttribute("themeMode", request.getSession().getAttribute("themeMode"));
-        request.setAttribute("themeSkin", request.getSession().getAttribute("themeSkin"));
         
         try {
             HttpSession s = request.getSession(false);
@@ -288,7 +229,7 @@ public class Profile extends WebshopBaseController {
      * Returns a short description of the servlet.
      */
     public String getServletInfo() {
-        return "Profile servlet";
+        return "Client Profile servlet";
     }
     // </editor-fold>
 }
