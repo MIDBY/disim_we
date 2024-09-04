@@ -4,7 +4,7 @@ import it.univaq.example.webshop.data.dao.impl.WebshopDataLayer;
 import it.univaq.framework.controller.AbstractBaseController;
 import it.univaq.framework.data.DataLayer;
 import java.sql.SQLException;
-import javax.servlet.ServletException;
+import jakarta.servlet.ServletException;
 import javax.sql.DataSource;
 
 public abstract class WebshopBaseController extends AbstractBaseController {

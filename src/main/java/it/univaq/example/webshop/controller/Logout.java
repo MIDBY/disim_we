@@ -2,8 +2,8 @@ package it.univaq.example.webshop.controller;
 
 import it.univaq.framework.security.SecurityHelpers;
 import java.io.*;
-import javax.servlet.*;
-import javax.servlet.http.*;
+import jakarta.servlet.*;
+import jakarta.servlet.http.*;
 
 /**
  *
