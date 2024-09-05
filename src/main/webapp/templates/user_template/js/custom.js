@@ -82,7 +82,8 @@ function editProposal(event, proid){
           Swal.fire({
             title: "Thank you!",
             text: "Your order will be shipped immediatelly!",
-            icon: "success"
+            icon: "success",
+            confirmButtonColor: "#3085d6"
           }).then(() => {
             document.getElementById('proposalMotivation'+proid).setAttribute("value", result.value);
             $("#edit"+proid).submit();
@@ -93,10 +94,14 @@ function editProposal(event, proid){
             input: "textarea",
             inputLabel: "Motivation",
             inputPlaceholder: "Type here your motivation...",
-            confirmButtonColor: "#3085d6"
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33"
           }).then((result) => {
-            document.getElementById('proposalMotivation'+proid).setAttribute("value", result.value);
-            $("#edit"+proid).submit();
+            if (result.isConfirmed){
+              document.getElementById('proposalMotivation'+proid).setAttribute("value", result.value);
+              $("#edit"+proid).submit();
+            }
           });
         }
       }

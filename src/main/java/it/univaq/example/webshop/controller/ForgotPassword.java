@@ -90,10 +90,9 @@ public class ForgotPassword extends WebshopBaseController {
                 }
             } catch (DataException ex) {
                 Logger.getLogger(ForgotPassword.class.getName()).log(Level.SEVERE, null, ex);
+                handleError("Password recovery with otp failed", request, response);
             }
-
         }
-        handleError("Password recovery with otp failed", request, response);
     }
 
     private void action_validateOtp(HttpServletRequest request, HttpServletResponse response) throws IOException, TemplateManagerException {
@@ -111,8 +110,8 @@ public class ForgotPassword extends WebshopBaseController {
             request.setAttribute("title", "Password recovery");
             request.setAttribute("errorOtp", true);
             result.activate("enterOtp.html", request, response);
+            handleError("Validation otp failed", request, response);
         }
-        handleError("Validation otp failed", request, response);
     }
 
     private void action_newPassword(HttpServletRequest request, HttpServletResponse response) throws IOException,TemplateManagerException {
@@ -150,10 +149,8 @@ public class ForgotPassword extends WebshopBaseController {
             request.setAttribute("errorPassword", true);
             request.setAttribute("errorEqual", false);
             result.activate("newPassword.html", request, response);
+            handleError("Password recovery failed", request, response);
         }
-        // se la validazione fallisce...
-        // if the validation fails...
-        handleError("Password recovery failed", request, response);
     }
 
     /**

@@ -68,6 +68,8 @@
                                                             <#list request.requestCharacteristics as reqChar>
                                                                 <#if reqChar.characteristic.key == characteristic.key && value?matches(reqChar.value, "i")>selected</#if>
                                                             </#list>
+                                                        <#else>
+                                                            <#if value?matches("Indifferent", "i")>selected</#if>
                                                         </#if>
                                                      >${value}</option>
                                                 </#list>

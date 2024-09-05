@@ -103,8 +103,9 @@ public class ManageRequestDetail extends WebshopBaseController {
                     rc.getCharacteristic();
                 String tree = req.getCategory().getName();
                 List<Characteristic> totalChars = new ArrayList<>();
+                 
+                totalChars.addAll(req.getCategory().getCharacteristics());
                 if(req.getCategory().getFatherCategory() != null) {
-                    totalChars.addAll(req.getCategory().getCharacteristics());
                     tree = tree(req.getCategory().getFatherCategory(), totalChars) + " > " + tree;
                 }
 
@@ -124,8 +125,9 @@ public class ManageRequestDetail extends WebshopBaseController {
 
                 String tree = category.getName();
                 List<Characteristic> totalChars = new ArrayList<>();
+                                    
+                totalChars.addAll(category.getCharacteristics());
                 if(category.getFatherCategory() != null) {
-                    totalChars.addAll(category.getCharacteristics());
                     tree = tree(category.getFatherCategory(), totalChars) + " > " + tree;
                 }
 

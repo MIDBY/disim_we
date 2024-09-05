@@ -22,7 +22,7 @@
                     <div class="card">
                         <ul class="nav nav-tabs pl-0 pr-0">
                             <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#open_list">Open Requests</a></li>
-                            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#ship_list">Shipping Orders</a></li>
+                            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#ship_list">Shipping Requests</a></li>
                             <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#close_list">Closed Requests</a></li>
                         </ul>
                         <div class="tab-content">
@@ -127,13 +127,13 @@
                                                     </#list>
                                                     <tr>
                                                         <form id="ship${request.key}" method="post" action="orders?myOrders&ship=${request.key}">
-                                                            <td><strong>${request.key}</strong></td>
-                                                            <td>${request.category.name}</td>
-                                                            <td>${prop.productName}</td>
+                                                            <td onclick="location.href='orderDetail?order=${request.key}'"><strong>${request.key}</strong></td>
+                                                            <td onclick="location.href='orderDetail?order=${request.key}'">${request.category.name}</td>
+                                                            <td onclick="location.href='orderDetail?order=${request.key}'">${prop.productName}</td>
                                                             <td><textarea spellcheck="false" cols="32" class="not-split-text" disabled>${prop.productDescription}</textarea></td>
-                                                            <td><span class="badge badge-primary">${request.ordering.username}</span></td>
-                                                            <td>${request.requestState}</td>
-                                                            <td>${request.orderState}</td>
+                                                            <td onclick="location.href='orderDetail?order=${request.key}'"><span class="badge badge-primary">${request.ordering.username}</span></td>
+                                                            <td onclick="location.href='orderDetail?order=${request.key}'">${request.requestState}</td>
+                                                            <td onclick="location.href='orderDetail?order=${request.key}'">${request.orderState}</td>
                                                             <td><button type="submit" class="btn btn-success" name="ship" <#if request.orderState?matches("","i") || request.orderState?matches("EMPTY","i")>onclick="shipOrder(event,${request.key},'${prop.productName}')"<#else>disabled</#if>><#if request.orderState?matches("","i") || request.orderState?matches("EMPTY","i")>Ship<#else>Shipped</#if></button></td>
                                                         </form>
                                                     </tr>
@@ -173,7 +173,7 @@
                                         <tbody>
                                             <#if (closedRequests?size>0)>      
                                                 <#list closedRequests as request>
-                                                    <tr>
+                                                    <tr onclick="location.href='orderDetail?order=${request.key}'">
                                                         <td><strong>${request.key}</strong></td>
                                                         <td>${request.category.name}</td>
                                                         <td>${request.title}</td>

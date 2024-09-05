@@ -167,9 +167,11 @@ public class ManageOrderDetail extends WebshopBaseController {
                 proposal.setProductDescription(request.getParameter("productDescription"));
                 proposal.setProductPrice(Float.parseFloat(request.getParameter("productPrice")));
                 String url = request.getParameter("url");
-                if(!(url.contains("http") || url.contains("https")))
-                    url = "https://" + url;
-                proposal.setUrl(url);
+                if(url != null && url != "") {
+                    if(!(url.contains("http") || url.contains("https")))
+                        url = "https://" + url;
+                    proposal.setUrl(url);
+                }
                 proposal.setNotes(request.getParameter("notes"));
                 if(newP) { 
                     proposal.setCreationDate(LocalDateTime.now());
