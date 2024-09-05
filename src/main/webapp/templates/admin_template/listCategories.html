@@ -28,7 +28,7 @@
                                         <th class="sorting_asc_disabled sorting_desc_disabled" width="50px">Image</th>
                                         <th>Product Name</th>
                                         <th>Characteristics</th>
-                                        <th class="sorting_asc_disabled sorting_desc_disabled">Action</th>
+                                        <th class="sorting_asc_disabled sorting_desc_disabled" width="50px">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -36,7 +36,7 @@
                                         <form id="delete${category.key}" method="post" action="categories?del=${category.key}">
                                             <tr id="node-${category.key}" <#if category.fatherCategory?has_content && category.fatherCategory.key gt 0>class="child-of-node-${category.fatherCategory.key}"</#if>>
                                                 <td></td>
-                                                <td><img src="image?imgid=${category.image.key}" alt="${category.image.caption!'Image'}"></td>
+                                                <td><img class="width-50" src="image?imgid=${category.image.key}" alt="${category.image.caption!'Image'}"></td>
                                                 <td><h5>${category.name}</h5></td>
                                                 <td><span class="text-muted"><#list category.characteristics as char>${char.name}: ${char.defaultValues?replace(",",", ")}<#sep><br></#list></span></td>
                                                 <td>

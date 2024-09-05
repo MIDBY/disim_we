@@ -13,6 +13,8 @@ public interface GroupDAO {
 
     Group getGroupByUser(int user_key) throws DataException;
 
+    Group getGroupByService(int service_key) throws DataException;
+
     List<Group> getGroups() throws DataException;
 
     Group getGroupByName(UserRoleEnum value) throws DataException;

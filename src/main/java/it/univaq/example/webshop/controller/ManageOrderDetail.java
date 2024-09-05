@@ -10,6 +10,7 @@ import it.univaq.example.webshop.data.model.User;
 import it.univaq.example.webshop.data.model.impl.NotificationTypeEnum;
 import it.univaq.example.webshop.data.model.impl.ProposalStateEnum;
 import it.univaq.example.webshop.data.model.impl.RequestStateEnum;
+import it.univaq.example.webshop.data.model.impl.UserRoleEnum;
 import it.univaq.framework.data.DataException;
 import it.univaq.framework.result.TemplateResult;
 import it.univaq.framework.security.SecurityHelpers;
@@ -275,20 +276,28 @@ public class ManageOrderDetail extends WebshopBaseController {
         try {
             HttpSession s = request.getSession(false);
             if (s != null) {
-                if(request.getParameter("order") != null) {
-                    req_key = SecurityHelpers.checkNumeric(request.getParameter("order"));
-                    if(request.getParameter("crud") != null && request.getParameter("crud").equals("update")) 
-                        action_update(request, response, req_key);          
+                if(SecurityHelpers.checkPermissionScript(request)) {
+                    if(request.getParameter("order") != null) {
+                        req_key = SecurityHelpers.checkNumeric(request.getParameter("order"));
+                        if(request.getParameter("crud") != null && request.getParameter("crud").equals("update")) 
+                            action_update(request, response, req_key);          
+                        else
+                            action_default(request, response, req_key);
+                    } else
+                        response.sendRedirect("orders?myOrders");
+                } else {
+                    Group myGroup = ((WebshopDataLayer) request.getAttribute("datalayer")).getGroupDAO().getGroupByUser(Integer.parseInt(request.getSession().getAttribute("userid").toString()));
+                    if(myGroup.getName().equals(UserRoleEnum.AMMINISTRATORE))
+                        response.sendRedirect("homepage");
                     else
-                        action_default(request, response, req_key);
-                } else
-                    response.sendRedirect("orders?myOrders");
+                        response.sendRedirect("index");
+                }
             } else {
                 action_anonymous(request, response);
             }
         } catch (NumberFormatException ex) {
             handleError("Invalid number submitted", request, response);
-        } catch (IOException | TemplateManagerException ex) {
+        } catch (IOException | TemplateManagerException | DataException ex) {
             handleError(ex, request, response);
         }
     }

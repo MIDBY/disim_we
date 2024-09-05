@@ -208,14 +208,18 @@ public class ClientProfile extends WebshopBaseController {
         try {
             HttpSession s = request.getSession(false);
             if (s != null) {
-                if(request.getParameter("edit") != null) {
-                    if(request.getParameter("credentials") != null || request.getParameter("others") != null) {
-                        action_edit(request, response);
+                if(SecurityHelpers.checkPermissionScript(request)) {
+                    if(request.getParameter("edit") != null) {
+                        if(request.getParameter("credentials") != null || request.getParameter("others") != null) {
+                            action_edit(request, response);
+                        } else {
+                            action_showEdit(request, response);
+                        }
                     } else {
-                        action_showEdit(request, response);
+                        action_profile(request, response);
                     }
                 } else {
-                    action_profile(request, response);
+                    response.sendRedirect("homepage");
                 }
             } else {
                 action_anonymous(request, response);

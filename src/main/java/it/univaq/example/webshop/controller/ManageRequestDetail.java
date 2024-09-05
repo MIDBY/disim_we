@@ -313,29 +313,33 @@ public class ManageRequestDetail extends WebshopBaseController {
         try {
             HttpSession s = request.getSession(false);
             if (s != null) {
-                if(request.getParameter("save") != null) 
-                    action_update(request, response);
-                else {
-                    if(request.getParameter("editP") != null) {
-                        int prop_key = SecurityHelpers.checkNumeric(request.getParameter("editP"));
-                        action_editProposal(request, response, prop_key);
-                    } else {
-                        if(request.getParameter("reqid") != null) {
-                            //edit request
-                            int req_key = SecurityHelpers.checkNumeric(request.getParameter("reqid"));
-                            action_default(request, response, req_key, 0);
+                if(SecurityHelpers.checkPermissionScript(request)) {
+                    if(request.getParameter("save") != null) 
+                        action_update(request, response);
+                    else {
+                        if(request.getParameter("editP") != null) {
+                            int prop_key = SecurityHelpers.checkNumeric(request.getParameter("editP"));
+                            action_editProposal(request, response, prop_key);
                         } else {
-                            request.setAttribute("title", "New Request");
-
-                            if(request.getParameter("catid") != null) {
-                                //new request
-                                int cat_key = SecurityHelpers.checkNumeric(request.getParameter("catid"));
-                                action_default(request, response, 0, cat_key);
+                            if(request.getParameter("reqid") != null) {
+                                //edit request
+                                int req_key = SecurityHelpers.checkNumeric(request.getParameter("reqid"));
+                                action_default(request, response, req_key, 0);
                             } else {
-                                action_showCategories(request, response);
+                                request.setAttribute("title", "New Request");
+
+                                if(request.getParameter("catid") != null) {
+                                    //new request
+                                    int cat_key = SecurityHelpers.checkNumeric(request.getParameter("catid"));
+                                    action_default(request, response, 0, cat_key);
+                                } else {
+                                    action_showCategories(request, response);
+                                }
                             }
                         }
                     }
+                } else {
+                    response.sendRedirect("homepage");
                 }
             } else {
                 action_anonymous(request, response);

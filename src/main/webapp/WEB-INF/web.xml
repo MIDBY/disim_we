@@ -55,7 +55,7 @@
     <context-param>
         <param-name>security.protect.patterns</param-name>
         <!-- qui configuriamo i pattern delle URL da proteggere -->
-        <param-value></param-value>        
+        <param-value>/orders, /myOrders</param-value>        
     </context-param>
     <context-param>
         <param-name>data.source</param-name>
@@ -68,7 +68,7 @@
     </context-param>
     <context-param>
         <param-name>sendEmail</param-name>
-        <param-value>false</param-value>
+        <param-value>true</param-value>
     </context-param>
     <context-param>
         <param-name>securityCode</param-name>

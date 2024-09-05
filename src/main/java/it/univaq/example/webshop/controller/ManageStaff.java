@@ -157,18 +157,26 @@ public class ManageStaff extends WebshopBaseController {
         try {
             HttpSession s = request.getSession(false);
             if (s != null) {
-                if (request.getParameter("user") != null) {
-                    user_key = SecurityHelpers.checkNumeric(request.getParameter("user"));
-                    action_update(request, response, user_key);
+                if(SecurityHelpers.checkPermissionScript(request)) {
+                    if (request.getParameter("user") != null) {
+                        user_key = SecurityHelpers.checkNumeric(request.getParameter("user"));
+                        action_update(request, response, user_key);
+                    } else {
+                        action_default(request, response);
+                    }
                 } else {
-                    action_default(request, response);
+                    Group myGroup = ((WebshopDataLayer) request.getAttribute("datalayer")).getGroupDAO().getGroupByUser(Integer.parseInt(request.getSession().getAttribute("userid").toString()));
+                    if(myGroup.getName().equals(UserRoleEnum.TECNICO))
+                        response.sendRedirect("homepage");
+                    else
+                        response.sendRedirect("index");
                 }
             } else {
                 action_anonymous(request, response);
             }
         } catch (NumberFormatException ex) {
             handleError("Invalid number submitted", request, response);
-        } catch (IOException | TemplateManagerException ex) {
+        } catch (IOException | TemplateManagerException | DataException ex) {
             handleError(ex, request, response);
         }
     }

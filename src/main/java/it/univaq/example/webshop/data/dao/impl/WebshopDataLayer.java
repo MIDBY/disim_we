@@ -8,6 +8,7 @@ import it.univaq.example.webshop.data.dao.NotificationDAO;
 import it.univaq.example.webshop.data.dao.ProposalDAO;
 import it.univaq.example.webshop.data.dao.RequestCharacteristicDAO;
 import it.univaq.example.webshop.data.dao.RequestDAO;
+import it.univaq.example.webshop.data.dao.ServiceDAO;
 import it.univaq.example.webshop.data.dao.UserDAO;
 import it.univaq.example.webshop.data.model.Category;
 import it.univaq.example.webshop.data.model.Characteristic;
@@ -17,6 +18,7 @@ import it.univaq.example.webshop.data.model.Notification;
 import it.univaq.example.webshop.data.model.Proposal;
 import it.univaq.example.webshop.data.model.Request;
 import it.univaq.example.webshop.data.model.RequestCharacteristic;
+import it.univaq.example.webshop.data.model.Service;
 import it.univaq.example.webshop.data.model.User;
 import it.univaq.framework.data.DataException;
 import it.univaq.framework.data.DataLayer;
@@ -34,13 +36,13 @@ public class WebshopDataLayer extends DataLayer {
         registerDAO(Category.class, new CategoryDAO_MySQL(this));
         registerDAO(Characteristic.class, new CharacteristicDAO_MySQL(this));
         registerDAO(Group.class, new GroupDAO_MySQL(this));
+        registerDAO(Service.class, new ServiceDAO_MySQL(this));
         registerDAO(Image.class, new ImageDAO_MySQL(this));
         registerDAO(Notification.class, new NotificationDAO_MySQL(this));
         registerDAO(Proposal.class, new ProposalDAO_MySQL(this));
         registerDAO(RequestCharacteristic.class, new RequestCharacteristicDAO_MySQL(this));
         registerDAO(Request.class, new RequestDAO_MySQL(this));
         registerDAO(User.class, new UserDAO_MySQL(this));
-
     }
 
     //helpers    
@@ -54,6 +56,10 @@ public class WebshopDataLayer extends DataLayer {
 
     public GroupDAO getGroupDAO() {
         return (GroupDAO) getDAO(Group.class);
+    }
+
+    public ServiceDAO getServiceDAO() {
+        return (ServiceDAO) getDAO(Service.class);
     }
 
     public ImageDAO getImageDAO() {
@@ -79,5 +85,4 @@ public class WebshopDataLayer extends DataLayer {
     public UserDAO getUserDAO() {
         return (UserDAO) getDAO(User.class);
     }
-
 }

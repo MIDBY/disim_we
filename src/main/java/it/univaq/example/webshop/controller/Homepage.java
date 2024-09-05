@@ -24,6 +24,7 @@ import it.univaq.example.webshop.data.model.impl.UserRoleEnum;
 import it.univaq.framework.data.DataException;
 import it.univaq.framework.result.TemplateManagerException;
 import it.univaq.framework.result.TemplateResult;
+import it.univaq.framework.security.SecurityHelpers;
 
 public class Homepage extends WebshopBaseController {
 
@@ -308,7 +309,11 @@ public class Homepage extends WebshopBaseController {
             if (s == null) {
                 action_anonymous(request, response);
             } else {
-                action_logged(request, response);
+                if(SecurityHelpers.checkPermissionScript(request)) {
+                    action_logged(request, response);
+                } else {
+                    response.sendRedirect("index");
+                }   
             }
         } catch (IOException | TemplateManagerException ex) {
             handleError(ex, request, response);

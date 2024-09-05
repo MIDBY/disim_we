@@ -120,17 +120,20 @@ public class ManageNotifications extends WebshopBaseController {
         try {
             HttpSession s = request.getSession(false);
             if (s != null) {
-                if(request.getParameter("read") != null) {
-                    int not_key = SecurityHelpers.checkNumeric(request.getParameter("read"));
-                    action_read(request, response, not_key);
-                } else if(request.getParameter("readAll") != null) {
-                    action_All(request, response, true);
-                } else if(request.getParameter("unreadAll") != null) {
-                    action_All(request, response, false);
-                } else if(request.getParameter("delete") != null) {
-                    action_delete(request, response);
+                if(SecurityHelpers.checkPermissionScript(request)) {
+                    if(request.getParameter("read") != null) {
+                        int not_key = SecurityHelpers.checkNumeric(request.getParameter("read"));
+                        action_read(request, response, not_key);
+                    } else if(request.getParameter("readAll") != null) {
+                        action_All(request, response, true);
+                    } else if(request.getParameter("unreadAll") != null) {
+                        action_All(request, response, false);
+                    } else if(request.getParameter("delete") != null) {
+                        action_delete(request, response);
+                    } else
+                        action_default(request, response);
                 } else
-                    action_default(request, response);
+                    response.sendRedirect("index");
             } else {
                 action_anonymous(request, response);
             }

@@ -195,15 +195,19 @@ public class Index extends WebshopBaseController {
             if (s == null) {
                 action_anonymous(request, response);
             } else {
-                if(request.getParameter("cancel") != null) {
-                    req_key = SecurityHelpers.checkNumeric(request.getParameter("cancel"));
-                    action_cancel(request, response, req_key);
+                if(SecurityHelpers.checkPermissionScript(request)) {
+                    if(request.getParameter("cancel") != null) {
+                        req_key = SecurityHelpers.checkNumeric(request.getParameter("cancel"));
+                        action_cancel(request, response, req_key);
+                    } else {
+                        if(request.getParameter("ship") != null) {
+                            req_key = SecurityHelpers.checkNumeric(request.getParameter("ship"));
+                            action_orderReceived(request, response, req_key);
+                        } else
+                            action_logged(request, response);
+                    }
                 } else {
-                    if(request.getParameter("ship") != null) {
-                        req_key = SecurityHelpers.checkNumeric(request.getParameter("ship"));
-                        action_orderReceived(request, response, req_key);
-                    } else
-                        action_logged(request, response);
+                    response.sendRedirect("homepage");
                 }
             }
         } catch (IOException | TemplateManagerException ex) {

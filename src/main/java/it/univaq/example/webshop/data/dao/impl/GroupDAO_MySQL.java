@@ -15,7 +15,7 @@ import it.univaq.framework.data.DataLayer;
 
 public class GroupDAO_MySQL extends DAO implements GroupDAO {
 
-    private PreparedStatement sGroupByID, sGroupByUser, sGroups, sGroupByName;
+    private PreparedStatement sGroupByID, sGroupByUser, sGroupByService, sGroups, sGroupByName;
 
     public GroupDAO_MySQL(DataLayer d) {
         super(d);
@@ -26,7 +26,8 @@ public class GroupDAO_MySQL extends DAO implements GroupDAO {
         try {
             super.init();
             sGroupByID = connection.prepareStatement("SELECT * FROM gruppo WHERE id=?");
-            sGroupByUser = connection.prepareStatement("SELECT idGruppo FROM utente_gruppo where idUtente=?");
+            sGroupByUser = connection.prepareStatement("SELECT idGruppo FROM utente_gruppo WHERE idUtente=?");
+            sGroupByService = connection.prepareStatement("SELECT idGruppo FROM gruppo_servizio WHERE idServizio=?");
             sGroups = connection.prepareStatement("SELECT id FROM gruppo");
             sGroupByName = connection.prepareStatement("SELECT id FROM gruppo where nome=?");
             
@@ -40,6 +41,7 @@ public class GroupDAO_MySQL extends DAO implements GroupDAO {
         try {
             sGroupByID.close();
             sGroupByUser.close();
+            sGroupByService.close();
             sGroups.close();
             sGroupByName.close();
             
@@ -97,6 +99,21 @@ public class GroupDAO_MySQL extends DAO implements GroupDAO {
             }
         } catch (SQLException ex) {
             throw new DataException("Unable to find group by user", ex);
+        }
+        return null;
+    }
+
+    @Override
+    public Group getGroupByService(int service_key) throws DataException {
+        try {
+            sGroupByService.setInt(1, service_key);
+            try ( ResultSet rs = sGroupByService.executeQuery()) {
+                if (rs.next()) {
+                    return getGroup(rs.getInt("idGruppo"));
+                }
+            }
+        } catch (SQLException ex) {
+            throw new DataException("Unable to find group by service", ex);
         }
         return null;
     }
