@@ -207,7 +207,10 @@ public class Index extends WebshopBaseController {
                             action_logged(request, response);
                     }
                 } else {
-                    response.sendRedirect("homepage");
+                    if(s.getAttribute("userid") != null)
+                        response.sendRedirect("homepage");
+                    else
+                        response.sendRedirect("login");
                 }
             }
         } catch (IOException | TemplateManagerException ex) {

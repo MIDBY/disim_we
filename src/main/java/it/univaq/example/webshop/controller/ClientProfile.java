@@ -219,7 +219,10 @@ public class ClientProfile extends WebshopBaseController {
                         action_profile(request, response);
                     }
                 } else {
-                    response.sendRedirect("homepage");
+                    if(s.getAttribute("userid") != null)
+                        response.sendRedirect("homepage");
+                    else
+                        response.sendRedirect("login");
                 }
             } else {
                 action_anonymous(request, response);

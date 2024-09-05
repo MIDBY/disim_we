@@ -341,7 +341,10 @@ public class ManageRequestDetail extends WebshopBaseController {
                         }
                     }
                 } else {
-                    response.sendRedirect("homepage");
+                    if(s.getAttribute("userid") != null)
+                        response.sendRedirect("homepage");
+                    else
+                        response.sendRedirect("login");
                 }
             } else {
                 action_anonymous(request, response);

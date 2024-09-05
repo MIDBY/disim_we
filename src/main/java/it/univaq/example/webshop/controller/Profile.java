@@ -277,7 +277,10 @@ public class Profile extends WebshopBaseController {
                         action_profile(request, response);
                     }
                 } else {
-                    response.sendRedirect("index");
+                    if(s.getAttribute("userid") != null)
+                        response.sendRedirect("index");
+                    else
+                        response.sendRedirect("login");
                 }
             } else {
                 action_anonymous(request, response);

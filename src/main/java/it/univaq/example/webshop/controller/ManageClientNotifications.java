@@ -130,7 +130,10 @@ public class ManageClientNotifications extends WebshopBaseController {
                     } else
                         action_default(request, response);
                 } else {
-                    response.sendRedirect("homepage");
+                    if(s.getAttribute("userid") != null)
+                        response.sendRedirect("homepage");
+                    else
+                        response.sendRedirect("login");
                 }
             } else {
                 action_anonymous(request, response);

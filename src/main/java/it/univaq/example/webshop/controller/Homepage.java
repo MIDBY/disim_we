@@ -3,7 +3,6 @@ package it.univaq.example.webshop.controller;
 import java.io.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -311,7 +310,10 @@ public class Homepage extends WebshopBaseController {
                 if(SecurityHelpers.checkPermissionScript(request)) {
                     action_logged(request, response);
                 } else {
-                    response.sendRedirect("index");
+                    if(s.getAttribute("userid") != null)
+                        response.sendRedirect("index");
+                    else
+                        response.sendRedirect("login");
                 }   
             }
         } catch (IOException | TemplateManagerException ex) {

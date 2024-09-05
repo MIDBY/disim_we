@@ -133,7 +133,10 @@ public class ManageNotifications extends WebshopBaseController {
                     } else
                         action_default(request, response);
                 } else
-                    response.sendRedirect("index");
+                    if(s.getAttribute("userid") != null)
+                        response.sendRedirect("index");
+                    else
+                        response.sendRedirect("login");
             } else {
                 action_anonymous(request, response);
             }

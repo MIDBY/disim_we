@@ -12,11 +12,9 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
-
 import it.univaq.example.webshop.data.dao.impl.WebshopDataLayer;
 import it.univaq.example.webshop.data.model.Group;
 import it.univaq.example.webshop.data.model.Service;
-import it.univaq.example.webshop.data.model.User;
 import it.univaq.framework.data.DataException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -220,18 +218,20 @@ public class SecurityHelpers {
 
     public static boolean checkPermissionScript(HttpServletRequest request){
         try {
-            String url = request.getAttribute("thispageurl").toString();
-            String script = url.split("/")[url.split("/").length -1];
-            if(script.contains("?"))
-                script = script.substring(0, script.indexOf("?"));
-            Service myService = ((WebshopDataLayer) request.getAttribute("datalayer")).getServiceDAO().getServiceByScript(script);
-            User me = ((WebshopDataLayer) request.getAttribute("datalayer")).getUserDAO().getUser(Integer.parseInt(request.getSession().getAttribute("userid").toString()));
-            Group myGroup = ((WebshopDataLayer) request.getAttribute("datalayer")).getGroupDAO().getGroupByUser(me.getKey());
-            return myGroup.getServices().contains(myService);
-        } catch (DataException e) {
+            if(request.getSession().getAttribute("userid") != null) {
+                String url = request.getAttribute("thispageurl").toString();
+                String script = url.split("/")[url.split("/").length -1];
+                if(script.contains("?"))
+                    script = script.substring(0, script.indexOf("?"));
+                Service myService = ((WebshopDataLayer) request.getAttribute("datalayer")).getServiceDAO().getServiceByScript(script);
+                Group myGroup = ((WebshopDataLayer) request.getAttribute("datalayer")).getGroupDAO().getGroupByUser(Integer.parseInt(request.getSession().getAttribute("userid").toString()));
+                return myGroup.getServices().contains(myService);
+            } 
+        } catch (NullPointerException | DataException e) {
+            //sessione resettata
             e.printStackTrace();
-            return false;
         }
+        return false;
     }
 
     //--------- PASSWORD SECURITY ------------
