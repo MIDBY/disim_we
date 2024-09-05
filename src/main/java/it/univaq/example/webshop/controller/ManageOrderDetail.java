@@ -243,26 +243,17 @@ public class ManageOrderDetail extends WebshopBaseController {
         }
     }
 
-    private int calculatePercentage(int valueNow, int valueLast) {
-        if(valueNow != 0) {
-            if(valueLast != 0){
-                float support = (float) valueNow / valueLast;
-                if(support > 1) {
-                    support= (support-1)*100;
-                    return (int)support;
-                } else {
-                    support*=100;
-                    return (int)support;
-                }
+    private int calculatePercentage(int valueTot, int valueFails) {
+        if(valueTot != 0) {
+            if(valueFails != 0){
+                float support = (float) 100 * valueFails / valueTot;
+                support = 100 - support;
+                return (int)support;
             } else {
-                return valueNow * 100;
+                return 100;
             }
         } else {
-            if(valueLast != 0) {
-                return -valueLast * 100;
-            } else {
-                return 0;
-            }
+            return 100;
         }
     }
 

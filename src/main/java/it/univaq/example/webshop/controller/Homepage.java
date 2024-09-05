@@ -59,7 +59,7 @@ public class Homepage extends WebshopBaseController {
                 int reqLastMonthValue = reqLastMonth.size();
                 int percentageRequests = calculatePercentage(reqThisMonthValue, reqLastMonthValue);
                 request.setAttribute("newRequestsMonth", reqThisMonthValue);
-                if(percentageRequests >= 0) {
+                if(reqThisMonthValue >= reqLastMonthValue) {
                     request.setAttribute("percentageRequests", percentageRequests);
                     request.setAttribute("percentageRequestsText", "% higher");
                 } else {
@@ -79,7 +79,7 @@ public class Homepage extends WebshopBaseController {
                 }
                 int percentageSells = calculatePercentage(reqThisMonthClosed, reqLastMonthClosed);
                 request.setAttribute("newSellsMonth", reqThisMonthClosed);
-                if(percentageSells >= 0) {
+                if(reqThisMonthClosed >= reqLastMonthClosed) {
                     request.setAttribute("percentageSells", percentageSells);
                     request.setAttribute("percentageSellsText", "% higher");
                 } else {
@@ -130,7 +130,6 @@ public class Homepage extends WebshopBaseController {
                     data1[j] = ((WebshopDataLayer) request.getAttribute("datalayer")).getRequestDAO().getRequestsByCreationMonth(i).size();
                     j++;
                 }
-                j--;
                 data1[j] = reqLastMonthValue; j++;
                 data1[j] = reqThisMonthValue;
                 request.setAttribute("chartData1", data1);
@@ -145,7 +144,7 @@ public class Homepage extends WebshopBaseController {
 
                 int[] data3 = new int[12];
                 for(User u : clients) {
-                    long monthsAgo = ChronoUnit.MONTHS.between(u.getSubscriptionDate(), LocalDate.now());
+                    int monthsAgo = LocalDate.now().getMonthValue() - u.getSubscriptionDate().getMonthValue();
                     if (monthsAgo < 12) {
                         data3[11 - (int) monthsAgo]++;
                     }

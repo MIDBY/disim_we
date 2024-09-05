@@ -9,8 +9,8 @@ if (document.getElementById("pie1")) {
                         columns: [
                             // each columns data
                             ['data1', document.getElementById("pie1").value],
-                            ['data2', document.getElementById("pie3").value],
-                            ['data3', document.getElementById("pie2").value],
+                            ['data2', document.getElementById("pie2").value],
+                            ['data3', document.getElementById("pie3").value],
                         ],
                         type: 'donut', // default type of chart
                         colors: {

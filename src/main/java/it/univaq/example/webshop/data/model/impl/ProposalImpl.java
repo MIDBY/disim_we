@@ -109,15 +109,15 @@ public class ProposalImpl extends DataItemImpl<Integer> implements Proposal {
 
     @Override
     public boolean setUrl(String url) {
-        try {
-            URL u = new URL(url);
-            u.toURI();
-
-        } catch (MalformedURLException|URISyntaxException e) {
-            e.printStackTrace();
-            return false;
+        if(url != null && url != "") {
+            try {
+                URL u = new URL(url);
+                u.toURI();
+            } catch (MalformedURLException|URISyntaxException e) {
+                e.printStackTrace();
+                return false;
+            }
         }
-
         this.url = url;
         return true;
     }

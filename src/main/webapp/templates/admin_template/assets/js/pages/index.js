@@ -56,7 +56,7 @@ if (document.getElementById("chartData1")) {
                             // name of each serie
                             'data1': 'New Requests',
                             'data2': 'Proposals',
-                            'data3': 'Orderings availables',
+                            'data3': 'New Orderings',
                         }
                     },
                     axis: {
