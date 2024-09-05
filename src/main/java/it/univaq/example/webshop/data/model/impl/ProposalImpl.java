@@ -109,7 +109,7 @@ public class ProposalImpl extends DataItemImpl<Integer> implements Proposal {
 
     @Override
     public boolean setUrl(String url) {
-        if(url != null && url != "") {
+        if(url.length() > 0) {
             try {
                 URL u = new URL(url);
                 u.toURI();
