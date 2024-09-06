@@ -136,7 +136,7 @@ public class ManageNotifications extends WebshopBaseController {
                     if(s.getAttribute("userid") != null)
                         response.sendRedirect("index");
                     else
-                        response.sendRedirect("login");
+                        response.sendRedirect("logout");
             } else {
                 action_anonymous(request, response);
             }

@@ -86,7 +86,7 @@ public class ManageRequests extends WebshopBaseController {
                         else
                             response.sendRedirect("index");
                     } else
-                        response.sendRedirect("login");
+                        response.sendRedirect("logout");
                 }
             } else {
                 action_anonymous(request, response);

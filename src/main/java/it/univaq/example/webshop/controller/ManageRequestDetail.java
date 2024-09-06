@@ -344,7 +344,7 @@ public class ManageRequestDetail extends WebshopBaseController {
                     if(s.getAttribute("userid") != null)
                         response.sendRedirect("homepage");
                     else
-                        response.sendRedirect("login");
+                        response.sendRedirect("logout");
                 }
             } else {
                 action_anonymous(request, response);

@@ -230,11 +230,14 @@ public class ManageOrders extends WebshopBaseController {
                             action_default(request, response);
                     }
                 } else {
-                    Group myGroup = ((WebshopDataLayer) request.getAttribute("datalayer")).getGroupDAO().getGroupByUser(Integer.parseInt(request.getSession().getAttribute("userid").toString()));
-                    if(myGroup.getName().equals(UserRoleEnum.AMMINISTRATORE))
-                        response.sendRedirect("homepage");
-                    else
-                        response.sendRedirect("index");
+                    if(s.getAttribute("userid") != null) {
+                        Group myGroup = ((WebshopDataLayer) request.getAttribute("datalayer")).getGroupDAO().getGroupByUser(Integer.parseInt(request.getSession().getAttribute("userid").toString()));
+                        if(myGroup.getName().equals(UserRoleEnum.AMMINISTRATORE))
+                            response.sendRedirect("homepage");
+                        else
+                            response.sendRedirect("index");
+                    } else
+                        response.sendRedirect("logout");
                 }
             } else {
                 action_anonymous(request, response);

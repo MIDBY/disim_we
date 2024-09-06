@@ -313,7 +313,7 @@ public class Homepage extends WebshopBaseController {
                     if(s.getAttribute("userid") != null)
                         response.sendRedirect("index");
                     else
-                        response.sendRedirect("login");
+                        response.sendRedirect("logout");
                 }   
             }
         } catch (IOException | TemplateManagerException ex) {

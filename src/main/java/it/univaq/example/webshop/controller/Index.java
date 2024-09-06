@@ -210,7 +210,7 @@ public class Index extends WebshopBaseController {
                     if(s.getAttribute("userid") != null)
                         response.sendRedirect("homepage");
                     else
-                        response.sendRedirect("login");
+                        response.sendRedirect("logout");
                 }
             }
         } catch (IOException | TemplateManagerException ex) {

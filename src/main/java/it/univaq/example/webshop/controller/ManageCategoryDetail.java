@@ -246,7 +246,7 @@ public class ManageCategoryDetail extends WebshopBaseController {
                         else
                             response.sendRedirect("index");
                     } else
-                        response.sendRedirect("login");
+                        response.sendRedirect("logout");
                     
                 }
             } else {
