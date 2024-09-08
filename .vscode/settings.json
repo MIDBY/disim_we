@@ -1,4 +1,6 @@
 {
     "java.dependency.packagePresentation": "hierarchical",
     "workbench.sideBar.location": "right",
+    "editor.fontSize": 12,
+    "java.configuration.updateBuildConfiguration": "interactive",
 }

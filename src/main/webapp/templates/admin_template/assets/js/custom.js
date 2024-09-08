@@ -384,3 +384,9 @@ function saveSkin(btn){
 $(document).ready(function() {
   loadTheme();
 });
+
+function searchGoogle() {
+  var searchInput = document.getElementById("search-input").value;
+  var searchUrl = "https://www.google.com/search?q=" + encodeURIComponent(searchInput);
+  window.open(searchUrl, "_blank");
+}

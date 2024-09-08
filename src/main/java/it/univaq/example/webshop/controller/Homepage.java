@@ -196,11 +196,10 @@ public class Homepage extends WebshopBaseController {
                     List<Request> reqByCat = ((WebshopDataLayer) request.getAttribute("datalayer")).getRequestDAO().getRequestsByCategory(catMostSold.get(0).getKey());
                     request.setAttribute("categorySoldName", catMostSold.get(0).getName());
                     request.setAttribute("categorySoldTimes", reqByCat.size());
-                    request.setAttribute("categoryImage", catMostSold.get(0).getImage().getFilename());
+                    request.setAttribute("categoryImage", catMostSold.get(0).getImage().getKey());
                 } else {
                     request.setAttribute("categorySoldName", "No one category wins");
                     request.setAttribute("categorySoldTimes", 0);
-                    request.setAttribute("categoryImage", "templates/admin_template/assets/images/lg/avatar2.jpg");
                 }
 
                 //grafico del mondo dei clienti
@@ -240,17 +239,41 @@ public class Homepage extends WebshopBaseController {
                     request.setAttribute("pieName3", keys[2]);
                     request.setAttribute("pieValue3", cCountry.get(keys[2]));
                     request.setAttribute("pieValue4", clients.size() - cCountry.get(keys[0]) - cCountry.get(keys[1]) - cCountry.get(keys[2]));
-                } else {
-                    request.setAttribute("pieName1", "Country 1");
-                    request.setAttribute("pieValue1", 33);
-                    request.setAttribute("pieName2", "Country 2");
-                    request.setAttribute("pieValue2", 33);
-                    request.setAttribute("pieName3", "Country 3");
-                    request.setAttribute("pieValue3", 33);
-                    request.setAttribute("pieValue3", 0);
-                    request.setAttribute("pieValue4", 0);
+                } else {                
+                    if(cCountry != null && cCountry.size() > 1) {
+                        cCountry = cCountry.entrySet().stream().sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                        .collect(Collectors.toMap( Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue, LinkedHashMap::new));
+                        Object[] keys = cCountry.keySet().toArray();
+                        request.setAttribute("pieName1", keys[0]);
+                        request.setAttribute("pieValue1", cCountry.get(keys[0]));
+                        request.setAttribute("pieName2", keys[1]);
+                        request.setAttribute("pieValue2", cCountry.get(keys[1]));
+                        request.setAttribute("pieName3", "");
+                        request.setAttribute("pieValue3", 0);
+                        request.setAttribute("pieValue4", 0);
+                    } else {
+                        if(cCountry != null && cCountry.size() > 0) {
+                            cCountry = cCountry.entrySet().stream().sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                            .collect(Collectors.toMap( Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue, LinkedHashMap::new));
+                            Object[] keys = cCountry.keySet().toArray();
+                            request.setAttribute("pieName1", keys[0]);
+                            request.setAttribute("pieValue1", cCountry.get(keys[0]));
+                            request.setAttribute("pieName2", "");
+                            request.setAttribute("pieValue2", 0);
+                            request.setAttribute("pieName3", "");
+                            request.setAttribute("pieValue3", 0);
+                            request.setAttribute("pieValue4", 0);
+                        } else {
+                            request.setAttribute("pieName1", "Country");
+                            request.setAttribute("pieValue1", 25);
+                            request.setAttribute("pieName2", "Country");
+                            request.setAttribute("pieValue2", 25);
+                            request.setAttribute("pieName3", "Country");
+                            request.setAttribute("pieValue3", 25);
+                            request.setAttribute("pieValue4", 25);
+                        }
+                    }
                 }
-                
 
                 request.setAttribute("completeRequestURL", "login");
                 res.activate("homepage.ftl.html", request, response);
