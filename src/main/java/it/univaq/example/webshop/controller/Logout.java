@@ -5,11 +5,6 @@ import java.io.*;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 
-/**
- *
- * @author Ingegneria del Web
- * @version
- */
 public class Logout extends WebshopBaseController {
 
     private void action_logout(HttpServletRequest request, HttpServletResponse response) throws IOException {

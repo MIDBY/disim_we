@@ -1,9 +1,5 @@
 package it.univaq.framework.result;
 
-/**
- *
- * @author Giuseppe Della Penna
- */
 public class TemplateManagerException extends Exception {
 
     public TemplateManagerException(String message) {

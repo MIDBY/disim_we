@@ -13,10 +13,6 @@ import freemarker.template.TemplateModelException;
 import it.univaq.framework.security.SecurityHelpers;
 import java.util.List;
 
-/**
- *
- * @author Giuseppe Della Penna
- */
 public class SplitSlashesFmkExt implements TemplateMethodModelEx {
 
     @SuppressWarnings("rawtypes")

@@ -42,10 +42,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import no.api.freemarker.java8.Java8ObjectWrapper;
 
-/**
- *
- * @author Giuseppe Della Penna
- */
 public class TemplateResult {
 
     protected ServletContext context;

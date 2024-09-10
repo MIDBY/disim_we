@@ -23,10 +23,6 @@ import java.util.Map;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 
-/**
- *
- * @author Giuseppe Della Penna
- */
 public interface DataModelFiller {
 
     //request e context POSSONO ESSERE NULL

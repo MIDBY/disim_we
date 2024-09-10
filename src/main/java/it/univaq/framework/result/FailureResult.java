@@ -22,10 +22,6 @@ import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-/**
- *
- * @author Giuseppe Della Penna
- */
 public class FailureResult {
 
     protected ServletContext context;
