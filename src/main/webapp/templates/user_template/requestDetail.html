@@ -117,7 +117,7 @@
                                                 <h5>${p.technician.username}</h5>
                                                 <span class="comment-date mr-3">${p.creationDate.format('dd/MM/yyyy HH:mm')}</span>
                                                 <span class="comment-date">version: ${p.version}</span>
-                                                <#if editable><a href="#" onclick="editProposal(event, '${p.key}')" class="replybutton"><i class="fa fa-edit"></i> Edit</a></#if>
+                                                <#if editable><a href="#" onclick="editProposal(event, '${p.key}')" class="replybutton"><i class="fa fa-reply"></i> Reply to proposal</a></#if>
                                                 <#if (p.proposalState == 'INATTESA')>
                                                     <span class="replybutton badge mr-3 badge-warning">IN ATTESA</span>
                                                 <#else>
