@@ -1,4 +1,4 @@
-Progetto WebShop
+# Progetto WebShop
 
 Il progetto WebShop è un'applicazione web sviluppata come progetto universitario, focalizzata sulla gestione di un negozio online per la vendita di oggetti personalizzati.
 
